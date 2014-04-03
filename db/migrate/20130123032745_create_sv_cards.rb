@@ -5,13 +5,12 @@ class CreateSvCards < ActiveRecord::Migration
       t.string :name
       t.string :img_url
       t.integer :types
-      t.float :price
-      t.float :discount #折扣比例
+     # t.float :discount #折扣比例 已经改成
       t.string :description
       t.integer :store_id
       t.integer :use_range    #优惠卡使用范围
-      t.integer :status, :default => 1
-      t.decimal :price, :precision=>"20,2"
+      t.integer :status, :default => 0
+      t.decimal :price, :precision=>"20,2",:default=>0
       
       t.timestamps
     end

@@ -5,10 +5,10 @@ class CreateNotices < ActiveRecord::Migration
       t.integer :target_id   #相关订单
       t.integer :types
       t.text :content
-      t.boolean :status
+      t.boolean :status,:default=>0
       t.integer :store_id
 
-      t.timestamps
+      t.datetime :created_at
     end
 
     add_index :notices, :store_id

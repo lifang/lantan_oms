@@ -6,7 +6,7 @@ class CreateDepartments < ActiveRecord::Migration
       t.integer :dpt_id
       t.integer :dpt_lv
       t.integer :store_id
-      t.integer :status
+      t.integer :status,:default=>0
 
       t.timestamps
     end

@@ -2,12 +2,12 @@ class CreateProducts < ActiveRecord::Migration
   def change
     create_table :products do |t|
       t.string :name
-      t.float :base_price
-      t.float :sale_price  #销售价格
+      t.decimal :base_price,:precision=>"20,2",:default=>0
+      t.decimal :sale_price,:precision=>"20,2",:default=>0  #销售价格
       t.string :description   #产品介绍
       t.integer :types  #清洁类，保养类。。。
       t.string :service_code   #服务代码
-      t.boolean :status     #状态
+      t.boolean :status,:default=>0     #状态
       t.text :introduction
       t.boolean :is_service   #判断是产品还是服务
       t.integer :staff_level   #所需技师等级
@@ -16,19 +16,19 @@ class CreateProducts < ActiveRecord::Migration
       t.integer :cost_time   #花费时长
       t.integer :store_id
       t.string :standard #规格
-      t.float :deduct_percent
-      t.float :t_price  #成本价
+      t.decimal :deduct_percent,:precision=>"20,2",:default=>0
+      t.decimal :t_price,:precision=>"20,2",:default=>0  #成本价
       t.boolean :is_auto_revist
       t.integer :auto_time
       t.text :revist_content
-      t.integer :prod_point
-      t.float :deduct_price
+      t.integer :prod_point,:default=>0
+      t.decimal :deduct_price,:precision=>"20,2",:default=>0
       t.boolean :show_on_ipad, :default => true #判断服务是否在ipad端显示
       t.boolean :commonly_used, :default => false  #给服务加标志，服务是否在新的下单系统中显示
       t.integer :category_id
       t.boolean :is_added, :default=>0
-      t.float :techin_price, :default=>0
-      t.float :techin_percent, :default=>0
+      t.decimal :techin_price,:precision=>"20,2",:default=>0
+      t.decimal :techin_percent,:precision=>"20,2",:default=>0
       t.integer :single_types, :defalut=>0
       t.timestamps
     end

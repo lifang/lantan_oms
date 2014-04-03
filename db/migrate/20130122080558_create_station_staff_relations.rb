@@ -6,7 +6,7 @@ class CreateStationStaffRelations < ActiveRecord::Migration
       t.integer :current_day   #日期  年月日
       t.integer :store_id
 
-      t.timestamps
+      t.datetime :created_at
     end
     add_index :station_staff_relations, :station_id
     add_index :station_staff_relations, :staff_id

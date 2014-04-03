@@ -4,7 +4,7 @@ class CreateMOrderTypes < ActiveRecord::Migration
     create_table :m_order_types do |t|
       t.integer :material_order_id  #所需物料订单编号
       t.integer :pay_types     
-      t.float :price
+      t.decimal :price,:precision=>"20,2",:default=>0
       t.timestamps
     end
 

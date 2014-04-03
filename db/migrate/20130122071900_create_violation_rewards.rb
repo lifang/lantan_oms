@@ -8,8 +8,8 @@ class CreateViolationRewards < ActiveRecord::Migration
       t.string :mark  #备注
       t.boolean :types   #处罚或者奖励
       t.integer :target_id  #相关订单
-      t.float :score_num #按分值算
-      t.float :salary_num #按金额算
+      t.decimal :score_num,:precision=>"5,2",:default=>0 #按分值算
+      t.decimal :salary_num,:precision=>"5,2",:default=>0 #按金额算
       t.datetime :process_at
       t.integer :belong_types
       
@@ -17,5 +17,6 @@ class CreateViolationRewards < ActiveRecord::Migration
     end
 
     add_index :violation_rewards, :staff_id
+    add_index :violation_rewards, :created_at
   end
 end

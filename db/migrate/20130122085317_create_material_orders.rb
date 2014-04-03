@@ -7,7 +7,7 @@ class CreateMaterialOrders < ActiveRecord::Migration
       t.integer :supplier_type  #供货类型
       t.integer :status      #
       t.integer :staff_id
-      t.float :price
+      t.decimal :price,:precision=>"10,2",:default=>0
       t.datetime :arrival_at   #到达日期
       t.string :logistics_code  #物流单号
       t.string :carrier     #托运人姓名

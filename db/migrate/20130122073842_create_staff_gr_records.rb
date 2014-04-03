@@ -9,9 +9,10 @@ class CreateStaffGrRecords < ActiveRecord::Migration
       t.integer :deduct_end  #提成结束数量
       t.float :deduct_percent
       t.integer :working_stats #在职状态 0试用 1正式
-      t.timestamps
+      t.datetime :created_at
     end
 
     add_index :staff_gr_records, :staff_id
+    add_index :staff_gr_records, :created_at
   end
 end

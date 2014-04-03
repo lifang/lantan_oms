@@ -5,14 +5,15 @@ class CreateMatInOrders < ActiveRecord::Migration
       t.integer :material_order_id
       t.integer :material_id
       t.integer :material_num
-      t.float :price
+      t.decimal :price,:precision=>"20,2",:default=>0
       t.integer :staff_id
 
-      t.timestamps
+      t.datetime :created_at
     end
 
     add_index :mat_in_orders, :material_order_id
     add_index :mat_in_orders, :material_id
     add_index :mat_in_orders, :staff_id
+    add_index :mat_in_orders, :created_at
   end
 end

@@ -2,7 +2,7 @@ class CreatePcardMaterialRelations < ActiveRecord::Migration
   def change
     create_table :pcard_material_relations do |t|
       t.integer :material_id
-      t.integer :material_num
+      t.integer :material_num,:default=>0
       t.integer :package_card_id
       t.timestamps
     end

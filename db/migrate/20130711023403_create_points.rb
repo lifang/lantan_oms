@@ -3,7 +3,7 @@ class CreatePoints < ActiveRecord::Migration
     create_table :points do |t|
       t.integer :customer_id
       t.integer :target_id
-      t.integer :point_num
+      t.integer :point_num,:default=>0
       t.string  :target_content
       t.integer :types
       t.timestamps

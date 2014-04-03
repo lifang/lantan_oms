@@ -5,15 +5,16 @@ class CreateMatOutOrders < ActiveRecord::Migration
       t.integer :material_id
       t.integer :staff_id
       t.integer :material_num
-      t.float :price
+      t.decimal :price,:precision=>"20,2",:default=>0
       t.integer :material_order_id
       t.integer :types, :limit => 1 #出库类型
+      t.datetime :created_at
       t.integer :store_id
-      t.timestamps
     end
 
     add_index :mat_out_orders, :material_id
     add_index :mat_out_orders, :staff_id
     add_index :mat_out_orders, :material_order_id
+    add_index :mat_out_orders, :created_at
   end
 end
