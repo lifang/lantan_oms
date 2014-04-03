@@ -5,9 +5,10 @@ class CreateOrderProdRelations < ActiveRecord::Migration
       t.integer :order_id
       t.integer :product_id
       t.integer :pro_num   #产品数量
-      t.decimal :price,:precision=>"20,2",:default=>0   #价格
-      t.decimal :total_price,:precision=>"20,2",:default=>0 #订单每项商品的总价
-      t.decimal :t_price,:precision=>"20,2",:default=>0 #订单每项商品的成本价
+      t.float :price   #价格
+      t.float :total_price #订单每项商品的总价
+      t.float :t_price #订单每项商品的成本价
+      t.integer :return_types, :default=>0
       
       t.timestamps
     end

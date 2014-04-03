@@ -5,13 +5,13 @@ class CreateCPcardRelations < ActiveRecord::Migration
       t.integer :customer_id
       t.integer :package_card_id
       t.datetime :ended_at
-      t.integer :status,:default=>0
+      t.integer :status
       t.string :content
-      t.decimal :price,:precision=>"20,2",:default=>0
-      t.datetime :created_at
+      t.float :price
       t.integer :order_id
+      t.integer :return_types, :default=>0
       t.integer :store_id
-      
+      t.timestamps
     end
 
     add_index :c_pcard_relations, :customer_id

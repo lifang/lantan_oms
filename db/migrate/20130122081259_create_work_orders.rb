@@ -9,14 +9,14 @@ class CreateWorkOrders < ActiveRecord::Migration
       t.datetime :ended_at
       t.integer :current_day
       t.float :runtime   #花费时长
-      t.integer :violation_num   #违规次数
+      t.float :violation_num   #违规次数
       t.string :violation_reason  
-      t.decimal :water_num,:precision=>"8,2",:default=>0
-      t.decimal :electricity_num,:precision=>"8,2",:default=>0
+      t.float :water_num
+      t.float :electricity_num
       t.integer :store_id
       t.integer :cost_time
 
-      t.datetime :created_at
+      t.timestamps
     end
 
     add_index :work_orders, :station_id

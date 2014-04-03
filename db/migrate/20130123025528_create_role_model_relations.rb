@@ -6,7 +6,6 @@ class CreateRoleModelRelations < ActiveRecord::Migration
       t.integer :num
       t.string :model_name
       t.integer :store_id
-      t.bigint :num
       t.timestamps
     end
 

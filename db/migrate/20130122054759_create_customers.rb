@@ -18,10 +18,9 @@ class CreateCustomers < ActiveRecord::Migration
       t.integer :integer, :default => 0 #客户属性 个人/集团客户
       t.string :group_name #集团名称(如果是集团客户)
       t.integer :allowed_debts, :default => 0 #是否允许欠账
-      t.decimal :debts_money,:precision=>"20,2",:default=>0 #欠账额度
+      t.float :debts_money #欠账额度
       t.integer :check_type #结算类型(月/周)
       t.integer :check_time #结算时间(..月/..周)
-	  t.integer :store_id
       t.timestamps
     end
 

@@ -10,7 +10,7 @@ class CreateComplaints < ActiveRecord::Migration
       t.integer :staff_id_1  #投诉技师
       t.integer :staff_id_2
       t.datetime :process_at   #处理时间
-      t.boolean :is_violation,:default=>0   #是否违规
+      t.boolean :is_violation   #是否违规
       t.integer :customer_id
       t.integer :store_id
       t.boolean :c_feedback_suggestion #客户反馈意见

@@ -10,6 +10,5 @@ class CreateNews < ActiveRecord::Migration
     end
 
     add_index :news, :status
-    add_index :news, :created_at
   end
 end

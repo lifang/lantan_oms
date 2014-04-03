@@ -3,16 +3,16 @@ class CreateSvcReturnRecords < ActiveRecord::Migration
   def change
     create_table :svc_return_records do |t|
       t.integer :store_id
-      t.decimal :price,:default=>0,:precision=>"20,2"
+      t.float :price
       t.integer :types
       t.text :content 
       t.integer :target_id
-      t.decimal :total_price,:default=>0,:precision=>"20,2"
+      t.float :total_price
 
-      t.datetime :created_at
+      t.timestamps
     end
 
     add_index :svc_return_records, :store_id
-    add_index :svc_return_records, :created_at
+
   end
 end

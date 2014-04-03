@@ -6,8 +6,8 @@ class CreateSales < ActiveRecord::Migration
       t.datetime :ended_at
       t.text :introduction
       t.integer :disc_types   #打折方式
-      t.integer :status,:status=>0
-      t.decimal :discount,:precision=>"20,2",:default=>0    #折扣
+      t.integer :status
+      t.float :discount    #折扣
       t.integer :store_id
       t.integer :disc_time_types  #打折时间方式
       t.integer :car_num           #折扣数量
@@ -23,7 +23,7 @@ class CreateSales < ActiveRecord::Migration
 
     add_index :sales, :status
     add_index :sales, :store_id
-    add_index :sales, :created_at
+
     add_index :sales, :code
   end
 end

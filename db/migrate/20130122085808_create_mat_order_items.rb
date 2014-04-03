@@ -5,7 +5,7 @@ class CreateMatOrderItems < ActiveRecord::Migration
       t.integer :material_order_id
       t.integer :material_id
       t.integer :material_num
-      t.decimal :price,:precision=>"20,2",:default=>0
+      t.float :price
       t.timestamps
     end
 

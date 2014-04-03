@@ -2,7 +2,7 @@ class CreateBackGoodRecords < ActiveRecord::Migration
   def change
     create_table :back_good_records do |t|
       t.integer :material_id
-      t.integer :material_num,:default=>1
+      t.integer :material_num
       t.integer :supplier_id
       t.integer :store_id
       

@@ -4,18 +4,17 @@ class CreateCSvcRelations < ActiveRecord::Migration
     create_table :c_svc_relations do |t|
       t.integer :customer_id
       t.integer :sv_card_id
-      t.decimal :total_price,:default=>0,:precision=>"20,2"
-      t.deciaml :left_price,:default=>0,:precision=>"20,2"
+      t.float :total_price
+      t.float :left_price
       t.string :id_card  #客户身份证
-      t.boolean :is_billing,:default=>0  #是否已开据发票
-      t.datetime :created_at
+      t.boolean :is_billing  #是否已开据发票
       t.string :verify_code
       t.integer :order_id
-      t.boolean :status,:default=>0
+      t.boolean :status
       t.integer :return_types, :default=>0
       t.string :password
       t.integer :store_id
-      
+      t.timestamps
     end
 
     add_index :c_svc_relations, :customer_id

@@ -6,7 +6,8 @@ class CreateTrains < ActiveRecord::Migration
       t.datetime :end_at
       t.boolean :certificate #是否有证书
       t.integer :train_type
-      t.datetime :created_at
+
+      t.timestamps
     end
   end
 end
