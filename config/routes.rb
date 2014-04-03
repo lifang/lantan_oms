@@ -13,18 +13,17 @@ LantanOms::Application.routes.draw do
   # Sample resource route (maps HTTP verbs to controller actions automatically):
   #   resources :products
 
-  # Sample resource route with options:
-  #   resources :products do
-  #     member do
-  #       get 'short'
-  #       post 'toggle'
-  #     end
-  #
-  #     collection do
-  #       get 'sold'
-  #     end
-  #   end
 
+  resources :logins do
+    collection do
+      get :logout
+      post :validate, :regist
+    end
+  end
+
+  resources :stores do
+    resources :welcomes
+  end
   # Sample resource route with sub-resources:
   #   resources :products do
   #     resources :comments, :sales
@@ -48,7 +47,7 @@ LantanOms::Application.routes.draw do
 
   # You can have the root of your site routed with "root"
   # just remember to delete public/index.html.
-  # root :to => 'welcome#index'
+   root :to => "logins#index"
 
   # See how all your routes lay out with "rake routes"
 

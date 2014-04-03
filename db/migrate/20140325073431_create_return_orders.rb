@@ -1,6 +1,6 @@
 class CreateReturnOrders < ActiveRecord::Migration
   def change
-    create_table :tech_orders do |t|
+    create_table :return_orders do |t|
       t.integer :return_types, :default=>0
       t.integer :return_direct
       t.decimal :return_fee, :default =>0,:precision=>"20,2"

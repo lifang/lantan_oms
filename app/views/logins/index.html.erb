@@ -1,0 +1,49 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <title>登陆</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <%= stylesheet_link_tag    "application", "style" %>
+    <%= javascript_include_tag "application", "main", "logins" %>
+    <%= csrf_meta_tags %>
+  </head>
+  <body class="loginBd">
+    <div class="loginBg">
+      <div class="loginBox">
+        <h1>杭州澜泰OMS系统</h1>
+        <div class="loginForm">
+          <%= form_tag "/logins/validate", :id => "logins_form", :method => :post, :remote => true do %>
+            <div class="loginInfo">
+              <p>用户名：</p>
+              <p class="warnShow">
+                <input type="text" name="logins_name"/>
+              </p>
+              <p>密码：</p>
+              <p class="warnShow">
+                <input type="password" name="logins_pwd"/>
+              </p>
+            </div>
+            <div class="loginAct">
+              <input type="checkbox" name="logins_save_user_info" value="1"/>
+              <div class="chkbox">
+                <span class="chkpoint"></span>
+              </div>
+              <span>在这台设备上保存信息</span>
+              <button type="button" onclick="logins_valid(this)">登录</button>
+            </div>
+          <% end %>
+        </div>
+      </div>
+    </div>
+    <div class="second_bg"></div>
+    <div class="tab_Prompt">
+      <a href="javascript:void(0)" class="x"></a>
+      <p></p>
+    </div>
+    <% if flash[:notice] %>
+      <script>
+        tishi('<%= flash[:notice] %>');
+      </script>
+    <% end %>
+  </body>
+</html>

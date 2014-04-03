@@ -1,0 +1,647 @@
+/* CSS Document */
+*{ padding: 0; margin: 0;}
+body { font-family:"微软雅黑", "宋体", Arial; font-size: 12px; background: #fff;}
+img { border: none;}
+li { list-style: none;}
+a { text-decoration: none; cursor: pointer;}
+button { cursor: pointer;}
+input,button,select,textarea{ outline: none}
+table { border-collapse: collapse;}
+
+/*提示信息弹出层*/
+.tab_Prompt {
+    width: 300px;
+    padding: 20px;
+    box-shadow: 0px 0px 5px rgba(51,51,51,0.8);
+    border-radius: 5px;
+    background: rgba(255,255,255,0.8);
+    position: absolute;
+    display: none;
+    z-index: 1000;
+}
+.tab_Prompt p {
+    text-align: center;
+}
+.x {
+    width: 10px;
+    height: 10px;
+    display: block;
+    text-indent: -999px;
+    overflow: hidden;
+    position: absolute;
+    top : 10px;
+    right: 10px;
+    background: url(/assets/x.png) no-repeat;
+}
+
+.cf:after { clear: both; content:"."; display: block; height: 0; overflow: hidden; visibility:hidden;}
+
+.orangeBtn {
+    background: #ffffff;
+    border: 1px solid #FF9E2F;
+    border-radius: 3px;
+    color: #F39223;
+    padding: 2px 10px;
+}
+.blueBtn {
+    background: #ffffff;
+    border: 1px solid #3067ce;
+    border-radius: 3px;
+    color: #3067ce;
+    padding: 2px 10px;
+}
+.orangeBtn2 {
+    background: #FF8828;
+    border: none;
+    border-radius: 3px;
+    color: #fff;
+    padding: 5px 20px;
+}
+.greenBtn {
+    background: #2ab83e;
+    border: none;
+    border-radius: 3px;
+    color: #fff;
+    padding: 5px 20px;
+}
+.greyBtn {
+    background: #dbdada;
+    border: none;
+    border-radius: 3px;
+    color: #fff;
+    padding: 5px 20px;
+}
+.editBtn { background: url(../assets/editTool.png) -2px -2px no-repeat; border: 0; display: inline-block; width: 20px; height: 20px;}
+.deleteBtn { background: url(../assets/deleteTool.png) -2px -1px no-repeat; border: 0; display: inline-block; width: 20px; height: 20px;}
+.setBtn { background: url(../assets/setBtn.png) no-repeat; border: 0; display: inline-block; width: 20px; height: 20px;}
+.leftBox { position: fixed; }
+
+/* select */
+.selectBox { border: 1px solid #CCCCCC; display: inline-block; height: 16px; padding: 3px; width: 100px; cursor: pointer; position: relative;}
+.selectBox select { height: 100%; left: 0; margin: 0; opacity: 0; position: absolute; top: 0; width: 100%;}
+.selectBox span { float: left; width: 80%; height: 100%; overflow: hidden; text-align: center;}
+.selectBox .openDownIcon { background: url(../assets/openDownIcon.png) no-repeat 2px center; background-size: 16px 7px; float: left; width: 16px; height: 100%;}
+
+.selectBox2 { border: 1px solid #CCCCCC; border-radius: 3px; display: inline-block; height: 30px; padding: 3px; width: 180px; cursor: pointer; position: relative;}
+.selectBox2 select { height: 100%; left: 0; margin: 0; opacity: 0; position: absolute; top: 0; width: 100%; font-size: 18px; }
+.selectBox2 span { float: left; width: 150px; height: 100%; overflow: hidden; font-size: 18px; line-height: 30px; color: #c3c3c3;}
+.selectBox2 .openDownIcon { background: url(../assets/selectIcon.png) no-repeat; background-size: 30px 30px; float: left; width: 30px; height: 30px;}
+
+/* checkbox,radio */
+.checkBox { display: inline-block; width: 20px; height: 20px; background: url(../assets/check_icon.png) no-repeat -7px -3px;}
+.checkBox input[type="checkbox"] { width: 20px; height: 20px; opacity: 0; margin: 0;}
+.checkBox:hover { background: url(../assets/check_icon.png) no-repeat -7px -33px;}
+.checkBox.check { background: url(../assets/check_icon.png) no-repeat -7px -66px;}
+
+.radioBox { display: inline-block; width: 20px; height: 20px; background: url(../assets/radio_icon.png) no-repeat -7px -3px;}
+.radioBox input[type="radio"] { width: 20px; height: 20px; opacity: 0; margin: 0;}
+.radioBox:hover { background: url(../assets/radio_icon.png) no-repeat -7px -33px;}
+.radioBox.check { background: url(../assets/radio_icon.png) no-repeat -7px -65px;}
+
+/* footer */
+.footer { background: url(../assets/bottom_bg.png) repeat-x; height: 50px; width: 100%; position: fixed; bottom: 0; z-index: 100;}
+
+/* login */
+.loginBg {
+    background: url(../assets/loginBg.jpg) no-repeat;
+    background-size: cover;
+    overflow: auto;
+}
+.loginBox { width: 360px; margin: 100px auto 20px;}
+.loginBox h1 {
+    color: #FFFFFF;
+    font-size: 32px;
+    font-weight: normal;
+    line-height: 64px;
+    text-align: center;
+    margin-bottom: 10px;
+}
+.loginForm { background: #ffffff; border-radius: 5px; }
+.loginInfo { padding: 20px 35px;}
+.loginInfo p { color: #777C89; font-size: 16px; margin: 10px 0; position: relative;}
+.loginInfo input { padding: 5px; border: 1px solid #e3e3e3; width: 278px; color: #777C89; font-size: 16px; border-radius: 3px; }
+.loginInfo .warn {
+    display: block;
+    height: 39px;
+    left: 95px;
+    position: absolute;
+    top: 25px;
+    width: 101px;
+    z-index: 2;
+    display: none;
+}
+.warnShow .warn { display: block;}
+.correct { background: url(../assets/correct.png) no-repeat;}
+.error { background: url(../assets/error.png) no-repeat;}
+
+.loginAct { border-top: 1px solid #c5c7cb; padding: 20px 35px; background: #f7f7f7; border-radius: 0 0 5px 5px; position: relative;}
+.loginAct input[type="checkbox"] { display: none;}
+.loginAct .chkbox {
+    display: inline-block;
+    width: 16px;
+    height: 16px;
+    border: 1px solid #bbbbbb;
+    background: #ffffff;
+    border-radius: 3px;
+    box-shadow: 0 1px 2px rgba(0, 0, 0, 0.3) inset;
+    position: absolute;
+    top: 25px;
+}
+.chkbox .chkpoint {
+    background: #68727d;
+    width: 6px;
+    height: 6px;
+    margin: 5px;
+    border-radius: 3px;
+    box-shadow: 0 0 1px rgba(0,0,0,0,3);
+    display: none;
+}
+.chkbox.check .chkpoint { display: inline-block;}
+.loginAct span { color: #969aa3; margin-left: 25px; line-height: 32px;}
+.loginAct button {
+    float: right;
+    font-size: 14px;
+    color: #ffffff;
+    padding: 5px 25px;
+    background: -webkit-gradient(linear, 0 0, 0 100%, from(#698bab), to(#4b6e8d));
+    background: -moz-linear-gradient(top, #698bab,#4b6e8d);
+    background: -ms-linear-gradient(top,  #08041a 0%,#342C78 100%);
+    background: linear-gradient(top,  #08041a 0%,#342C78 100%);
+    filter: progid:DXImageTransform.Microsoft.gradient(startColorstr="#698bab",endColorstr="#4b6e8d",GradientType=0);
+
+    border: 1px solid #446583;
+    border-radius: 5px;
+    text-shadow: 1px 1px 1px rgba(0,0,0,0.25);
+    box-shadow: 0 2px 2px rgba(0,0,0,0.25);
+}
+.loginAct button:hover { box-shadow: 0 3px 3px rgba(0,0,0,0.25);}
+.loginAct button:avtive { box-shadow: 0 3px 3px rgba(0,0,0,0.25);}
+
+
+/* 主菜单界面 */
+.menuBox { width: 810px; height: 540px; margin: 50px auto 10px;}
+.menuBox h1 {
+    color: #FFFFFF;
+    font-size: 32px;
+    font-weight: normal;
+    line-height: 80px;
+    text-align: center;
+    margin-bottom: 10px;
+}
+.menuBox .menu { float: left; margin: 0 20px 20px 0; cursor: pointer; box-shadow: 0 0 5px #000; border-radius: 5px;}
+.menuBox .menu:hover { box-shadow: 0 0 5px #fff;}
+.menu1 {
+    width: 117px;
+    height: 192px;
+    background-color: #ff8100;
+}
+.menu2 { background: url(../assets/menuImage2.jpg) no-repeat; width: 319px; height: 192px;}
+.menu3 { width: 168px; height: 192px; background-color: #0e61d9;}
+.menu4 { width: 117px; height: 192px; background-color: #a3cd23;}
+.menu5 { width: 117px; height: 232px; background-color: #707070;}
+.menu6 { width: 187px; height: 232px; background-color: #123496;}
+.menu7 { width: 187px; height: 232px; background-color: #ec5342;}
+.menu8 { width: 235px; height: 134px; background-color: #a61ced;}
+.menu9 { width: 235px; height: 78px; background-color: #ff0000;}
+
+
+/* header */
+.header {
+    min-width: 1300px;
+    height: 80px;
+    margin-bottom: 34px;
+    position: relative;
+    background: -webkit-gradient(linear, 0 0, 100% 0, from(#08041a), to(#2B236F));
+    background: -moz-linear-gradient(left, #08041a,#2B236F);
+    background: -ms-linear-gradient(left,  #08041a 0%,#2B236F 100%);
+    background: linear-gradient(left,  #08041a 0%,#2B236F 100%);
+    filter: progid:DXImageTransform.Microsoft.gradient( startColorstr="#08041a", endColorstr="#2B236F",GradientType=1);
+}
+.userInfo { position: absolute; width: 80px; height: 60px; margin: 10px; text-align: center;}
+.userInfo .userImg { width: 36px; height: 36px; margin: 0 auto; border: 2px solid #ffffff; border-radius: 20px; overflow: hidden;}
+.userInfo span { color: #f9fafe; line-height: 24px; }
+
+.nav { width: 1100px; margin: 0 auto;}
+.topMenu { padding: 0 10px;}
+.topMenu li { color: #979fb6;}
+.topMenu li.hover,.topMenu li:hover { color: #f9fafe;}
+.tmItem { width: 120px; height: 40px; line-height: 40px; float: left; overflow: hidden; text-indent: 55px; cursor: pointer; padding: 20px 0;}
+.tmItem.hover,.tmItem:hover { background-color: #394264;}
+.tmItem1 { background: url(../assets/navIcon.png) no-repeat 0px center; background-size: 999px 37px;}
+.tmItem2 { background: url(../assets/navIcon.png) no-repeat -118px center; background-size: 999px 37px;}
+.tmItem3 { background: url(../assets/navIcon.png) no-repeat -236px center; background-size: 999px 37px;}
+.tmItem4 { background: url(../assets/navIcon.png) no-repeat -354px center; background-size: 999px 37px;}
+.tmItem5 { background: url(../assets/navIcon.png) no-repeat -472px center; background-size: 999px 37px;}
+.tmItem6 { background: url(../assets/navIcon.png) no-repeat -590px center; background-size: 999px 37px;}
+.tmItem7 { background: url(../assets/navIcon.png) no-repeat -708px center; background-size: 999px 37px;}
+.tmItem8 { background: url(../assets/navIcon.png) no-repeat -826px center; background-size: 999px 37px;}
+.tmItem9 { background: url(../assets/navIcon.png) no-repeat -944px center; background-size: 999px 37px;}
+
+.scdMenuBox { position: absolute; top: 80px; left: 0; width: 100%; background: #191d39; box-shadow: 0 1px 1px #1A1822;}
+.scdMenu { width: 700px; margin: 0 auto;}
+.scdMenu li { width: 100px; height: 32px; line-height: 32px; float: left; text-indent: 0; text-align: center;}
+.scdMenu li.hover,.scdMenu li:hover { background: #394264; box-shadow: 0 0 1px #252c45; }
+
+
+/* mian */
+.main { color: #3c3c3c;}
+.main_tit { background: #e7e9e9; height: 45px; border-bottom: 1px solid #D5D5D5; margin-bottom: 10px;}
+.main_tit h1 { width: 900px; margin: 0 auto; color: #31343d; line-height: 45px; font-weight: normal; font-size: 18px;}
+.main_con { width: 900px; margin: 0 auto; padding: 10px; padding-bottom: 80px;}
+
+.topInfo {}
+.topInfo p { overflow: hidden; text-align: right;}
+.topInfo p span { line-height: 20px; padding-right: 10px; display: inline-block; width: 80px; border-right: 1px solid #ccc; }
+
+.toolbar { margin: 10px 0; position: relative; height: 36px; overflow: hidden; padding-bottom: 5px; border-bottom: 1px solid #ccc;}
+.searchBox { height: 24px; margin: 6px 0; color:  #858585;}
+.searchBox label { line-height: 24px; margin-right: 10px; float: left;}
+.searchBox input {
+    border: 1px solid #C2C2C2;
+    border-radius: 3px;
+    color:  #858585;
+    text-align: center;
+    float: left;
+    height: 16px;
+    width: 100px;
+    padding: 3px;
+    margin-right: 10px;
+    background: -webkit-gradient(linear, 0 0, 0 100%, from(#ffffff), to(#f0f0f0));
+    background: -moz-linear-gradient(top, #ffffff,#f0f0f0);
+    background: -ms-linear-gradient(top,  #ffffff 0%,#f0f0f0 100%);
+    background: linear-gradient(top,  #ffffff 0%,#f0f0f0 100%);
+    filter: progid:DXImageTransform.Microsoft.gradient(startColorstr="#ffffff",endColorstr="#f0f0f0",GradientType=0);
+}
+.searchBox .selectBox {
+    float: left;
+    margin-right: 10px;
+    border-radius: 3px;
+    background: -webkit-gradient(linear, 0 0, 0 100%, from(#ffffff), to(#f0f0f0));
+    background: -moz-linear-gradient(top, #ffffff,#f0f0f0);
+    background: -ms-linear-gradient(top,  #ffffff 0%,#f0f0f0 100%);
+    background: linear-gradient(top,  #ffffff 0%,#f0f0f0 100%);
+    filter: progid:DXImageTransform.Microsoft.gradient(startColorstr="#ffffff",endColorstr="#f0f0f0",GradientType=0);
+}
+.searchBox button { float: left; margin-right: 10px;}
+
+.funcBox { position: absolute; top: 0; right: 0;}
+.scd_btn[name="newUser"] { display: block; width: 36px; height: 36px; float: left; background: url(../assets/newUser.png) no-repeat; background-size: cover; margin: 0 5px;}
+.scd_btn[name="newReward"] { display: block; width: 36px; height: 36px; float: left; border-radius: 18px; background: #f47400; color: #fff; line-height: 36px; text-align: center; margin: 0 5px; }
+.scd_btn[name="newPunish"] { display: block; width: 36px; height: 36px; float: left; border-radius: 18px; background: #30b154; color: #fff; line-height: 36px; text-align: center; margin: 0 5px; }
+.funcBox a {
+    display: inline-block;
+    padding: 5px 20px;
+    margin-left: 10px;
+    border: 1px solid #a9a9a9;
+    border-radius: 5px;
+    color: #858585;
+    background: -webkit-gradient(linear, 0 0, 0 100%, from(#ffffff), to(#f0f0f0));
+    background: -moz-linear-gradient(top, #ffffff,#f0f0f0);
+    background: -ms-linear-gradient(top,  #ffffff 0%,#f0f0f0 100%);
+    background: linear-gradient(top,  #ffffff 0%,#f0f0f0 100%);
+    filter: progid:DXImageTransform.Microsoft.gradient(startColorstr="#ffffff",endColorstr="#f0f0f0",GradientType=0);
+}
+.funcBox a.hover,.funcBox a:hover { background: #ff8828; color: #fff; border: 1px solid #ff8828;}
+.funcBox a span { display: block; height: 24px; line-height: 24px;}
+
+.ruleBtn { background: url(../assets/ruleIcon.png) -2px 0px no-repeat; text-indent: 25px;}
+.exportBtn { background: url(../assets/exportBtn.png) -2px 0px no-repeat; text-indent: 25px;}
+.funcBox a.hover .ruleBtn,.funcBox a:hover .ruleBtn { background: url(../assets/ruleIcon.png) -2px -28px no-repeat;}
+.funcBox a.hover .exportBtn,.funcBox a:hover .exportBtn { background: url(../assets/exportBtn.png) -2px -28px no-repeat;}
+
+.billInfo { margin: 5px 20px; line-height: 24px;}
+.billInfo label { width: 80px; text-align: right; display: inline-block;}
+.billInfo div span { width: 80px; display: inline-block;}
+.billDtl {}
+.billDtl table { width: 100%;}
+.billDtl table th,.billDtl table td { text-align: center; line-height: 24px;}
+.billTotle { line-height: 24px; margin-left: 450px; text-align: center; }
+.billTotle span {}
+.scdBoxAct2 { float: right; margin: 10px 20px;}
+.scdBoxAct2 button { display: inline-block; width: 100px; height: 30px; border: 0; color: #fff; }
+.scdBoxAct2 button:hover { box-shadow: 0 0 2px rgba(0,0,0,0.3);}
+.yesBtn { background: #3cb742;}
+.noBtn { background: #f27d00;}
+
+.waitingTit { background: #f9090a; width: 80px; height: 24px; line-height: 24px; font-size: 12px; font-weight: normal; text-align: center; color: #fff;}
+.waitingArea { border-top: 1px solid #ccc; border-bottom: 2px solid #ccc; margin: 5px 0;}
+.waitingCar { display: inline-block; width: 80px; height: 60px; text-align: center; background: url(../assets/wait.png) no-repeat 0 27px; background-size: 80px 26px; margin: 3px;}
+.waitingCar span { line-height: 24px;}
+.washingTit { background: #1338ff; width: 80px; height: 24px; line-height: 24px; font-size: 12px; font-weight: normal; text-align: center; color: #fff;}
+.washingArea { border-top: 1px solid #ccc; border-bottom: 1px solid #ccc; margin: 5px 0;}
+.washingCar { display: inline-block; width: 140px; height: 127px; text-align: center; margin: 3px;}
+.washingCar .station { height: 24px; line-height: 24px; background: #ccc;}
+.washingCar.on .station { background: #4846c3;}
+.station span { display: inline-block; color: #f2f2f2;}
+.station .clock { background: url(../assets/clock.png) no-repeat; width: 20px; height: 20px; background-size: 20px 20px; margin: -4px 4px;}
+.endTit { background: #24ca24; width: 80px; height: 24px; line-height: 24px; font-size: 12px; font-weight: normal; text-align: center; color: #fff;}
+.endArea { border-top: 1px solid #ccc; border-bottom: 1px solid #ccc; margin: 5px 0;}
+.waitingCar:hover,.washingCar:hover { box-shadow: 0px 1px 1px rgba(0,0,0,0.3);}
+
+
+
+
+
+
+
+
+
+/* table*/
+.table1 { width: 100%; line-height: 30px;}
+.table1 th,.table1 td { text-align: center; padding: 2px;}
+.table1 tr th.first_icon { width: 30px;}
+.table1 tr td.first_icon { background: url(../assets/heart.png) no-repeat 9px 9px; background-size: 16px 15px;}
+.table1 .more { display: inline-block; width: 20px; height: 20px; background: url(../assets/more@delete.png) no-repeat -1px 0; border: 0; background-size: 56px 20px; margin: 3px;}
+.table1 .delete { display: inline-block; width: 20px; height: 20px; background: url(../assets/more@delete.png) no-repeat -35px 0; border: 0; background-size: 56px 20px; margin: 3px;}
+.table1 .add { display: inline-block; width: 20px; height: 20px; background: url(../assets/add_icon.png) no-repeat; border: 0; background-size: 20px 20px; margin: 3px;}
+
+/* second_box */
+.second_bg { width:100%; height:100%; z-index:98; position: fixed; top:0; opacity: 0.3; filter: alpha(opacity=30); display: none;}
+.second_box { width:100%; height:100%; z-index:99; position: absolute; top:0; display: none; }
+.second_box.second_box_fixed { position: fixed;}
+.second_content {
+    background-color: #fff;
+    border: 1px solid #d5d5d5;
+    overflow: auto;
+    margin: 140px auto 80px;
+    position: relative;
+    color: #3c3c3c;
+    box-shadow: 0 0 20px #7c7b7b;
+}
+.second_content h1 { line-height: 40px; background: #dedede; text-indent: 30px; font-size: 18px;}
+.second_content .close {
+    font-size: 28px;
+    line-height: 40px;
+    overflow: hidden;
+    position: absolute;
+    right: 12px;
+    cursor: pointer;
+}
+.scdBoxAct { margin: 10px 0; text-align: center; }
+
+
+.infoBox { border-top: 1px solid #e2e2e2; margin: 15px 10px 0; padding: 15px; position: relative; color: #b8b7b7;}
+.infoBox .infoBoxTit { background: #fff; position: absolute; left: 45px; top: -14px; padding: 5px 20px;}
+.perPic { float: left; width: 110px; height: 130px; background: #d4d4d4; border: 1px solid #c5c5c5; box-shadow: 0 3px 4px #767676; position: relative;}
+.perPic span { color: #fff; display: block; margin-top: 20px; text-align: center; text-shadow: 1px 1px 1px rgba(0, 0, 0, 0.3);}
+.perPic .upload { padding: 0 3px 0 15px; border: 1px solid #FF8828; border-radius: 3px; background: url(../assets/perPic_upload.png) no-repeat 3px center #fff; position: absolute; bottom: 10px; right: 10px;}
+.perDtl { overflow: hidden; display: inline-block; line-height: 28px;}
+.perDtl p { line-height: 28px;}
+.perDtl label { width: 70px; text-align: right; display: inline-block; margin-right: 6px;}
+.perDtl input { padding: 3px; width: 120px; border: 1px solid #e2e2e2; margin-right: 10px; color: #A9A8A8;}
+.workInfo .choiceBox { position: absolute; top: 76px; left: 237px; }
+.choiceBox { display: block; width: 250px; overflow: hidden;}
+.choiceBox label { float: left; line-height: 20px;}
+.choiceBox .checkBox { float: left;}
+.infoBox textarea { border: 1px solid #E2E2E2; float: right; height: 120px; resize: none; width: 300px; color: #A9A8A8; padding: 3px;}
+
+.rwdDtl p { line-height: 28px; overflow: hidden; margin-bottom: 10px;}
+.rwdDtl label { width: 70px; text-align: right; display: inline-block; margin-right: 6px;}
+.rwdDtl input { padding: 3px; width: 120px; border: 1px solid #e2e2e2; margin-right: 10px; color: #A9A8A8;}
+.rwdDtl textarea { float: left; margin-left: 4px; width: 400px;}
+
+
+/* 收银管理 */
+.nopaid { background: url(../assets/payIcon2.png) -6px -4px no-repeat; text-indent: 25px;}
+.paid { background: url(../assets/payIcon2.png) -110px -4px no-repeat; text-indent: 25px;}
+.funcBox a.hover .nopaid,.funcBox a:hover .nopaid { background-image: url(../assets/payIcon1.png);}
+.funcBox a.hover .paid,.funcBox a:hover .paid { background-image: url(../assets/payIcon1.png);}
+
+.personBill { padding: 5px; margin-bottom: 10px; color: #858585;}
+.personBill .personInfo { line-height: 36px;}
+.personBill .personInfo label { display: inline-block; width: 80px; text-align: right;}
+.personBill .personInfo span { display: inline-block; margin-right: 10px;}
+.personBillDtl { border: 1px solid #f2f2f2; border-radius: 5px;}
+.personBillTot { line-height: 32px; text-align: right; padding: 5px;}
+.personBillTot label { margin-right: 5px; font-weight: bold;}
+.personBillTot span { margin-right: 10px; font-weight: bold;}
+.personBillTot button { margin: 0 10px;}
+
+.dateBox { position: fixed; width: 160px; height: 260px; text-align: center; background: #ff8100; border-radius: 5px; box-shadow: -2px 1px 5px #000; color: #f2f2f2; text-shadow: 0 0 3px rgba(0,0,0,0.3);}
+.dateBox p { line-height: 24px; font-size: 16px;}
+.dateBox .day { line-height: 80px; padding-top: 20px; font-size: 72px; color: #fff;}
+.dateBox .month { font-size: 18px; margin-bottom: 10px;}
+.timeBox { height: 50px; background: #fc9048; box-shadow: 0 0 10px rgba(0,0,0,0.1); padding: 10px;}
+.timeBox .time { background: url(../assets/time.png) no-repeat 40px 1px; text-indent: 16px; font-size: 14px;}
+
+.paymentDtl { padding: 20px; overflow: hidden;}
+.paymentDtl .toolbar { border: 0;}
+.paymentDtl .toolbar .selectBox2 { float: left; margin-left: 20px;}
+.paymentDtl .toolbar .toolbarBtn { float: right; margin: 5px;}
+.paymentDtl .personInfo { background: #eee; border: 1px solid #e7e7e7; line-height: 30px;}
+.paymentDtl .personInfo label { display: inline-block; width: 80px; text-align: right;}
+.paymentDtl .personInfo span { display: inline-block; margin-right: 10px;}
+.paymentDtl table { border-bottom: 1px solid #e7e7e7; margin-bottom: 20px;}
+
+.paymentTotInfo { float: left; margin-left: 10px; padding-bottom: 32px; border-bottom: 1px solid #e7e7e7; border-right: 1px solid #e7e7e7; border-radius: 5px;}
+.paymentTotInfo li { line-height: 32px; width: 200px; border-bottom: 1px solid #e7e7e7; padding-left: 10px; color: #9f9f9f;}
+.payMethod { float: left; margin-left: 50px; width: 300px;}
+.payMethod ul { overflow: hidden; border-radius: 5px; box-shadow: 1px 2px 0 #e2e2e2; margin-bottom: 10px;}
+.payMethod li { float: left; width: 25%; text-align: center; line-height: 40px; color: #9F9F9F; cursor: pointer;}
+.payMethod li:hover,.payMethod li.hover { background: #FF8828; color: #fff;}
+.payMethodDtl { color: #9F9F9F;}
+.payMethodDtl p { line-height: 30px; margin: 15px; overflow: hidden;}
+.payMethodDtl label { float: left; width: 80px; text-align: right; margin-right: 10px; color: #9F9F9F;}
+.payMethodDtl input[type="text"] { padding: 7px; background: #f0f2f5; border: 0; border-radius: 5px; box-shadow: 0 1px 0 #ccc inset; color: #9F9F9F;}
+.payMethodDtl button {}
+.payMethodDtl input[type="checkbox"] {}
+.payMethodDtl span {}
+
+.printBtn { background: url(../assets/print.png) 10px 0 no-repeat; text-indent: 20px;}
+
+.paidBill { margin-bottom: 10px;}
+.paidBillInfo { height: 40px; line-height: 40px; background: #e3e2e2; border-bottom: 2px solid #ee7932; border-radius: 5px 5px 0 0; padding: 0 20px;}
+.paidBillInfo .right { float: right;}
+.paidBillDtl { display: none;}
+.paidBill.open .paidBillDtl { display: block;}
+.paidBillDtl .personInfo { line-height: 24px; padding: 5px;}
+.paidBillDtl .personInfo label { display: inline-block; width: 80px; text-align: right;}
+.paidBillDtl .personInfo span { display: inline-block; width: 120px; margin-right: 10px;}
+.paidBill th { background: #aeafb1; color: #fff;}
+.paidBillTot { line-height: 32px; text-align: right; padding: 5px; border-bottom: 1px solid #e3e3e3; border-radius: 0 0 5px 5px;}
+.paidBillTot label { margin-right: 5px; font-weight: bold;}
+.paidBillTot span { margin-right: 10px; font-weight: bold;}
+
+/* 客户管理 */
+.customerInfo .choiceBox { float: right; margin-top: 4px; width: 140px;}
+.customerInfo .perDtl .choiceBox label { width: 36px;}
+.customerInfo .greenBtn { margin-left: 110px;}
+
+.editTool { background: url(../assets/editTool.png) -2px 1px no-repeat; text-indent: 25px;}
+.printTool { background: url(../assets/printTool.png) -2px 1px no-repeat; text-indent: 25px;}
+.deleteTool { background: url(../assets/deleteTool.png) -2px 2px no-repeat; text-indent: 25px;}
+.funcBox a.hover .editTool,.funcBox a:hover .editTool { background: url(../assets/editTool.png) -2px -28px no-repeat;}
+.funcBox a.hover .printTool,.funcBox a:hover .printTool { background: url(../assets/printTool.png) -2px -28px no-repeat;}
+.funcBox a.hover .deleteTool,.funcBox a:hover .deleteTool { background: url(../assets/deleteTool.png) -2px -28px no-repeat;}
+
+.noHidden { overflow: visible;}
+.custmRecord { position: absolute; top: 10px; border-left: 1px solid #ccc;}
+.custmRecord li { float: left; line-height: 20px; padding: 5px 10px; background: #f5f5f5; border-top: 1px solid #ccc; border-right: 1px solid #ccc;}
+.custmRecord li:hover,.custmRecord li.hover { border-bottom: 1px solid #fff; background: #fff; color: #ff8828;}
+
+.cusCars { position: absolute; width: 160px; color: #f2f2f2;}
+.cusCar { padding: 15px 0; margin: 15px 0 0;}
+.cusCar .infoBoxTit { left: 10px;}
+.cusCar p { line-height: 24px;}
+.cusCarAct { display: inline-block; position: absolute; bottom: 16px; right: 2px;}
+.cusCarAct .edit { background: url(../assets/editTool.png) -2px -2px no-repeat; border: 0; display: inline-block; width: 20px; height: 20px;}
+.cusCarAct .delete { background: url(../assets/deleteTool.png) -2px -1px no-repeat; border: 0; display: inline-block; width: 20px; height: 20px;}
+
+.table1 .returnVisitBtn { display: inline-block; width: 20px; height: 20px; background: url(../assets/returnVisit.png) no-repeat; border: 0;}
+.returnVisitDtl { padding: 10px;}
+
+.form_1 {}
+.form_row { line-height: 24px; overflow: hidden; margin-bottom: 10px;}
+.form_row label { width: 80px; text-align: right; float: left; margin-right: 6px;}
+.form_row input[type="text"] { padding: 4px; width: 120px; border: 1px solid #e2e2e2; margin-right: 10px; color: #A9A8A8; float: left;}
+.form_row textarea { float: left; width: 400px; border: 1px solid #E2E2E2; height: 120px; resize: none;color: #A9A8A8; padding: 4px;}
+
+.res { width: 400px; float: left; margin: 10px;}
+.res h2 { color: #31343D; font-size: 18px; font-weight: normal; text-align: center;}
+.tabDiv { border: 1px solid #ccc; position: relative; height: 300px;}
+.thBg { 
+    height: 30px;
+    width: 100%;
+    background: -webkit-gradient(linear, 0 0, 0 100%, from(#ffffff), to(#f0f0f0));
+    background: -moz-linear-gradient(top, #ffffff,#f0f0f0);
+    background: -ms-linear-gradient(top,  #ffffff 0%,#f0f0f0 100%);
+    background: linear-gradient(top,  #ffffff 0%,#f0f0f0 100%);
+    filter: progid:DXImageTransform.Microsoft.gradient(startColorstr="#ffffff",endColorstr="#f0f0f0",GradientType=0);
+}
+.res table { width: 380px; margin: 0 10px; line-height: 30px; position: absolute; top: 0;}
+.res table td { text-align: center; padding: 2px; border-bottom: 1px solid #ccc;}
+.goto { float: left; width: 60px; height: 60px; margin-top: 160px; background: url(../assets/goto.png) no-repeat; cursor: pointer;}
+.res .choose { background: url(../assets/circle.png) no-repeat -2px 0; display: inline-block; width: 20px; height: 20px; border: 0;}
+.res .delete { background: url(../assets/delete.png) no-repeat; display: inline-block; width: 20px; height: 20px; border: 0;}
+
+.shortMsg { padding: 10px;}
+.shortMsg h2 { color: #31343D; font-size: 18px; font-weight: normal; text-align: center;}
+.shortMsg ul { border: 1px solid #ccc; height: 30px;}
+.shortMsg li { float: left; width: 218px; border-right: 1px solid #ccc; height: 100%; color: #858585; position: relative;}
+.shortMsg li:last-child { border: 0;}
+.shortMsg li .msgChoose { text-align: center; float: left; width: 185px; height: 30px; line-height: 30px; background: url(../assets/selectIcon.png) no-repeat 150px center; background-size: 35px 30px;}
+.shortMsg li .msgAdd { float: left; width: 30px; height: 30px; background: url(../assets/add.png) no-repeat 2px center; background-size: 25px 25px;}
+.shortMsg li .msgChooseItem { position: absolute; top: 30px; line-height: 24px; width: 300px; text-indent: 20px; padding: 0 10px; border: 1px solid #ccc; box-shadow: -1px 1px 3px rgba(0,0,0,0.3); margin-bottom: 10px; display: none;}
+.shortMsg li.hover .msgChooseItem { display: block;}
+.shortMsg textarea { resize: none; height: 200px; width: 878px; border: 1px solid #ccc; border-top: 0;}
+.shortMsg .msgAct { padding: 5px 20px; text-align: right; border: 1px solid #ccc; border-top: 0;}
+
+
+/* 营销管理 */
+.cardBox { width: 205px; margin: 10px; float: left;}
+.cardBox img { float: left;}
+.cardInfo { overflow: hidden; padding: 5px; height: 90px;}
+.cardInfo p { line-height: 20px;}
+.cardBtn { text-align: center;}
+.cardBtn .show { display: inline-block; width: 25px; height: 25px; background: url(../assets/card_btn.png) no-repeat -4px center; border: 0;}
+.cardBtn .edit { display: inline-block; width: 25px; height: 25px; background: url(../assets/card_btn.png) no-repeat -40px center; border: 0;}
+.cardBtn .delete { display: inline-block; width: 25px; height: 25px; background: url(../assets/card_btn.png) no-repeat -70px center; border: 0;}
+
+
+/* 统计管理 */
+.service { background: url(../assets/serviceIcon.png) 0px 1px no-repeat; text-indent: 25px;}
+.funcBox a.hover .service,.funcBox a:hover .service { background: url(../assets/serviceIcon.png) 0px -28px no-repeat;}
+
+.satisfy { width: 410px; float: left; margin: 20px; border-radius: 5px; box-shadow: 0 2px 1px #dddbdb; overflow: hidden;}
+.satisfy h1 { height: 40px; line-height: 40px; font-weight: normal; padding: 10px 30px; background: #dddbdb; border-bottom: 2px solid #d2d1d1;}
+.itemSatisfy { line-height: 20px; padding: 10px; overflow: hidden;}
+.itemSatisfy label { float: left; width: 120px; font-size: 16px;}
+.satisfyBlock { float: left; background: #e3e4e8; color: #a4aeb9; width: 250px; height: 20px; border-radius: 10px; position: relative; overflow: hidden; cursor: pointer;}
+.satisfyBlock .satisfyPers { display: block; background: #ed5565; position: absolute; height: 100%; }
+.satisfyBlock .satisfyNum { position: absolute; right: 10px; color: #fff;}
+
+.cusTypeBuyCountBox { margin: 10px; width: 430px; overflow: hidden; float: left;}
+.cusTypeBuyCountGeneral { float: left; width: 220px; height: 400px; border-radius: 5px; background: #2b2937; border-bottom: 3px solid #1a1822; color: #e6e6e6; overflow: hidden;}
+.cusTypeBuyCountGeneral h1 { background: #eac80d; line-height: 50px; text-align: center; font-weight: normal; border-bottom: 3px solid #bfa30c;}
+.cusTypeBuyCountGeneral h2 { padding: 20px 0; line-height: 60px; text-align: center; font-size: 32px; border-bottom: 1px solid #494a5a; }
+.cusTypeBuyCountGeneral h2 span { font-size: 16px; font-weight: normal; color: #9095aa; }
+.cusTypeBuyCountGeneral h3 { line-height: 70px; text-align: center; font-size: 28px; color: #fff;}
+.cusTypeBuyCountGeneral p { font-size: 16px; color: #9095aa; height: 40px; line-height: 40px; border-bottom: 1px solid #494a5a; padding: 0 10px; }
+.cusTypeBuyCountGeneral p span { display: inline-block; width: 33%; text-align: center;}
+.cusTypeBuyCountDetail { float: left; width: 200px; height: 300px; margin: 50px 0 50px 10px; border-radius: 5px; overflow: hidden;}
+.cusTypeBuyCountDetail h1 { background: #f6f8fa; color: #FF8828; line-height: 30px; padding-left: 10px; font-size: 16px; font-weight: normal;}
+.cusTypeBuyCountDetail table { width: 100%; text-align: center; line-height: 24px;}
+
+.carTypeBuyCountBox { border-radius: 5px; overflow: hidden; position: relative; border-bottom: 3px solid #e3e4e8;}
+.carTypeBuyCountBox .bgColor { position: absolute; height: 80px; width: 100%; background: #f6f8fa;}
+.carTypeBuyCountItem { float: left; width: 20%; position: relative; color: #858585; padding-bottom: 10px;}
+.carTypeBuyCountItem h1 { line-height: 40px; margin-bottom: 80px; font-size: 16px; font-weight: normal; text-align: center;}
+.carTypeBuyCountItem h2 { display: inline-block; padding: 5px 10px; background: #e3e4e8; border-radius: 5px; font-weight: normal; margin: 0 42px;}
+.carTypeBuyCountItem .carNum { position: absolute; top: 45px; left: 55px; width: 70px; height: 70px; line-height: 70px; text-align: center; border-radius: 35px; background: #e3e4e8;}
+.carTypeBuyCountItem p { line-height: 24px; text-align: center;}
+
+
+/* 库存管理 */
+.footer button { height: 30px; width: 100px; margin: 10px; border: 0; border-radius: 3px; color: #fff; background: url(../assets/bottom_btn.png) repeat-x; box-shadow: 0 0 2px #000;}
+.footer button:hover { box-shadow: 0 0 2px #000 inset;}
+
+
+
+
+
+
+/* 系统设置 */
+.stationBox { float: left; width: 430px; height: 145px; margin: 10px;}
+.stationBox .stationImg { float: left; margin-right: 10px;}
+.stationBox .stationInfo { overflow: hidden;}
+.stationInfo h1 { height: 25px; line-height: 25px; padding-bottom: 5px; border-bottom: 1px solid #ccc; font-size: 16px; font-weight: normal; position: relative;}
+.stationInfo .stationAct { position: absolute; top: 0; right: 5px;}
+.stationAct .edit { float: left; width: 25px; height: 25px; background: url(../assets/card_btn.png) no-repeat -40px center; border: 0;}
+.stationAct .delete { float: left; width: 25px; height: 25px; background: url(../assets/card_btn.png) no-repeat -70px center; border: 0;}
+.stationInfolist { width: 50%; float: left;}
+.stationInfolist h2 { font-size: 12px; font-weight: normal; line-height: 24px; padding-left: 20px;}
+.stationInfolist p { font-size: 12px; line-height: 20px; color: #858585;}
+
+.newStationJob { overflow: hidden; padding: 20px 20px 0;}
+.newStationJob h2 { font-size: 12px; font-weight: normal; line-height: 24px; text-align: center;}
+.stationJobPicker { border: 1px solid #ccc; padding: 5px; min-height: 200px;}
+.stationJobPicker ul { border-bottom: 2px solid #ccc;}
+.stationJobPicker li { line-height: 32px; display: inline-block; width: 120px; text-align: center; cursor: pointer;}
+.stationJobPicker li:hover,.stationJobPicker li.hover { background: #ccc;}
+.stationJobPicker .choiceBox { width: 100%; margin: 10px 0;}
+.stationJobPicker .choiceBox label { width: 120px;} 
+
+.storeInfo { background: url(../assets/infoIcon.png) -2px 0px no-repeat; text-indent: 25px;}
+.funcBox a.hover .storeInfo,.funcBox a:hover .storeInfo { background: url(../assets/infoIcon.png) -2px -27px no-repeat;}
+
+.perDtl .inputBox { width: 280px; float: left; padding: 5px 10px;}
+.perDtl .inputBox p { color: #666; margin: 3px 0;}
+.perDtl .inputBox input[type="text"] { padding: 10px 6px; width: 114px; border-radius: 5px; float: left;}
+.selectBox3 { width: 120px; height: 30px; border: 1px solid #e2e2e2; border-radius: 5px; float: left; margin-right: 10px;}
+.selectBox3 option { padding: 6px; text-align: center;}
+.perDtl .inputBox .choiceBox label { width: 80px;}
+
+.leftBox { border: 1px solid #ccc; border-radius: 5px;}
+.storeLeftMenu_1 { line-height: 30px; padding: 0 10px 0 33px; background: url(../assets/storeLeftMenu.png) no-repeat 0 3px; border-bottom: 1px solid #ccc; color: #FF8828;}
+.storeLeftMenu_2 { line-height: 30px; padding: 0 10px 0 33px; background: url(../assets/storeLeftMenu.png) no-repeat 0 -31px; border-bottom: 1px solid #ccc;}
+.storeLeftMenu_3 { line-height: 30px; padding: 0 10px 0 33px; background: url(../assets/storeLeftMenu.png) no-repeat 0 -63px;}
+
+.hasItemBox { border-radius: 5px; box-shadow: 0 5px 1px #f3f4f4; overflow: hidden;}
+.hasItemBoxTit { background: #f3f4f4; overflow: hidden;}
+.hasItemBoxTit .newOrg { float: right; margin: 5px;}
+.hasItemBoxTit .newGoodsType { float: right; margin: 5px;}
+.hasItemBoxItem { width: 200px; height: 60px; margin: 10px; float: left;}
+.hasItemBoxItem .itemName { float: left; border: 2px solid #ccc; border-radius: 5px; padding: 5px; background: #f0f2f5;}
+.hasItemBoxItem .itemName p { line-height: 24px; text-align: center;}
+.hasItemBoxItem .itemDtl { overflow: hidden;}
+.hasItemBoxItem .itemDtl p { line-height: 20px; padding-left: 10px;}
+
+.roleBox { overflow: hidden; padding-bottom: 10px;}
+.role { float: left;}
+.roleImg { width: 120px; text-align: center; float: left; background: #f2f2f2; padding-bottom: 10px; box-shadow: 1px 1px 5px rgba(0,0,0,0.3);}
+.roleInfo { float: left; padding: 10px;}
+.roleInfo p { line-height: 24px;}
+.starBox { width: 100px; height: 20px; margin: 10px 0; position: relative; overflow: hidden;}
+.starBox .star { display: inline-block; height: 100%; background: #ff9613;}
+.starBox .starCover { width: 100%; height: 100%; position: absolute; top: 0; left: 0; background: url(../assets/starCover.png) no-repeat; background-size: 100px 20px;}
+
+.rightSet { width: 430px; padding: 10px; float: left;}
+.rightSetTit { padding: 10px 5px; border-bottom: 1px solid #ccc;}
+.rightSetPicker { height: 150px; border-radius: 5px; box-shadow: 0 3px 1px #ccc; padding: 5px;}
+.rightSetPicker .choiceBox { float: left; width: 33%; margin: 5px 0;}
+
+
+
+
+
+

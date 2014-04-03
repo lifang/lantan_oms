@@ -1,6 +1,6 @@
 class AddIndexToRoles< ActiveRecord::Migration
   def change
-    add_column :role_model_relations, :num, :bigint
+    change_column :role_model_relations, :num, :bigint
     add_index :capitals, :created_at
     add_index :car_brands, :created_at
     add_index :car_models, :created_at
