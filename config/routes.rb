@@ -23,6 +23,10 @@ LantanOms::Application.routes.draw do
 
   resources :stores do
     resources :welcomes
+    resources :station_datas
+    resources :roles
+    resources :set_stores
+    
   end
   # Sample resource route with sub-resources:
   #   resources :products do
