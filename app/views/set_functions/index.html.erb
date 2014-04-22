@@ -1,0 +1,74 @@
+<%= javascript_include_tag "set_functions" %>
+<div class="main_tit"><h1>门店设置</h1></div>
+<div class="main_con">
+  <div class="toolbar" style="border: 0;">
+    <div class="funcBox">
+      <a href="/stores/<%= @store.id %>/set_stores" ><span class="storeInfo">门店信息</span></a>
+      <a href="/stores/<%= @store.id %>/set_functions" class="hover"><span class="ruleBtn">组织架构</span></a>
+    </div>
+  </div>
+
+  <ul class="leftBox">
+    <li class="storeLeftMenu_1 hover" id="menu_1"><a href="javascript:void(0)" onclick="set_functions_change_type(1, this)">门店组织架构</a></li>
+    <li class="storeLeftMenu_2" id="menu_2"><a href="javascript:void(0)" onclick="set_functions_change_type(2, this)">商品类别管理</a></li>
+    <li class="storeLeftMenu_3" id="menu_3"><a href="javascript:void(0)" onclick="set_functions_change_type(3, this)">服务类别管理</a></li>
+  </ul>
+
+  <div class="infoBox" style="padding: 15px 0;" id="dpt_div">
+    <%= render "dpt_and_pos_list" %>
+  </div>
+
+  <div class="infoBox" style="padding: 15px 0;display:none;" id="goods_div">
+    <%= render "goods_list" %>
+  </div>
+  <div class="infoBox" style="padding: 15px 0;display:none;" id="materials_div">
+    <%= render "materials_list" %>
+  </div>
+  <div class="infoBox" style="padding: 15px 0;display:none;" id="servs_div">
+    <%= render "servs_list" %>
+  </div>
+
+</div>
+
+<div class="second_box" id="set_functions_new">   <!--新建部门职务商品服务物料弹出层-->
+  <div class="second_content" style="width: 450px;">
+    <input type="hidden" value="<%= @store.id %>"/>
+    <span class="close" title="关闭">×</span>
+    <h1>新建</h1>
+    <div class="infoBox">
+      <div class="rwdDtl">
+        <p>
+          <label>名称</label>
+          <input type="text" style="width: 262px;" id="set_functions_name"/>
+        </p>
+      </div>
+    </div>
+    <div class="scdBoxAct">
+      <button class="orangeBtn2" id="new_commit_button">确认</button>
+      <button class="greyBtn" onclick="new_cancel_button()">取消</button>
+    </div>
+  </div>
+</div>
+
+
+<div class="second_box" id="set_functions_edit">   <!--编辑部门职务商品服务物料弹出层-->
+</div>
+
+<div class="second_box" id="new_position">  <!--新建职务弹出层-->
+  <div class="second_content" style="width: 450px;">
+    <span class="close2" title="关闭">×</span>
+    <h1>新建职务</h1>
+    <div class="infoBox">
+      <div class="rwdDtl">
+        <p>
+          <label>名称</label>
+          <input type="text" style="width: 262px;" id="new_position_name"/>
+        </p>
+      </div>
+    </div>
+    <div class="scdBoxAct">
+      <button class="orangeBtn2" >确认</button>
+      <button class="greyBtn" onclick="new_position_cancel()">取消</button>
+    </div>
+  </div>
+</div>

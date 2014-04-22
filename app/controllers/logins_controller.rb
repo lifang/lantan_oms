@@ -48,11 +48,16 @@ class LoginsController < ApplicationController
     end
   end
 
-  def regist
-
-  end
-
   def logout
-    
+    cookies[:store_id] = nil
+    cookies[:staff_id] = nil
+    cookies[:staff_name] = nil
+    cookies[:store_name] = nil
+    cookies.delete(:store_id)
+    cookies.delete(:staff_id)
+    cookies.delete(:staff_name)
+    cookies.delete(:store_name)
+    redirect_to logins_path
   end
+
 end

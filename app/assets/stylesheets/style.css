@@ -8,32 +8,6 @@ button { cursor: pointer;}
 input,button,select,textarea{ outline: none}
 table { border-collapse: collapse;}
 
-/*提示信息弹出层*/
-.tab_Prompt {
-    width: 300px;
-    padding: 20px;
-    box-shadow: 0px 0px 5px rgba(51,51,51,0.8);
-    border-radius: 5px;
-    background: rgba(255,255,255,0.8);
-    position: absolute;
-    display: none;
-    z-index: 1000;
-}
-.tab_Prompt p {
-    text-align: center;
-}
-.x {
-    width: 10px;
-    height: 10px;
-    display: block;
-    text-indent: -999px;
-    overflow: hidden;
-    position: absolute;
-    top : 10px;
-    right: 10px;
-    background: url(/assets/x.png) no-repeat;
-}
-
 .cf:after { clear: both; content:"."; display: block; height: 0; overflow: hidden; visibility:hidden;}
 
 .orangeBtn {
@@ -48,6 +22,13 @@ table { border-collapse: collapse;}
     border: 1px solid #3067ce;
     border-radius: 3px;
     color: #3067ce;
+    padding: 2px 10px;
+}
+.greyBtn2 {
+    background: #ffffff;
+    border: 1px solid #c6c6c6;
+    border-radius: 3px;
+    color: #c6c6c6;
     padding: 2px 10px;
 }
 .orangeBtn2 {
@@ -71,41 +52,43 @@ table { border-collapse: collapse;}
     color: #fff;
     padding: 5px 20px;
 }
-.editBtn { background: url(../assets/editTool.png) -2px -2px no-repeat; border: 0; display: inline-block; width: 20px; height: 20px;}
-.deleteBtn { background: url(../assets/deleteTool.png) -2px -1px no-repeat; border: 0; display: inline-block; width: 20px; height: 20px;}
-.setBtn { background: url(../assets/setBtn.png) no-repeat; border: 0; display: inline-block; width: 20px; height: 20px;}
+.editBtn { background: url(/assets/editTool.png) -2px -2px no-repeat; border: 0; display: inline-block; width: 20px; height: 20px;}
+.deleteBtn { background: url(/assets/deleteTool.png) -2px -1px no-repeat; border: 0; display: inline-block; width: 20px; height: 20px;}
+.setBtn { background: url(/assets/setBtn.png) no-repeat; border: 0; display: inline-block; width: 20px; height: 20px;}
 .leftBox { position: fixed; }
+
 
 /* select */
 .selectBox { border: 1px solid #CCCCCC; display: inline-block; height: 16px; padding: 3px; width: 100px; cursor: pointer; position: relative;}
 .selectBox select { height: 100%; left: 0; margin: 0; opacity: 0; position: absolute; top: 0; width: 100%;}
 .selectBox span { float: left; width: 80%; height: 100%; overflow: hidden; text-align: center;}
-.selectBox .openDownIcon { background: url(../assets/openDownIcon.png) no-repeat 2px center; background-size: 16px 7px; float: left; width: 16px; height: 100%;}
+.selectBox .openDownIcon { background: url(/assets/openDownIcon.png) no-repeat 2px center; background-size: 16px 7px; float: left; width: 16px; height: 100%;}
 
 .selectBox2 { border: 1px solid #CCCCCC; border-radius: 3px; display: inline-block; height: 30px; padding: 3px; width: 180px; cursor: pointer; position: relative;}
 .selectBox2 select { height: 100%; left: 0; margin: 0; opacity: 0; position: absolute; top: 0; width: 100%; font-size: 18px; }
 .selectBox2 span { float: left; width: 150px; height: 100%; overflow: hidden; font-size: 18px; line-height: 30px; color: #c3c3c3;}
-.selectBox2 .openDownIcon { background: url(../assets/selectIcon.png) no-repeat; background-size: 30px 30px; float: left; width: 30px; height: 30px;}
+.selectBox2 .openDownIcon { background: url(/assets/selectIcon.png) no-repeat; background-size: 30px 30px; float: left; width: 30px; height: 30px;}
 
 /* checkbox,radio */
-.checkBox { display: inline-block; width: 20px; height: 20px; background: url(../assets/check_icon.png) no-repeat -7px -3px;}
+.checkBox { display: inline-block; width: 20px; height: 20px; background: url(/assets/check_icon.png) no-repeat -7px -3px;}
 .checkBox input[type="checkbox"] { width: 20px; height: 20px; opacity: 0; margin: 0;}
-.checkBox:hover { background: url(../assets/check_icon.png) no-repeat -7px -33px;}
-.checkBox.check { background: url(../assets/check_icon.png) no-repeat -7px -66px;}
+.checkBox:hover { background: url(/assets/check_icon.png) no-repeat -7px -33px;}
+.checkBox.check { background: url(/assets/check_icon.png) no-repeat -7px -66px;}
 
-.radioBox { display: inline-block; width: 20px; height: 20px; background: url(../assets/radio_icon.png) no-repeat -7px -3px;}
+.radioBox { display: inline-block; width: 20px; height: 20px; background: url(/assets/radio_icon.png) no-repeat -7px -3px;}
 .radioBox input[type="radio"] { width: 20px; height: 20px; opacity: 0; margin: 0;}
-.radioBox:hover { background: url(../assets/radio_icon.png) no-repeat -7px -33px;}
-.radioBox.check { background: url(../assets/radio_icon.png) no-repeat -7px -65px;}
+.radioBox:hover { background: url(/assets/radio_icon.png) no-repeat -7px -33px;}
+.radioBox.check { background: url(/assets/radio_icon.png) no-repeat -7px -65px;}
 
 /* footer */
-.footer { background: url(../assets/bottom_bg.png) repeat-x; height: 50px; width: 100%; position: fixed; bottom: 0; z-index: 100;}
+.footer { background: url(/assets/bottom_bg.png) repeat-x; height: 50px; width: 100%; position: fixed; bottom: 0; z-index: 100;}
 
 /* login */
 .loginBg {
-    background: url(../assets/loginBg.jpg) no-repeat;
+    background: url(/assets/loginBg.jpg) no-repeat;
     background-size: cover;
     overflow: auto;
+    position: relative;
 }
 .loginBox { width: 360px; margin: 100px auto 20px;}
 .loginBox h1 {
@@ -131,8 +114,8 @@ table { border-collapse: collapse;}
     display: none;
 }
 .warnShow .warn { display: block;}
-.correct { background: url(../assets/correct.png) no-repeat;}
-.error { background: url(../assets/error.png) no-repeat;}
+.correct { background: url(/assets/correct.png) no-repeat;}
+.error { background: url(/assets/error.png) no-repeat;}
 
 .loginAct { border-top: 1px solid #c5c7cb; padding: 20px 35px; background: #f7f7f7; border-radius: 0 0 5px 5px; position: relative;}
 .loginAct input[type="checkbox"] { display: none;}
@@ -195,7 +178,7 @@ table { border-collapse: collapse;}
     height: 192px;
     background-color: #ff8100;
 }
-.menu2 { background: url(../assets/menuImage2.jpg) no-repeat; width: 319px; height: 192px;}
+.menu2 { background: url(/assets/menuImage2.jpg) no-repeat; width: 319px; height: 192px;}
 .menu3 { width: 168px; height: 192px; background-color: #0e61d9;}
 .menu4 { width: 117px; height: 192px; background-color: #a3cd23;}
 .menu5 { width: 117px; height: 232px; background-color: #707070;}
@@ -204,6 +187,11 @@ table { border-collapse: collapse;}
 .menu8 { width: 235px; height: 134px; background-color: #a61ced;}
 .menu9 { width: 235px; height: 78px; background-color: #ff0000;}
 
+.topLogin { position: absolute; top: 10px; right: 200px;}
+.topLogin span { color: #fff; padding: 5px 10px; position: relative; cursor: pointer;}
+.topLogin span ul { position: absolute; background: #fff; top: 25px; left: 0;}
+.topLogin span li { padding: 2px 10px; color: #2c2c2c; width: 25px; display: none;}
+.topLogin span:hover li { display: block;}
 
 /* header */
 .header {
@@ -219,23 +207,28 @@ table { border-collapse: collapse;}
 }
 .userInfo { position: absolute; width: 80px; height: 60px; margin: 10px; text-align: center;}
 .userInfo .userImg { width: 36px; height: 36px; margin: 0 auto; border: 2px solid #ffffff; border-radius: 20px; overflow: hidden;}
-.userInfo span { color: #f9fafe; line-height: 24px; }
+.userInfo span { color: #f9fafe; line-height: 24px; position: relative; }
+.userInfo span ul { position: absolute; background: #394264; top: 17px; left: 0; z-index: 9;}
+.userInfo span li { padding: 0 10px; color: #fff; display: none;}
+.userInfo span li a { color: #f9fafe; width: 35px;}
+.userInfo span:hover li { display: block;}
 
 .nav { width: 1100px; margin: 0 auto;}
 .topMenu { padding: 0 10px;}
-.topMenu li { color: #979fb6;}
-.topMenu li.hover,.topMenu li:hover { color: #f9fafe;}
+.topMenu li a { color: #979fb6;}
+.topMenu li.hover a.fst_menu_a,.topMenu li:hover a.fst_menu_a{ color: #f9fafe;}
+.topMenu li.hover .scdMenu li.hover a.scd_menu_a,.topMenu li.hover .scdMenu li:hover a.scd_menu_a { color: #f9fafe;}
 .tmItem { width: 120px; height: 40px; line-height: 40px; float: left; overflow: hidden; text-indent: 55px; cursor: pointer; padding: 20px 0;}
 .tmItem.hover,.tmItem:hover { background-color: #394264;}
-.tmItem1 { background: url(../assets/navIcon.png) no-repeat 0px center; background-size: 999px 37px;}
-.tmItem2 { background: url(../assets/navIcon.png) no-repeat -118px center; background-size: 999px 37px;}
-.tmItem3 { background: url(../assets/navIcon.png) no-repeat -236px center; background-size: 999px 37px;}
-.tmItem4 { background: url(../assets/navIcon.png) no-repeat -354px center; background-size: 999px 37px;}
-.tmItem5 { background: url(../assets/navIcon.png) no-repeat -472px center; background-size: 999px 37px;}
-.tmItem6 { background: url(../assets/navIcon.png) no-repeat -590px center; background-size: 999px 37px;}
-.tmItem7 { background: url(../assets/navIcon.png) no-repeat -708px center; background-size: 999px 37px;}
-.tmItem8 { background: url(../assets/navIcon.png) no-repeat -826px center; background-size: 999px 37px;}
-.tmItem9 { background: url(../assets/navIcon.png) no-repeat -944px center; background-size: 999px 37px;}
+.tmItem1 { background: url(/assets/navIcon.png) no-repeat 0px center; background-size: 999px 37px;}
+.tmItem2 { background: url(/assets/navIcon.png) no-repeat -118px center; background-size: 999px 37px;}
+.tmItem3 { background: url(/assets/navIcon.png) no-repeat -236px center; background-size: 999px 37px;}
+.tmItem4 { background: url(/assets/navIcon.png) no-repeat -354px center; background-size: 999px 37px;}
+.tmItem5 { background: url(/assets/navIcon.png) no-repeat -472px center; background-size: 999px 37px;}
+.tmItem6 { background: url(/assets/navIcon.png) no-repeat -590px center; background-size: 999px 37px;}
+.tmItem7 { background: url(/assets/navIcon.png) no-repeat -708px center; background-size: 999px 37px;}
+.tmItem8 { background: url(/assets/navIcon.png) no-repeat -826px center; background-size: 999px 37px;}
+.tmItem9 { background: url(/assets/navIcon.png) no-repeat -944px center; background-size: 999px 37px;}
 
 .scdMenuBox { position: absolute; top: 80px; left: 0; width: 100%; background: #191d39; box-shadow: 0 1px 1px #1A1822;}
 .scdMenu { width: 700px; margin: 0 auto;}
@@ -247,7 +240,7 @@ table { border-collapse: collapse;}
 .main { color: #3c3c3c;}
 .main_tit { background: #e7e9e9; height: 45px; border-bottom: 1px solid #D5D5D5; margin-bottom: 10px;}
 .main_tit h1 { width: 900px; margin: 0 auto; color: #31343d; line-height: 45px; font-weight: normal; font-size: 18px;}
-.main_con { width: 900px; margin: 0 auto; padding: 10px; padding-bottom: 80px;}
+.main_con { width: 900px; margin: 0 auto; padding: 10px; padding-bottom: 80px; position: relative; overflow: hidden;}
 
 .topInfo {}
 .topInfo p { overflow: hidden; text-align: right;}
@@ -285,7 +278,7 @@ table { border-collapse: collapse;}
 .searchBox button { float: left; margin-right: 10px;}
 
 .funcBox { position: absolute; top: 0; right: 0;}
-.scd_btn[name="newUser"] { display: block; width: 36px; height: 36px; float: left; background: url(../assets/newUser.png) no-repeat; background-size: cover; margin: 0 5px;}
+.scd_btn[name="newUser"] { display: block; width: 36px; height: 36px; float: left; background: url(/assets/newUser.png) no-repeat; background-size: cover; margin: 0 5px;}
 .scd_btn[name="newReward"] { display: block; width: 36px; height: 36px; float: left; border-radius: 18px; background: #f47400; color: #fff; line-height: 36px; text-align: center; margin: 0 5px; }
 .scd_btn[name="newPunish"] { display: block; width: 36px; height: 36px; float: left; border-radius: 18px; background: #30b154; color: #fff; line-height: 36px; text-align: center; margin: 0 5px; }
 .funcBox a {
@@ -299,15 +292,19 @@ table { border-collapse: collapse;}
     background: -moz-linear-gradient(top, #ffffff,#f0f0f0);
     background: -ms-linear-gradient(top,  #ffffff 0%,#f0f0f0 100%);
     background: linear-gradient(top,  #ffffff 0%,#f0f0f0 100%);
-    filter: progid:DXImageTransform.Microsoft.gradient(startColorstr="#ffffff",endColorstr="#f0f0f0",GradientType=0);
+    -ms-filter: progid:DXImageTransform.Microsoft.gradient(startColorstr="#ffffff",endColorstr="#f0f0f0",GradientType=0);
 }
-.funcBox a.hover,.funcBox a:hover { background: #ff8828; color: #fff; border: 1px solid #ff8828;}
+.funcBox a.hover,.funcBox a:hover {
+    border: 1px solid #ff8828;
+    color: #fff;
+    background: #ff8828;
+}
 .funcBox a span { display: block; height: 24px; line-height: 24px;}
 
-.ruleBtn { background: url(../assets/ruleIcon.png) -2px 0px no-repeat; text-indent: 25px;}
-.exportBtn { background: url(../assets/exportBtn.png) -2px 0px no-repeat; text-indent: 25px;}
-.funcBox a.hover .ruleBtn,.funcBox a:hover .ruleBtn { background: url(../assets/ruleIcon.png) -2px -28px no-repeat;}
-.funcBox a.hover .exportBtn,.funcBox a:hover .exportBtn { background: url(../assets/exportBtn.png) -2px -28px no-repeat;}
+.ruleBtn { background: url(/assets/ruleIcon.png) -2px 0px no-repeat; text-indent: 25px;}
+.exportBtn { background: url(/assets/exportBtn.png) -2px 0px no-repeat; text-indent: 25px;}
+.funcBox a.hover .ruleBtn,.funcBox a:hover .ruleBtn { background: url(/assets/ruleIcon.png) -2px -28px no-repeat;}
+.funcBox a.hover .exportBtn,.funcBox a:hover .exportBtn { background: url(/assets/exportBtn.png) -2px -28px no-repeat;}
 
 .billInfo { margin: 5px 20px; line-height: 24px;}
 .billInfo label { width: 80px; text-align: right; display: inline-block;}
@@ -325,7 +322,7 @@ table { border-collapse: collapse;}
 
 .waitingTit { background: #f9090a; width: 80px; height: 24px; line-height: 24px; font-size: 12px; font-weight: normal; text-align: center; color: #fff;}
 .waitingArea { border-top: 1px solid #ccc; border-bottom: 2px solid #ccc; margin: 5px 0;}
-.waitingCar { display: inline-block; width: 80px; height: 60px; text-align: center; background: url(../assets/wait.png) no-repeat 0 27px; background-size: 80px 26px; margin: 3px;}
+.waitingCar { display: inline-block; width: 80px; height: 60px; text-align: center; background: url(/assets/wait.png) no-repeat 0 27px; background-size: 80px 26px; margin: 3px;}
 .waitingCar span { line-height: 24px;}
 .washingTit { background: #1338ff; width: 80px; height: 24px; line-height: 24px; font-size: 12px; font-weight: normal; text-align: center; color: #fff;}
 .washingArea { border-top: 1px solid #ccc; border-bottom: 1px solid #ccc; margin: 5px 0;}
@@ -333,7 +330,7 @@ table { border-collapse: collapse;}
 .washingCar .station { height: 24px; line-height: 24px; background: #ccc;}
 .washingCar.on .station { background: #4846c3;}
 .station span { display: inline-block; color: #f2f2f2;}
-.station .clock { background: url(../assets/clock.png) no-repeat; width: 20px; height: 20px; background-size: 20px 20px; margin: -4px 4px;}
+.station .clock { background: url(/assets/clock.png) no-repeat; width: 20px; height: 20px; background-size: 20px 20px; margin: -4px 4px;}
 .endTit { background: #24ca24; width: 80px; height: 24px; line-height: 24px; font-size: 12px; font-weight: normal; text-align: center; color: #fff;}
 .endArea { border-top: 1px solid #ccc; border-bottom: 1px solid #ccc; margin: 5px 0;}
 .waitingCar:hover,.washingCar:hover { box-shadow: 0px 1px 1px rgba(0,0,0,0.3);}
@@ -348,15 +345,30 @@ table { border-collapse: collapse;}
 
 /* table*/
 .table1 { width: 100%; line-height: 30px;}
+.table1 th {
+    background: -webkit-gradient(linear, 0 0, 0 100%, from(#ffffff), to(#f0f0f0));
+    background: -moz-linear-gradient(top, #ffffff,#f0f0f0);
+    background: -ms-linear-gradient(top,  #ffffff 0%,#f0f0f0 100%);
+    background: linear-gradient(top,  #ffffff 0%,#f0f0f0 100%);
+    filter: progid:DXImageTransform.Microsoft.gradient(startColorstr="#ffffff",endColorstr="#f0f0f0",GradientType=0);
+}
 .table1 th,.table1 td { text-align: center; padding: 2px;}
-.table1 tr th.first_icon { width: 30px;}
-.table1 tr td.first_icon { background: url(../assets/heart.png) no-repeat 9px 9px; background-size: 16px 15px;}
-.table1 .more { display: inline-block; width: 20px; height: 20px; background: url(../assets/more@delete.png) no-repeat -1px 0; border: 0; background-size: 56px 20px; margin: 3px;}
-.table1 .delete { display: inline-block; width: 20px; height: 20px; background: url(../assets/more@delete.png) no-repeat -35px 0; border: 0; background-size: 56px 20px; margin: 3px;}
-.table1 .add { display: inline-block; width: 20px; height: 20px; background: url(../assets/add_icon.png) no-repeat; border: 0; background-size: 20px 20px; margin: 3px;}
+table .more { display: inline-block; width: 20px; height: 20px; background: url(/assets/more@delete.png) no-repeat -1px 0; border: 0; background-size: 56px 20px; margin: 3px;}
+table .delete { display: inline-block; width: 20px; height: 20px; background: url(/assets/more@delete.png) no-repeat -35px 0; border: 0; background-size: 56px 20px; margin: 3px;}
+table .add { display: inline-block; width: 20px; height: 20px; background: url(/assets/add_icon.png) no-repeat; border: 0; background-size: 20px 20px; margin: 3px;}
+table .returnVisitBtn { display: inline-block; width: 20px; height: 20px; background: url(/assets/returnVisit.png) no-repeat; border: 0;}
+table .money { display: inline-block; width: 20px; height: 20px; background: url(/assets/money.png) no-repeat; border: 0; margin: 3px;}
+
+.table2 { width: 100%; line-height: 30px; border: 1px solid #ccc;}
+.table2 th { background: #ccc;}
+.table2 td { text-align: center; border: 1px solid #ccc;}
+.table2 li { text-align: center; border-bottom: 1px solid #ccc;}
+.table2 li:last-child { border-bottom: 0;}
+.table2 tr:hover { background: #f5f5f5;}
 
 /* second_box */
 .second_bg { width:100%; height:100%; z-index:98; position: fixed; top:0; opacity: 0.3; filter: alpha(opacity=30); display: none;}
+.second_bg2 { width:100%; height:100%; z-index:98; position: fixed; top:0; opacity: 0.3; filter: alpha(opacity=30); display: none;}
 .second_box { width:100%; height:100%; z-index:99; position: absolute; top:0; display: none; }
 .second_box.second_box_fixed { position: fixed;}
 .second_content {
@@ -377,6 +389,14 @@ table { border-collapse: collapse;}
     right: 12px;
     cursor: pointer;
 }
+.second_content .close2 {
+    font-size: 28px;
+    line-height: 40px;
+    overflow: hidden;
+    position: absolute;
+    right: 12px;
+    cursor: pointer;
+}
 .scdBoxAct { margin: 10px 0; text-align: center; }
 
 
@@ -384,7 +404,8 @@ table { border-collapse: collapse;}
 .infoBox .infoBoxTit { background: #fff; position: absolute; left: 45px; top: -14px; padding: 5px 20px;}
 .perPic { float: left; width: 110px; height: 130px; background: #d4d4d4; border: 1px solid #c5c5c5; box-shadow: 0 3px 4px #767676; position: relative;}
 .perPic span { color: #fff; display: block; margin-top: 20px; text-align: center; text-shadow: 1px 1px 1px rgba(0, 0, 0, 0.3);}
-.perPic .upload { padding: 0 3px 0 15px; border: 1px solid #FF8828; border-radius: 3px; background: url(../assets/perPic_upload.png) no-repeat 3px center #fff; position: absolute; bottom: 10px; right: 10px;}
+.perPic img { position: absolute; top: 0;left: 0; width: 100%;height: 100%;}
+.perPic .upload { padding: 0 3px 0 15px; border: 1px solid #FF8828; border-radius: 3px; background: url(/assets/perPic_upload.png) no-repeat 3px center #fff; position: absolute; bottom: 10px; right: 10px;}
 .perDtl { overflow: hidden; display: inline-block; line-height: 28px;}
 .perDtl p { line-height: 28px;}
 .perDtl label { width: 70px; text-align: right; display: inline-block; margin-right: 6px;}
@@ -399,13 +420,15 @@ table { border-collapse: collapse;}
 .rwdDtl label { width: 70px; text-align: right; display: inline-block; margin-right: 6px;}
 .rwdDtl input { padding: 3px; width: 120px; border: 1px solid #e2e2e2; margin-right: 10px; color: #A9A8A8;}
 .rwdDtl textarea { float: left; margin-left: 4px; width: 400px;}
-
+.rwdDtl .position { display: inline-block; margin-left: 5px;}
+.rwdDtl .position span { display: inline-block; width: 130px;}
+.rwdDtl .position button { margin: 0px 5px; }
 
 /* 收银管理 */
-.nopaid { background: url(../assets/payIcon2.png) -6px -4px no-repeat; text-indent: 25px;}
-.paid { background: url(../assets/payIcon2.png) -110px -4px no-repeat; text-indent: 25px;}
-.funcBox a.hover .nopaid,.funcBox a:hover .nopaid { background-image: url(../assets/payIcon1.png);}
-.funcBox a.hover .paid,.funcBox a:hover .paid { background-image: url(../assets/payIcon1.png);}
+.nopaid { background: url(/assets/payIcon2.png) -6px -4px no-repeat; text-indent: 25px;}
+.paid { background: url(/assets/payIcon2.png) -110px -4px no-repeat; text-indent: 25px;}
+.funcBox a.hover .nopaid,.funcBox a:hover .nopaid { background-image: url(/assets/payIcon1.png);}
+.funcBox a.hover .paid,.funcBox a:hover .paid { background-image: url(/assets/payIcon1.png);}
 
 .personBill { padding: 5px; margin-bottom: 10px; color: #858585;}
 .personBill .personInfo { line-height: 36px;}
@@ -422,7 +445,7 @@ table { border-collapse: collapse;}
 .dateBox .day { line-height: 80px; padding-top: 20px; font-size: 72px; color: #fff;}
 .dateBox .month { font-size: 18px; margin-bottom: 10px;}
 .timeBox { height: 50px; background: #fc9048; box-shadow: 0 0 10px rgba(0,0,0,0.1); padding: 10px;}
-.timeBox .time { background: url(../assets/time.png) no-repeat 40px 1px; text-indent: 16px; font-size: 14px;}
+.timeBox .time { background: url(/assets/time.png) no-repeat 40px 1px; text-indent: 16px; font-size: 14px;}
 
 .paymentDtl { padding: 20px; overflow: hidden;}
 .paymentDtl .toolbar { border: 0;}
@@ -439,7 +462,7 @@ table { border-collapse: collapse;}
 .payMethod ul { overflow: hidden; border-radius: 5px; box-shadow: 1px 2px 0 #e2e2e2; margin-bottom: 10px;}
 .payMethod li { float: left; width: 25%; text-align: center; line-height: 40px; color: #9F9F9F; cursor: pointer;}
 .payMethod li:hover,.payMethod li.hover { background: #FF8828; color: #fff;}
-.payMethodDtl { color: #9F9F9F;}
+.payMethodDtl { color: #9F9F9F; position: relative;}
 .payMethodDtl p { line-height: 30px; margin: 15px; overflow: hidden;}
 .payMethodDtl label { float: left; width: 80px; text-align: right; margin-right: 10px; color: #9F9F9F;}
 .payMethodDtl input[type="text"] { padding: 7px; background: #f0f2f5; border: 0; border-radius: 5px; box-shadow: 0 1px 0 #ccc inset; color: #9F9F9F;}
@@ -447,10 +470,10 @@ table { border-collapse: collapse;}
 .payMethodDtl input[type="checkbox"] {}
 .payMethodDtl span {}
 
-.printBtn { background: url(../assets/print.png) 10px 0 no-repeat; text-indent: 20px;}
+.printBtn { background: url(/assets/print.png) 10px 0 no-repeat; text-indent: 20px;}
 
 .paidBill { margin-bottom: 10px;}
-.paidBillInfo { height: 40px; line-height: 40px; background: #e3e2e2; border-bottom: 2px solid #ee7932; border-radius: 5px 5px 0 0; padding: 0 20px;}
+.paidBillInfo { height: 40px; line-height: 40px; background: #e3e2e2; border-bottom: 2px solid #ee7932; border-radius: 5px 5px 0 0; padding: 0 10px 0 35px; position: relative;}
 .paidBillInfo .right { float: right;}
 .paidBillDtl { display: none;}
 .paidBill.open .paidBillDtl { display: block;}
@@ -467,12 +490,12 @@ table { border-collapse: collapse;}
 .customerInfo .perDtl .choiceBox label { width: 36px;}
 .customerInfo .greenBtn { margin-left: 110px;}
 
-.editTool { background: url(../assets/editTool.png) -2px 1px no-repeat; text-indent: 25px;}
-.printTool { background: url(../assets/printTool.png) -2px 1px no-repeat; text-indent: 25px;}
-.deleteTool { background: url(../assets/deleteTool.png) -2px 2px no-repeat; text-indent: 25px;}
-.funcBox a.hover .editTool,.funcBox a:hover .editTool { background: url(../assets/editTool.png) -2px -28px no-repeat;}
-.funcBox a.hover .printTool,.funcBox a:hover .printTool { background: url(../assets/printTool.png) -2px -28px no-repeat;}
-.funcBox a.hover .deleteTool,.funcBox a:hover .deleteTool { background: url(../assets/deleteTool.png) -2px -28px no-repeat;}
+.editTool { background: url(/assets/editTool.png) -2px 1px no-repeat; text-indent: 25px;}
+.printTool { background: url(/assets/printTool.png) -2px 1px no-repeat; text-indent: 25px;}
+.deleteTool { background: url(/assets/deleteTool.png) -2px 2px no-repeat; text-indent: 25px;}
+.funcBox a.hover .editTool,.funcBox a:hover .editTool { background: url(/assets/editTool.png) -2px -28px no-repeat;}
+.funcBox a.hover .printTool,.funcBox a:hover .printTool { background: url(/assets/printTool.png) -2px -28px no-repeat;}
+.funcBox a.hover .deleteTool,.funcBox a:hover .deleteTool { background: url(/assets/deleteTool.png) -2px -28px no-repeat;}
 
 .noHidden { overflow: visible;}
 .custmRecord { position: absolute; top: 10px; border-left: 1px solid #ccc;}
@@ -484,10 +507,16 @@ table { border-collapse: collapse;}
 .cusCar .infoBoxTit { left: 10px;}
 .cusCar p { line-height: 24px;}
 .cusCarAct { display: inline-block; position: absolute; bottom: 16px; right: 2px;}
-.cusCarAct .edit { background: url(../assets/editTool.png) -2px -2px no-repeat; border: 0; display: inline-block; width: 20px; height: 20px;}
-.cusCarAct .delete { background: url(../assets/deleteTool.png) -2px -1px no-repeat; border: 0; display: inline-block; width: 20px; height: 20px;}
+.cusCarAct .edit { background: url(/assets/editTool.png) -2px -2px no-repeat; border: 0; display: inline-block; width: 20px; height: 20px;}
+.cusCarAct .delete { background: url(/assets/deleteTool.png) -2px -1px no-repeat; border: 0; display: inline-block; width: 20px; height: 20px;}
 
-.table1 .returnVisitBtn { display: inline-block; width: 20px; height: 20px; background: url(../assets/returnVisit.png) no-repeat; border: 0;}
+.cusInfo { position: absolute; top: 0;}
+.cusInfo p { line-height: 20px;}
+.cusInfo p label { width: 80px; display: inline-block;}
+.infoBlocks { padding: 5px; margin-bottom: 80px; line-height: 20px; overflow: hidden; border-radius: 5px; border: 1px solid #ccc;}
+.infoBlock { padding: 5px; margin-bottom: 5px; border-radius: 5px; background: #F5F5F5; box-shadow: 0 0 3px rgba(0,0,0,0.7); display: none;}
+.infoBlock p label { width: 80px; display: inline-block;}
+
 .returnVisitDtl { padding: 10px;}
 
 .form_1 {}
@@ -499,7 +528,7 @@ table { border-collapse: collapse;}
 .res { width: 400px; float: left; margin: 10px;}
 .res h2 { color: #31343D; font-size: 18px; font-weight: normal; text-align: center;}
 .tabDiv { border: 1px solid #ccc; position: relative; height: 300px;}
-.thBg { 
+.thBg {
     height: 30px;
     width: 100%;
     background: -webkit-gradient(linear, 0 0, 0 100%, from(#ffffff), to(#f0f0f0));
@@ -510,17 +539,17 @@ table { border-collapse: collapse;}
 }
 .res table { width: 380px; margin: 0 10px; line-height: 30px; position: absolute; top: 0;}
 .res table td { text-align: center; padding: 2px; border-bottom: 1px solid #ccc;}
-.goto { float: left; width: 60px; height: 60px; margin-top: 160px; background: url(../assets/goto.png) no-repeat; cursor: pointer;}
-.res .choose { background: url(../assets/circle.png) no-repeat -2px 0; display: inline-block; width: 20px; height: 20px; border: 0;}
-.res .delete { background: url(../assets/delete.png) no-repeat; display: inline-block; width: 20px; height: 20px; border: 0;}
+.goto { float: left; width: 60px; height: 60px; margin-top: 160px; background: url(/assets/goto.png) no-repeat; cursor: pointer;}
+.res .choose { background: url(/assets/circle.png) no-repeat -2px 0; display: inline-block; width: 20px; height: 20px; border: 0;}
+.res .delete { background: url(/assets/delete.png) no-repeat; display: inline-block; width: 20px; height: 20px; border: 0;}
 
 .shortMsg { padding: 10px;}
 .shortMsg h2 { color: #31343D; font-size: 18px; font-weight: normal; text-align: center;}
 .shortMsg ul { border: 1px solid #ccc; height: 30px;}
 .shortMsg li { float: left; width: 218px; border-right: 1px solid #ccc; height: 100%; color: #858585; position: relative;}
 .shortMsg li:last-child { border: 0;}
-.shortMsg li .msgChoose { text-align: center; float: left; width: 185px; height: 30px; line-height: 30px; background: url(../assets/selectIcon.png) no-repeat 150px center; background-size: 35px 30px;}
-.shortMsg li .msgAdd { float: left; width: 30px; height: 30px; background: url(../assets/add.png) no-repeat 2px center; background-size: 25px 25px;}
+.shortMsg li .msgChoose { text-align: center; float: left; width: 185px; height: 30px; line-height: 30px; background: url(/assets/selectIcon.png) no-repeat 150px center; background-size: 35px 30px;}
+.shortMsg li .msgAdd { float: left; width: 30px; height: 30px; background: url(/assets/add.png) no-repeat 2px center; background-size: 25px 25px;}
 .shortMsg li .msgChooseItem { position: absolute; top: 30px; line-height: 24px; width: 300px; text-indent: 20px; padding: 0 10px; border: 1px solid #ccc; box-shadow: -1px 1px 3px rgba(0,0,0,0.3); margin-bottom: 10px; display: none;}
 .shortMsg li.hover .msgChooseItem { display: block;}
 .shortMsg textarea { resize: none; height: 200px; width: 878px; border: 1px solid #ccc; border-top: 0;}
@@ -533,14 +562,14 @@ table { border-collapse: collapse;}
 .cardInfo { overflow: hidden; padding: 5px; height: 90px;}
 .cardInfo p { line-height: 20px;}
 .cardBtn { text-align: center;}
-.cardBtn .show { display: inline-block; width: 25px; height: 25px; background: url(../assets/card_btn.png) no-repeat -4px center; border: 0;}
-.cardBtn .edit { display: inline-block; width: 25px; height: 25px; background: url(../assets/card_btn.png) no-repeat -40px center; border: 0;}
-.cardBtn .delete { display: inline-block; width: 25px; height: 25px; background: url(../assets/card_btn.png) no-repeat -70px center; border: 0;}
+.cardBtn .show { display: inline-block; width: 25px; height: 25px; background: url(/assets/card_btn.png) no-repeat -4px center; border: 0;}
+.cardBtn .edit { display: inline-block; width: 25px; height: 25px; background: url(/assets/card_btn.png) no-repeat -40px center; border: 0;}
+.cardBtn .delete { display: inline-block; width: 25px; height: 25px; background: url(/assets/card_btn.png) no-repeat -70px center; border: 0;}
 
 
 /* 统计管理 */
-.service { background: url(../assets/serviceIcon.png) 0px 1px no-repeat; text-indent: 25px;}
-.funcBox a.hover .service,.funcBox a:hover .service { background: url(../assets/serviceIcon.png) 0px -28px no-repeat;}
+.service { background: url(/assets/serviceIcon.png) 0px 1px no-repeat; text-indent: 25px;}
+.funcBox a.hover .service,.funcBox a:hover .service { background: url(/assets/serviceIcon.png) 0px -28px no-repeat;}
 
 .satisfy { width: 410px; float: left; margin: 20px; border-radius: 5px; box-shadow: 0 2px 1px #dddbdb; overflow: hidden;}
 .satisfy h1 { height: 40px; line-height: 40px; font-weight: normal; padding: 10px 30px; background: #dddbdb; border-bottom: 2px solid #d2d1d1;}
@@ -570,13 +599,31 @@ table { border-collapse: collapse;}
 .carTypeBuyCountItem .carNum { position: absolute; top: 45px; left: 55px; width: 70px; height: 70px; line-height: 70px; text-align: center; border-radius: 35px; background: #e3e4e8;}
 .carTypeBuyCountItem p { line-height: 24px; text-align: center;}
 
+.complainTotal { position: relative; border-radius: 5px; overflow: hidden; border-bottom: 3px solid #da7544; float: left; width: 300px;}
+.complainTotal h1 { background: #f6f8fa; border-bottom: 3px solid #e3e4e8; color: #a4aeb9; font-weight: normal; padding: 10px;}
+.complainTotal h2 { background: #f4902f; color: #fff; font-weight: normal; text-align: center; padding: 10px;}
+.complainTotal canvas { display: block; width: 160px; height: 160px; margin: 0 auto;}
+.complainTotal .complainClass { position: absolute; padding-bottom: 3px;}
+.complainTotal .complainClass span { color: #fff; padding: 0 5px; border-radius: 3px;}
+.complainOfYear { position: relative; border-radius: 5px; overflow: hidden; border-bottom: 3px solid #da7544; float: left; width: 550px; margin-left: 50px; background: #ed9555;}
+.complainOfYear h1 { background: #ee803e; border-bottom: 3px solid #ee803e; color: #fff; font-weight: normal; padding: 10px;}
+.complainOfYear h1 span { font-weight: normal; font-size: 12px; float: right; margin-top: 20px;}
+.complainOfYear canvas { display: block; margin: 10px 10px 40px 40px; width: 500px; height: 250px;}
+.complainOfYear .xAxis { bottom: 16px; left: 60px; position: absolute;}
+.complainOfYear .yAxis { position: absolute; top: 34px; width: 40px;}
+.complainOfYear .xAxis span { float: left; text-align: center; width: 38.5px; color: #fff;}
+.complainOfYear .yAxis span { display: block; line-height: 62px; text-align: center; color: #fff;}
 
 /* 库存管理 */
-.footer button { height: 30px; width: 100px; margin: 10px; border: 0; border-radius: 3px; color: #fff; background: url(../assets/bottom_btn.png) repeat-x; box-shadow: 0 0 2px #000;}
+.footer button { height: 30px; width: 100px; margin: 10px; border: 0; border-radius: 3px; color: #fff; background: url(/assets/bottom_btn.png) repeat-x; box-shadow: 0 0 2px #000;}
 .footer button:hover { box-shadow: 0 0 2px #000 inset;}
 
-
-
+.moreBox { display: inline-block; position: relative;}
+.moreList { position: absolute; display: none;}
+.moreBox:hover .moreList { display: block;}
+.moreList ul { margin-bottom: 80px; border: 1px solid #ccc;}
+.moreList li { line-height: 20px; width: 100px; text-align: left; text-indent: 10px;}
+.moreList li:hover { background: #FF9E2F; color: #fff;}
 
 
 
@@ -586,8 +633,8 @@ table { border-collapse: collapse;}
 .stationBox .stationInfo { overflow: hidden;}
 .stationInfo h1 { height: 25px; line-height: 25px; padding-bottom: 5px; border-bottom: 1px solid #ccc; font-size: 16px; font-weight: normal; position: relative;}
 .stationInfo .stationAct { position: absolute; top: 0; right: 5px;}
-.stationAct .edit { float: left; width: 25px; height: 25px; background: url(../assets/card_btn.png) no-repeat -40px center; border: 0;}
-.stationAct .delete { float: left; width: 25px; height: 25px; background: url(../assets/card_btn.png) no-repeat -70px center; border: 0;}
+.stationAct .edit { float: left; width: 25px; height: 25px; background: url(/assets/card_btn.png) no-repeat -40px center; border: 0;}
+.stationAct .delete { float: left; width: 25px; height: 25px; background: url(/assets/card_btn.png) no-repeat -70px center; border: 0;}
 .stationInfolist { width: 50%; float: left;}
 .stationInfolist h2 { font-size: 12px; font-weight: normal; line-height: 24px; padding-left: 20px;}
 .stationInfolist p { font-size: 12px; line-height: 20px; color: #858585;}
@@ -596,13 +643,13 @@ table { border-collapse: collapse;}
 .newStationJob h2 { font-size: 12px; font-weight: normal; line-height: 24px; text-align: center;}
 .stationJobPicker { border: 1px solid #ccc; padding: 5px; min-height: 200px;}
 .stationJobPicker ul { border-bottom: 2px solid #ccc;}
-.stationJobPicker li { line-height: 32px; display: inline-block; width: 120px; text-align: center; cursor: pointer;}
+.stationJobPicker li { line-height: 32px; display: inline-block; width: 120px; text-align: center; cursor: pointer; margin-bottom: 3px;}
 .stationJobPicker li:hover,.stationJobPicker li.hover { background: #ccc;}
 .stationJobPicker .choiceBox { width: 100%; margin: 10px 0;}
-.stationJobPicker .choiceBox label { width: 120px;} 
+.stationJobPicker .choiceBox label { width: 44%;}
 
-.storeInfo { background: url(../assets/infoIcon.png) -2px 0px no-repeat; text-indent: 25px;}
-.funcBox a.hover .storeInfo,.funcBox a:hover .storeInfo { background: url(../assets/infoIcon.png) -2px -27px no-repeat;}
+.storeInfo { background: url(/assets/infoIcon.png) -2px 0px no-repeat; text-indent: 25px;}
+.funcBox a.hover .storeInfo,.funcBox a:hover .storeInfo { background: url(/assets/infoIcon.png) -2px -27px no-repeat;}
 
 .perDtl .inputBox { width: 280px; float: left; padding: 5px 10px;}
 .perDtl .inputBox p { color: #666; margin: 3px 0;}
@@ -612,19 +659,25 @@ table { border-collapse: collapse;}
 .perDtl .inputBox .choiceBox label { width: 80px;}
 
 .leftBox { border: 1px solid #ccc; border-radius: 5px;}
-.storeLeftMenu_1 { line-height: 30px; padding: 0 10px 0 33px; background: url(../assets/storeLeftMenu.png) no-repeat 0 3px; border-bottom: 1px solid #ccc; color: #FF8828;}
-.storeLeftMenu_2 { line-height: 30px; padding: 0 10px 0 33px; background: url(../assets/storeLeftMenu.png) no-repeat 0 -31px; border-bottom: 1px solid #ccc;}
-.storeLeftMenu_3 { line-height: 30px; padding: 0 10px 0 33px; background: url(../assets/storeLeftMenu.png) no-repeat 0 -63px;}
+.leftBox li { padding: 5px 10px; border-bottom: 1px solid #ccc;}
+.leftBox li:last-child { border: 0;}
+.leftBox li:hover,.leftBox li.hover { color: #FF8828;}
+.leftBox li a { color: #666;}
+.leftBox li:hover a,.leftBox li.hover a { color: #FF8828;}
+.leftBox li.storeLeftMenu_1 { padding: 5px 10px 5px 33px; background: url(/assets/storeLeftMenu.png) no-repeat 0 3px; border-bottom: 1px solid #ccc;}
+.leftBox li.storeLeftMenu_2 { padding: 5px 10px 5px 33px; background: url(/assets/storeLeftMenu.png) no-repeat 0 -31px; border-bottom: 1px solid #ccc;}
+.leftBox li.storeLeftMenu_3 { padding: 5px 10px 5px 33px; background: url(/assets/storeLeftMenu.png) no-repeat 0 -63px;}
 
 .hasItemBox { border-radius: 5px; box-shadow: 0 5px 1px #f3f4f4; overflow: hidden;}
 .hasItemBoxTit { background: #f3f4f4; overflow: hidden;}
 .hasItemBoxTit .newOrg { float: right; margin: 5px;}
 .hasItemBoxTit .newGoodsType { float: right; margin: 5px;}
-.hasItemBoxItem { width: 200px; height: 60px; margin: 10px; float: left;}
-.hasItemBoxItem .itemName { float: left; border: 2px solid #ccc; border-radius: 5px; padding: 5px; background: #f0f2f5;}
-.hasItemBoxItem .itemName p { line-height: 24px; text-align: center;}
+.hasItemBoxItem { width: 156px; margin: 10px; float: left;}
+.hasItemBoxItem .itemName { border: 2px solid #ccc; border-radius: 5px; padding: 5px; background: #f0f2f5; overflow: hidden;}
+.hasItemBoxItem .itemName p { line-height: 20px; }
+.hasItemBoxItem .itemName button:first-child { margin-left: 98px;}
 .hasItemBoxItem .itemDtl { overflow: hidden;}
-.hasItemBoxItem .itemDtl p { line-height: 20px; padding-left: 10px;}
+.hasItemBoxItem .itemDtl p { height: 20px; line-height: 20px; padding-left: 10px;}
 
 .roleBox { overflow: hidden; padding-bottom: 10px;}
 .role { float: left;}
@@ -633,7 +686,7 @@ table { border-collapse: collapse;}
 .roleInfo p { line-height: 24px;}
 .starBox { width: 100px; height: 20px; margin: 10px 0; position: relative; overflow: hidden;}
 .starBox .star { display: inline-block; height: 100%; background: #ff9613;}
-.starBox .starCover { width: 100%; height: 100%; position: absolute; top: 0; left: 0; background: url(../assets/starCover.png) no-repeat; background-size: 100px 20px;}
+.starBox .starCover { width: 100%; height: 100%; position: absolute; top: 0; left: 0; background: url(/assets/starCover.png) no-repeat; background-size: 100px 20px;}
 
 .rightSet { width: 430px; padding: 10px; float: left;}
 .rightSetTit { padding: 10px 5px; border-bottom: 1px solid #ccc;}
@@ -641,7 +694,98 @@ table { border-collapse: collapse;}
 .rightSetPicker .choiceBox { float: left; width: 33%; margin: 5px 0;}
 
 
+/* 财务管理 */
+.revenueClass { margin: 10px 0;}
+.revenueItem { float: left; width: 178px; height: 40px; line-height: 40px; border-left: 1px solid #ccc; border-bottom: 1px solid #ccc; color: #858585; text-indent: 10px; background: url(/assets/revenueItem.png) no-repeat 150px center; position: relative;}
+.revenueItem:last-child { border-right: 1px solid #ccc; width: 182px;}
+.revenueItem_1 { box-shadow: 0 -7px 0 #ec2440;}
+.revenueItem_2 { box-shadow: 0 -7px 0 #74a66b;}
+.revenueItem_3 { box-shadow: 0 -7px 0 #6b8ea6;}
+.revenueItem_4 { box-shadow: 0 -7px 0 #886ba6;}
+.revenueItem_5 { box-shadow: 0 -7px 0 #a68a6b;}
+.revenueItem .revenueItemShow {
+    background: url("/assets/card_btn.png") no-repeat;
+    background-size: 49px 14px;
+    display: inline-block;
+    width: 14px;
+    height: 14px;
+    position: absolute;
+    bottom: -7px;
+    right: 10px;
+}
+.revenueCount_1 { line-height: 20px; width: 220px; color: #2c2c2c; float: left;}
+.revenueCount_1 label { float: left; width: 70px; text-align: right;}
+.revenueCount_1 span { float: left; width: 40px;}
+.revenueCount_2 { line-height: 20px; float: left; width: 360px}
+.revenueCount_2 label { float: left; width: 50px; text-align: right;}
+.revenueCount_2 span { float: left; width: 40px;}
 
+.dtlBtn { background: url(/assets/dtlBtn.png) -2px -1px no-repeat; text-indent: 25px;}
+.funcBox a.hover .dtlBtn,.funcBox a:hover .dtlBtn { background: url(/assets/dtlBtn.png) -2px -27px no-repeat;}
+.payable { background: url(/assets/payable.png) 0px -1px no-repeat; text-indent: 25px;}
+.funcBox a.hover .payable,.funcBox a:hover .payable { background: url(/assets/payable.png) 0px -27px no-repeat;}
+.receivable { background: url(/assets/receivable.png) -1px 0px no-repeat; text-indent: 25px;}
+.funcBox a.hover .receivable,.funcBox a:hover .receivable { background: url(/assets/receivable.png) -1px -28px no-repeat;}
+
+.costClass { border-top: 5px solid #6871a2; box-shadow: -1px 0 0 #ccc;}
+.costClass li { float: left; width: 89px; border-right: 1px solid #ccc; border-bottom: 1px solid #ccc; line-height: 20px;}
+.costClass li:hover,.costClass li.hover { background: #6871a2; color: #f2f2f2; border-color: #6871a2;}
+.costClass li label { display: block; padding-left: 5px;}
+.costClass li span { display: block; text-align: right; padding-right: 5px;}
+.costClass p { line-height: 32px; padding: 5px 10px; border-right: 1px solid #ccc; border-bottom: 1px solid #ccc; }
+.costClass p span { margin-right: 20px;}
+.costClass a.hover .exportBtn,.costClass a:hover .exportBtn { background: url(/assets/exportBtn.png) -2px -28px no-repeat;}
+.costClass a {
+    display: inline-block;
+    padding: 3px 10px;
+    margin-left: 10px;
+    border: 1px solid #a9a9a9;
+    border-radius: 5px;
+    color: #858585;
+    float: right;
+    background: -webkit-gradient(linear, 0 0, 0 100%, from(#ffffff), to(#f0f0f0));
+    background: -moz-linear-gradient(top, #ffffff,#f0f0f0);
+    background: -ms-linear-gradient(top,  #ffffff 0%,#f0f0f0 100%);
+    background: linear-gradient(top,  #ffffff 0%,#f0f0f0 100%);
+    filter: progid:DXImageTransform.Microsoft.gradient(startColorstr="#ffffff",endColorstr="#f0f0f0",GradientType=0);
+}
+.costClass a.hover,.costClass a:hover {
+    color: #fff;
+    border: 1px solid #ff8828;
+    background: #ff8828;
+}
+.costClass a span { display: block; height: 24px; line-height: 24px; margin: 0;}
+
+.page { text-align: center; line-height: 30px;}
+.page span { display: none;}
+.page em { padding: 3px 8px; margin: 0 3px; background: #F9651B; border: 1px solid #F9651B; color: #fff;}
+.page a { padding: 3px 8px; margin: 0 3px; background: #fff; border: 1px solid #ccc; color: #3c3c3c;}
+
+/*提示信息弹出层*/
+.tab_Prompt {
+    width: 300px;
+    padding: 20px;
+    box-shadow: 0px 0px 5px rgba(51,51,51,0.8);
+    border-radius: 5px;
+    background: rgba(255,255,255,0.8);
+    position: absolute;
+    display: none;
+    z-index: 1000;
+}
+.tab_Prompt p {
+    text-align: center;
+}
+.x {
+    width: 10px;
+    height: 10px;
+    display: block;
+    text-indent: -999px;
+    overflow: hidden;
+    position: absolute;
+    top : 10px;
+    right: 10px;
+    background: url(/assets/x.png) no-repeat;
+}
 
 
 

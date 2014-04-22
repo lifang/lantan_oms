@@ -1,0 +1,32 @@
+<div class="second_content" style="width: 650px;">
+  <span class="close" title="关闭">×</span>
+  <h1>编辑工位</h1>
+  <div>
+    <div class="perDtl" style="float: left; margin-top: 41px;">
+      <p><label>名称</label><input type="text" value="<%= @station.name %>"/></p>
+      <p><label>编号</label><input type="text"  value="<%= @station.code %>"/></p>
+    </div>
+    <div class="newStationJob">
+      <h2>选择工位可进行的服务</h2>
+      <div class="stationJobPicker">
+        <ul>
+          <% @categories.each do |k, v| %>
+            <li onclick="show_servs(<%= k %>)"><%= v %></li>
+          <% end %>
+        </ul>
+        <div class="jobClass_1">
+          <div class="choiceBox">
+            <div class="checkBox">
+              <input type="checkbox" onclick="select_serv(this)"/>
+            </div>
+            <label>极致洗车</label>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="scdBoxAct">
+    <button class="orangeBtn2">确认</button>
+    <button class="greyBtn">取消</button>
+  </div>
+</div>

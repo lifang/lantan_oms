@@ -7,7 +7,7 @@ class CreateProducts < ActiveRecord::Migration
       t.string :description   #产品介绍
       t.integer :types  #清洁类，保养类。。。
       t.string :service_code   #服务代码
-      t.boolean :status     #状态
+      t.boolean :status, :default => true     #状态
       t.text :introduction
       t.boolean :is_service   #判断是产品还是服务
       t.integer :staff_level   #所需技师等级

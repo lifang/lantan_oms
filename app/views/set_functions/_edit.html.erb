@@ -1,0 +1,43 @@
+<div class="second_content" style="width: 450px;">
+  <input type="hidden" value="<%= @store.id %>"/>
+  <span class="close" title="关闭">×</span>
+  <% if @type == 0 %>
+    <h1>编辑部门</h1>
+  <% elsif @type == 1 %>
+    <h1>编辑职务</h1>
+  <% elsif @type == 2 %>
+    <h1>编辑商品</h1>
+  <% elsif @type == 3 %>
+    <h1>编辑物料</h1>
+  <% elsif @type == 4 %>
+    <h1>编辑服务</h1>
+  <% end %>
+  <div class="infoBox">
+    <div class="rwdDtl">
+      <p>
+        <label>名称</label>
+        <input type="text" style="width: 200px;" id="set_functions_edit_name" value="<%= @obj.name %>"/>
+      </p>
+      <% if @type == 0 %>
+        <div style="line-height: 28px; margin-bottom: 10px;">
+          <label style="float: left;">职务</label>
+          <ul class="position">
+            <% @positions.each do |p| %>
+              <li>
+                <span><%= p.name %></span>
+                <input type="text" style="display:none;" onblur="edit_position_commit(<%= @obj.id %>, <%= p.id %>, <%= @store.id %>, this)"/>
+                <button class="greenBtn" onclick="edit_position(this)">编辑</button>
+                <button class="greenBtn" onclick="del_position(<%= p.id %>, <%= @store.id %>, this)">删除</button>
+              </li>
+            <% end if @positions && @positions.any? %>
+          </ul>
+        </div>
+        <button class="orangeBtn2" style="top: 16px;position: absolute;right: 0;" onclick="new_position(<%= @obj.id %>, <%= @store.id %>)">新建职务</button>
+      <% end %>
+    </div>
+  </div>
+  <div class="scdBoxAct">
+    <button class="orangeBtn2" id="new_commit_button" onclick="edit_commit_button(<%= @type %>, <%= @obj.id %>, <%= @store.id %>)">确认</button>
+    <button class="greyBtn" onclick="new_cancel_button()">取消</button>
+  </div>
+</div>

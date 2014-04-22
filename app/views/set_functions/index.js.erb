@@ -1,0 +1,9 @@
+<% if @type && (@type.to_i==0 || @type.to_i==1) %>
+$("#dpt_div").html("<%= j(render "dpt_and_pos_list") %>");
+<% elsif @type && @type.to_i==2 %>
+$("#goods_div").html("<%= j(render "goods_list") %>");
+<% elsif @type && @type.to_i==3 %>
+$("#materials_div").html("<%= j(render "materials_list") %>");
+<% elsif @type && @type.to_i==4 %>
+$("#servs_div").html("<%= j(render "servs_list") %>");
+<% end %>

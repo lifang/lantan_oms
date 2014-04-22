@@ -14,4 +14,15 @@ module ApplicationHelper
     end
   end
 
+  def is_hover(*controller_names)
+    flag = false
+    controller_names.each do |name|
+      if request.url.include?(name)
+        flag = true
+        break
+      end
+    end
+    return flag
+  end
+  
 end

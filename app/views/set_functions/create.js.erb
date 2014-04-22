@@ -1,0 +1,12 @@
+$("#waiting").hide();
+$(".second_bg").hide();
+$("#set_functions_new").hide();
+tishi("创建成功!");
+$.ajax({
+  type: "get",
+  url: "/stores/"+<%= @store.id %>+"/set_functions",
+  dataType: "script",
+  data: {
+    type : <%= @type %>
+  }
+})

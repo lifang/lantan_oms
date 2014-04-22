@@ -16,4 +16,6 @@ class Station < ActiveRecord::Base
   PerPage = 10
   validates :name, :presence => true
   validate :unique_code
+  
+
 end

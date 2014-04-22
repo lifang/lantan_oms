@@ -1,0 +1,22 @@
+<span class="infoBoxTit">门店组织架构</span>
+<button class="orangeBtn" style="position: absolute; padding: 0px; top: -10px; left: 180px;" onclick="set_functions_new(0)">新建部门</button>
+<% @departs.each do |k, departs| %>
+  <div class="hasItemBox">
+    <div class="hasItemBoxTit"><button class="newOrg orangeBtn2" onclick="new_same_lv_dpt(<%= k %>, <%= @store.id %>)">新建同级部门</button></div>
+    <% departs.each do |d| %>
+      <div class="hasItemBoxItem">
+        <div class="itemName">
+          <p><%= d.name %></p>
+          <p><button class="editBtn" title="编辑" onclick="set_funcions_edit(0, <%= d.id %>, <%= @store.id %>)"></button>
+            <button class="deleteBtn" title="删除" onclick="set_funcions_delete(0, <%= d.id %>, <%= @store.id %>)"></button>
+          </p>
+        </div>
+        <div class="itemDtl">
+          <% @positions[d.id].each do |p| %>
+            <p><%= p.name %></p>
+          <% end if @positions && @positions[d.id] %>
+        </div>
+      </div>
+    <% end %>
+  </div>
+<% end if @departs %>

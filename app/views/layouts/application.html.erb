@@ -1,14 +1,86 @@
-<!DOCTYPE html>
-<html>
-<head>
-  <title>LantanOms</title>
-  <%= stylesheet_link_tag    "application", :media => "all" %>
-  <%= javascript_include_tag "application" %>
-  <%= csrf_meta_tags %>
-</head>
-<body>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <title>LantanOms_<%= @title %></title>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <%= stylesheet_link_tag "application", "style" %>
+    <%= javascript_include_tag "application", "main" %>
+    <%= javascript_include_tag "/assets/My97DatePicker/WdatePicker.js" %>
+    <%= stylesheet_link_tag "/assets/My97DatePicker/skin/WdatePicker" %>
+    <%= csrf_meta_tags %>
+  </head>
+  <body>
+    <div class="header">
+      <div class="userInfo">
+        <div class="userImg">
+          <img src="/assets/user.jpg" height = 40 />
+        </div>
+        <span style="cursor: pointer;"><%= cookies[:staff_name] %>
+          <ul>
+            <li><a href="/logins/logout">退出</a></li>
+          </ul>
+        </span>
+      </div>
+      <div class="nav">
+        <ul class="topMenu cf">
+          <li class="tmItem tmItem1 <%= is_hover("xianchang") ? "hover" : "" %>">
+            <a class="fst_menu_a" href="javacript:void(0)">现场管理</a>
+            <%= render "layouts/nav_second_menu" %>
+          </li>
+          <li class="tmItem tmItem2 <%= is_hover("shouyin") ? "hover" : "" %>">
+            <a class="fst_menu_a" href="javacript:void(0)">收银管理</a>
+            <%= render "layouts/nav_second_menu" %>
+          </li>
+          <li class="tmItem tmItem3 <%= is_hover("yinxiao") ? "hover" : "" %>">
+            <a class="fst_menu_a" href="javacript:void(0)">营销管理</a>
+            <%= render "layouts/nav_second_menu" %>
+          </li>
+          <li class="tmItem tmItem4 <%= is_hover("kefu") ? "hover" : "" %>">
+            <a class="fst_menu_a" href="javacript:void(0)">客户管理</a>
+            <%= render "layouts/nav_second_menu" %>
+          </li>
+          <li class="tmItem tmItem5 <%= is_hover("tongji") ? "hover" : "" %>">
+            <a class="fst_menu_a" href="javacript:void(0)">统计管理</a>
+            <%= render "layouts/nav_second_menu" %>
+          </li>
+          <li class="tmItem tmItem6 <%= is_hover("kucun") ? "hover" : "" %>">
+            <a class="fst_menu_a" href="javacript:void(0)">库存管理</a>
+            <%= render "layouts/nav_second_menu" %>
+          </li>
+          <li class="tmItem tmItem7 <%= is_hover("caiwu") ? "hover" : "" %>">
+            <a class="fst_menu_a" href="javacript:void(0)">财务管理</a>
+            <%= render "layouts/nav_second_menu" %>
+          </li>
+          <li class="tmItem tmItem8 <%= is_hover("yuangong") ? "hover" : "" %>">
+            <a class="fst_menu_a" href="javacript:void(0)">员工管理</a>
+            <%= render "layouts/nav_second_menu" %>
+          </li>
+          <li class="tmItem tmItem9 <%= is_hover("station_datas", "set_stores", "set_functions") ? "hover" : "" %>">
+            <a class="fst_menu_a" href="/stores/<%= @store.id %>/station_datas">系统设置</a>
+            <%= render "layouts/nav_second_menu" %>
+          </li>
+        </ul>
+      </div>
+    </div>
+    <div class="tab_Prompt" id="tishi_div"> <!--信息提示层-->
+      <a href="javascript:void(0)" class="x"></a>
+      <p></p>
+    </div>
+    <div class="main">
 
-<%= yield %>
+      <%= yield %>
 
-</body>
+    </div>
+    <div class="footer"></div>
+    <div class="second_bg"></div> <!--一级菜单遮罩层-->
+    <div class="second_bg2"></div> <!--二级菜单遮罩层-->
+    <div class="tab_Prompt" id="waiting"> <!--等待层-->
+      <p>请稍后...</p>
+    </div>
+    <% if flash[:notice] %>
+      <script>
+        tishi('<%= flash[:notice] %>');
+      </script>
+    <% end %>
+  </body>
 </html>

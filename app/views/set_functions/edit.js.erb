@@ -1,0 +1,8 @@
+$("#waiting").hide();
+$(".second_bg").hide();
+<% if @obj.nil?%>
+tishi("数据错误!");
+<% else %>
+$("#set_functions_edit").html("<%= j(render "edit") %>");
+popup("#set_functions_edit");
+<% end %>

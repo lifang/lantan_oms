@@ -1,0 +1,5 @@
+$("#store_city_id").html("<option value='0'>------</option>");
+$("#store_city_id").append("<% @cities.each do |c| %><option value='<%= c.id %>'><%= c.name %></option><% end %>");
+$("#store_city_id").parents(".selectBox").find("span").first().text("----");
+$(".second_bg").hide();
+$("#waiting").hide();

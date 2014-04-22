@@ -11,7 +11,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20140330105145) do
+ActiveRecord::Schema.define(:version => 20140421034448) do
 
   create_table "accounts", :force => true do |t|
     t.integer  "types"
@@ -163,8 +163,8 @@ ActiveRecord::Schema.define(:version => 20140330105145) do
     t.integer  "order_index"
     t.string   "name"
     t.integer  "parent_id"
-    t.datetime "created_at",  :null => false
-    t.datetime "updated_at",  :null => false
+    t.datetime "created_at"
+    t.datetime "updated_at"
   end
 
   add_index "cities", ["created_at"], :name => "index_cities_on_created_at"
@@ -1180,6 +1180,8 @@ ActiveRecord::Schema.define(:version => 20140330105145) do
     t.boolean  "is_chain"
     t.datetime "created_at",                      :null => false
     t.datetime "updated_at",                      :null => false
+    t.datetime "sale_start_time"
+    t.datetime "sale_end_time"
   end
 
   add_index "stores", ["city_id"], :name => "index_stores_on_city_id"

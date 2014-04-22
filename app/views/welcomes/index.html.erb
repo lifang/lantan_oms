@@ -7,7 +7,6 @@
     <%= csrf_meta_tags %>
     <title>欢迎</title>
   </head>
-
   <body class="loginBd">
     <div class="loginBg">
       <div class="menuBox">
@@ -16,11 +15,18 @@
         <div class="menu menu2"><a href="javascript:void(0)"><img src="/assets/menuIcon2.png" /></a></div>
         <div class="menu menu3"><a href="javascript:void(0)"><img src="/assets/menuIcon3.png" /></a></div>
         <div class="menu menu4"><a href="javascript:void(0)"><img src="/assets/menuIcon4.png" /></a></div>
-        <div class="menu menu5"><a href="javascript:void(0)"><img src="/assets/menuIcon5.png" /></a></div>
+        <div class="menu menu5"><a href="/stores/<%= @store.id %>/station_datas"><img src="/assets/menuIcon5.png" /></a></div>
         <div class="menu menu6"><a href="javascript:void(0)"><img src="/assets/menuIcon6.png" /></a></div>
         <div class="menu menu7"><a href="javascript:void(0)"><img src="/assets/menuIcon7.png" /></a></div>
         <div class="menu menu8"><a href="javascript:void(0)"><img src="/assets/menuIcon8.png" /></a></div>
         <div class="menu menu9"><a href="javascript:void(0)"><img src="/assets/menuIcon9.png" /></a></div>
+      </div>
+      <div class="topLogin">
+        <span><%= cookies[:staff_name] %>
+          <ul>
+            <li><a href="/logins/logout">退出</a></li>
+          </ul>
+        </span>
       </div>
     </div>
   </body>

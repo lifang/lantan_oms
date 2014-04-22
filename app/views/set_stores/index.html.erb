@@ -1,0 +1,119 @@
+<%= javascript_include_tag "set_stores" %>
+<div class="main_tit"><h1>门店设置</h1></div>
+<div class="main_con">
+  <div class="toolbar" style="border: 0;">
+    <div class="funcBox">
+      <a href="/stores/<%= @store.id %>/set_stores" class="hover"><span class="storeInfo">门店信息</span></a>
+      <a href="/stores/<%= @store.id %>/set_functions"><span class="ruleBtn">组织架构</span></a>
+    </div>
+  </div>
+  <input type="hidden" value="<%= @store.id %>" id="store_id"/>
+  <%= form_tag "/stores/#{@store.id}/set_stores/#{@store.id}", :id => "edit_store_form", :method=>"put", :multipart => true do %>
+    <div class="infoBox">
+      <span class="infoBoxTit">基本信息设置</span>
+      <div class="perPic" style="width: 220px; height: 260px;">
+        <span>照片</span>
+        <img src="<%= @store.img_url.nil? ? "" : @store.img_url.gsub("_img", "_img_#{Store::STORE_PICSIZE[0]}") %>"/>
+        <button type="button" class="upload" onclick="upload_store_img(this)">上传</button>
+        <input type="file" style="display:none;" name="store_img"/>
+      </div>
+      <div class="perDtl" style="min-height: 260px; padding: 0 10px;">
+        <div>
+          <div class="inputBox">
+            <p>所在地区</p>
+            <div class="selectBox selectBox3">
+              <span><%= @store_province.name if @store_province %></span>
+              <div class="openDownIcon"></div>
+              <select name="store_prov_id">
+                <% @province.each do |p| %>
+                  <option value="<%= p.id %>" <% if @store_province && @store_province.id==p.id %>selected<% end %>><%= p.name %></option>
+                <% end %>
+              </select>
+            </div>
+            <div class="selectBox selectBox3">
+              <span><%= @store_city.name if @store_city %></span>
+              <div class="openDownIcon"></div>
+              <select name="store_city_id" id="store_city_id">
+                <option value="0">------</option>
+                <% @cities.each do |c| %>
+                  <option value="<%= c.id %>" <% if @store_city && @store_city.id==c.id %>selected<% end %>><%= c.name %></option>
+                <% end if @cities %>
+              </select>
+            </div>
+          </div>
+          <div class="inputBox">
+            <p>门店坐标</p>
+            <input type="text" placeHolder="X:" name="store_x_position" id="store_x_position" value="<%= @store.position.split(",")[0] %>"/>
+            <input type="text" placeHolder="Y:" name="store_y_position" id="store_y_position" value="<%= @store.position.split(",")[1] %>"/>
+            <a href="http://api.map.baidu.com/lbsapi/getpoint/index.html" target="_blank" style="position: absolute;right: 18px;top: 61px;">
+              <img src="/assets/mapIcon.png" alt="点击获取地图坐标" title="点击获取地图坐标"/>
+            </a>
+          </div>
+        </div>
+        <div>
+          <div class="inputBox">
+            <p>门店名称</p>
+            <input type="text" value="<%= @store.name %>" style="width: 252px;" name="store_name" id="store_name"/>
+          </div>
+          <div class="inputBox">
+            <p>联系人</p>
+            <input type="text" value="<%= @store.contact %>" style="width: 252px;" name="store_contanct" id="store_contanct"/>
+          </div>
+        </div>
+        <div>
+          <div class="inputBox">
+            <p>详细地址</p>
+            <input type="text" value="<%= @store.address %>" style="width: 252px;" name="store_address" id="store_address"/>
+          </div>
+          <div class="inputBox">
+            <p>门店状态</p>
+            <div class="selectBox selectBox3" style="width: 256px;">
+              <span style="width: 230px;"><%= Store::S_STATUS[@store.status] %></span>
+              <div class="openDownIcon"></div>
+              <select name="store_status" id="store_status">
+                <% Store::S_STATUS.each do |k, v| %>
+                  <option value="<%= k %>" <% if @store.status==k %>selected<% end %>><%= v %></option>
+                <% end %>
+              </select>
+            </div>
+          </div>
+        </div>
+        <div>
+          <div class="inputBox">
+            <p>联系电话</p>
+            <input type="text" value="<%= @store.phone %>" style="width: 252px;" name="store_phone" id="store_phone"/>
+          </div>
+          <div class="inputBox">
+            <p>营业时间</p>
+            <input type="text" name="store_sale_stime" id="store_sale_stime" value="<%= @store.sale_start_time %>" class="Wdate" onclick="WdatePicker({dateFmt:'H:mm'});" readonly placeHolder="开始时间"/>
+            <input type="text" name="store_sale_etime" id="store_sale_etime" value="<%= @store.sale_end_time %>" class="Wdate" onclick="WdatePicker({dateFmt:'H:mm'});" readonly placeHolder="结束时间"/>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="infoBox">
+      <span class="infoBoxTit">其他设置</span>
+      <div class="perDtl">
+        <div class="inputBox">
+          <p>免单密码</p>
+          <input type="text" style="width: 252px;" value="<%= @store.limited_password %>" name="store_lim_pwd" id="store_lim_pwd"/>
+        </div>
+        <div class="inputBox">
+          <p>收银权限</p>
+          <div class="choiceBox" style="margin: 10px 0;width: 300px;">
+            <label>移动平台收银</label>
+            <div class="checkBox <%= @store.cash_auth.to_i==Store::CASH_AUTH[:YES] ? "check" : "" %>" style="margin-right: 30px;">
+              <input value="1" type="checkbox" name="store_cash_auth" <% if @store.cash_auth.to_i==Store::CASH_AUTH[:YES] %>checked<% end %>/>
+            </div>
+            <label>自动回访</label>
+            <div class="checkBox <%= @store.auto_send.to_i==Store::AUTO_SEND[:YES] ? "check" : "" %>" style="margin-right: 30px;">
+              <input value="1" type="checkbox" name="store_auto_send" <% if @store.auto_send.to_i==Store::AUTO_SEND[:YES] %>checked<% end %>/>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div style="text-align:center;"><button type="button" class="greenBtn" onclick="edit_store_valid(this)">确定</button></div>
+  <% end %>
+</div>

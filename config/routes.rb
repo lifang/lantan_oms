@@ -16,8 +16,8 @@ LantanOms::Application.routes.draw do
 
   resources :logins do
     collection do
-      get :logout
-      post :validate, :regist
+      get :logout, :logout
+      post :validate
     end
   end
 
@@ -25,8 +25,17 @@ LantanOms::Application.routes.draw do
     resources :welcomes
     resources :station_datas
     resources :roles
-    resources :set_stores
-    
+    resources :set_stores do
+      collection do
+        get :search_cities
+      end
+    end
+    resources :set_functions do
+      collection do
+        get :new_valid, :edit_valid, :del_position
+        post :edit_position
+      end
+    end
   end
   # Sample resource route with sub-resources:
   #   resources :products do

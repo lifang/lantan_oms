@@ -1,0 +1,54 @@
+<%= javascript_include_tag "station_datas" %>
+<div class="main_tit"><h1>工位设置</h1></div>
+<div class="main_con">
+  <div class="topInfo">
+    <p><span><%= @total_s %></span></p><p><span>工位数量</span></p>
+  </div>
+  <div class="toolbar">
+    <div class="searchBox">
+      <input type="text" value="<%= @s_name.nil? ? "" : @s_name %>" id="search_station"/>
+      <button class="orangeBtn" onclick="search_station(<%= @store.id %>)">查询</button>
+    </div>
+    <div class="funcBox">
+      <a href="javascript:void(0)" class="hover scd_btn"><span>新建工位</span></a>
+    </div>
+  </div>
+
+  <div style="overflow: hidden;">
+    <% @stations.each do |s| %>
+      <div class="stationBox">
+        <img class="stationImg" src="/assets/station_icon.png" />
+        <div class="stationInfo">
+          <h1><%= s.name %>
+            <div class="stationAct">
+              <a title="编辑" onclick="edit_station(<%= @store.id %>, <%= s.id %>)"><button class="edit"></button></a>
+              <a title="删除"><button class="delete"></button></a>
+            </div>
+          </h1>
+          <div class="stationInfolist">
+            <h2>项目</h2>
+            <% if @s_service && @s_service[s.id] %>
+              <% @s_service[s.id].each_with_index do |ss, index| %>
+                <p><%= index+1 %>、<%= ss.name %></p>
+              <% end %>
+            <% else %>
+              <p>无</p>
+            <% end %>
+          </div>
+          <div class="stationInfolist">
+            <h2>工位设备</h2>
+            <p>1、暂无</p>
+            <p>2、暂无</p>
+          </div>
+        </div>
+      </div>
+    <% end if @stations %>
+  </div>
+  <% if @stations %>
+    <%= will_paginate @stations, :previous_label => "上一页", :next_label => "下一页", :class => "page" %>
+  <% end %>
+</div>
+
+<div class="second_box" id="station_form">
+
+</div>

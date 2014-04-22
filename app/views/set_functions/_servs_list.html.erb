@@ -1,0 +1,13 @@
+<span class="infoBoxTit">物料类别管理</span>
+<button class="orangeBtn" style="position: absolute; padding: 0px; top: -10px; left: 180px;" onclick="set_functions_new(4)">新建服务</button>
+<div class="hasItemBox">
+  <% @market_servs.each do |ms| %>
+    <div class="hasItemBoxItem">
+      <div class="itemName">
+        <p><%= ms.name %></p>
+        <p><button class="editBtn" title="编辑" onclick="set_funcions_edit(4, <%= ms.id %>, <%= @store.id %>)"></button>
+          <button class="deleteBtn" title="删除" onclick="set_funcions_delete(4, <%= ms.id %>, <%= @store.id %>)"></button></p>
+      </div>
+    </div>
+  <% end %>
+</div>
