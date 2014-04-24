@@ -1,5 +1,5 @@
 #encoding: utf-8
-class SetStoresController < ApplicationController
+class SetStoresController < ApplicationController   #系统设置-门店信息
   before_filter :has_sign?, :get_title
   require 'will_paginate/array'
   

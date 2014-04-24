@@ -24,7 +24,12 @@ LantanOms::Application.routes.draw do
   resources :stores do
     resources :welcomes
     resources :station_datas
-    resources :roles
+    resources :roles do
+      collection do
+        post :role_name_valid, :set_auth_commit
+        get :set_auth
+      end
+    end
     resources :set_stores do
       collection do
         get :search_cities
@@ -33,9 +38,10 @@ LantanOms::Application.routes.draw do
     resources :set_functions do
       collection do
         get :new_valid, :edit_valid, :del_position
-        post :edit_position
+        post :edit_position, :new_position
       end
     end
+    resources :set_staffs
   end
   # Sample resource route with sub-resources:
   #   resources :products do

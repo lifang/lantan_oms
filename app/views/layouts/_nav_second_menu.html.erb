@@ -67,12 +67,12 @@
       <li <% if is_hover("yuangong3") %>class="hover"<% end %>><a class="scd_menu_a" href="javacript:void(0)">出勤</a></li>
     </ul>
   </div>
-<% elsif is_hover("station_datas", "set_stores", "set_functions") %>
+<% elsif is_hover("station_datas", "set_stores", "set_functions", "roles", "set_staffs") %>
   <div class="scdMenuBox">
     <ul class="scdMenu cf">
       <li <% if is_hover("station_datas") %>class="hover"<% end %>><a class="scd_menu_a" href="/stores/<%= @store.id %>/station_datas">工位设置</a></li>
       <li <% if is_hover("set_stores", "set_functions") %>class="hover"<% end %>><a class="scd_menu_a" href="/stores/<%= @store.id %>/set_stores">门店设置</a></li>
-      <li><a class="scd_menu_a" href="/stores/<%= @store.id %>/set_functions">权限设置</a></li>
+      <li <% if is_hover("roles", "set_staffs") %>class="hover"<% end %>><a class="scd_menu_a" href="/stores/<%= @store.id %>/roles">权限设置</a></li>
     </ul>
   </div>
 <% end %>

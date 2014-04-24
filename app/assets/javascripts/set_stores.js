@@ -41,7 +41,12 @@ function upload_store_img(obj){
 }
 
 function edit_store_valid(obj){
-    if($("#store_city_id").val()=="" || $("#store_city_id").val()=="0"){
+    var img_format =["jpg", "png", "bmp"];
+    var img = $("#store_img").val();
+    var img_type = img.substring(img.lastIndexOf(".")).toLowerCase();
+    if(img!="" && img_format.indexOf(img_type.substring(1,img_type.length))==-1){
+        tishi("图片格式不正确，请选择jpg,png,bmp的文件!");
+    }else if($("#store_city_id").val()=="" || $("#store_city_id").val()=="0"){
         tishi("请选择门店所在地区!");
     }else if($.trim($("#store_x_position").val())=="" || $.trim($("#store_y_position").val())==""){
         tishi("请输入门店坐标!");
@@ -60,5 +65,14 @@ function edit_store_valid(obj){
     }else{
         popup("#waiting");
         $(obj).parents("form").submit();
+    }
+}
+
+function select_checkbox(obj){
+    $(obj).parent().removeAttr("class");
+    if($(obj).attr("checked")=="checked"){
+        $(obj).parent().attr("class", "checkBox check");
+    }else{
+        $(obj).parent().attr("class", "checkBox");
     }
 }

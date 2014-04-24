@@ -1,5 +1,5 @@
 #encoding: utf-8
-class SetFunctionsController < ApplicationController
+class SetFunctionsController < ApplicationController  #系统设置-组织架构
   before_filter :has_sign?, :get_title
   def index
     @type = params[:type]
@@ -129,6 +129,22 @@ class SetFunctionsController < ApplicationController
     end
   end
 
+  def new_position  #新建职务
+    name = params[:name]
+    dpt_id = params[:dpt_id]
+    Department.transaction do
+      @status = 0
+      position = Department.new(:name => name, :types => Department::TYPES[:POSITION], :dpt_id => dpt_id,
+        :store_id => @store.id, :status => Department::STATUS[:NORMAL])
+      if position.save
+        @status = 1
+        @obj = Department.find_by_id(dpt_id)
+        @positions = Department.where(["types=? and dpt_id=? and store_id=? and status=?", Department::TYPES[:POSITION],
+            @obj.id, @store.id, Department::STATUS[:NORMAL]])
+      end      
+    end
+  end
+
   def new_valid #新建部门、职务、商品等重名验证
     type = params[:type].to_i   #type 0部门 1职务 2商品 3物料 4服务
     name = params[:name]
@@ -136,7 +152,9 @@ class SetFunctionsController < ApplicationController
       obj = Department.find_by_name_and_types_and_store_id_and_status(name, Department::TYPES[:DEPARTMENT],
         @store.id, Department::STATUS[:NORMAL])
     elsif type == 1
-
+      dpt_id = params[:dpt_id].to_i
+      obj = Department.where(["name=? and types=? and dpt_id=? and store_id=? and status=?", name, Department::TYPES[:POSITION],
+          dpt_id, @store.id, Department::STATUS[:NORMAL]]).first
     elsif type == 2
       obj = Category.find_by_name_and_types_and_store_id(name, Category::TYPES[:good], @store.id)
     elsif type == 3

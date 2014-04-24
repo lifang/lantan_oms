@@ -368,8 +368,9 @@ table .money { display: inline-block; width: 20px; height: 20px; background: url
 
 /* second_box */
 .second_bg { width:100%; height:100%; z-index:98; position: fixed; top:0; opacity: 0.3; filter: alpha(opacity=30); display: none;}
-.second_bg2 { width:100%; height:100%; z-index:98; position: fixed; top:0; opacity: 0.3; filter: alpha(opacity=30); display: none;}
-.second_box { width:100%; height:100%; z-index:99; position: absolute; top:0; display: none; }
+.second_bg2 { width:100%; height:100%; z-index:100; position: fixed; top:0; opacity: 0.3; filter: alpha(opacity=30); display: none;}
+.second_box { width:100%; height:100%; z-index:99; position: absolute; top:0; display: none; }      /*一级菜单层*/
+.second_box2 { width:100%; height:100%; z-index:101; position: absolute; top:0; display: none; }    /*二级菜单层*/
 .second_box.second_box_fixed { position: fixed;}
 .second_content {
     background-color: #fff;
@@ -680,19 +681,23 @@ table .money { display: inline-block; width: 20px; height: 20px; background: url
 .hasItemBoxItem .itemDtl p { height: 20px; line-height: 20px; padding-left: 10px;}
 
 .roleBox { overflow: hidden; padding-bottom: 10px;}
-.role { float: left;}
+.role { float: left; margin: 0 55px 20px 0;}
 .roleImg { width: 120px; text-align: center; float: left; background: #f2f2f2; padding-bottom: 10px; box-shadow: 1px 1px 5px rgba(0,0,0,0.3);}
+.roleImg img {height: 110px;}
 .roleInfo { float: left; padding: 10px;}
-.roleInfo p { line-height: 24px;}
+.roleInfo p { line-height: 24px; width: 100px;}
 .starBox { width: 100px; height: 20px; margin: 10px 0; position: relative; overflow: hidden;}
 .starBox .star { display: inline-block; height: 100%; background: #ff9613;}
 .starBox .starCover { width: 100%; height: 100%; position: absolute; top: 0; left: 0; background: url(/assets/starCover.png) no-repeat; background-size: 100px 20px;}
 
 .rightSet { width: 430px; padding: 10px; float: left;}
 .rightSetTit { padding: 10px 5px; border-bottom: 1px solid #ccc;}
-.rightSetPicker { height: 150px; border-radius: 5px; box-shadow: 0 3px 1px #ccc; padding: 5px;}
+.rightSetPicker { height: 150px; border-radius: 5px; box-shadow: 0 3px 1px #ccc; padding: 5px; overflow: auto;margin: 5px;}
 .rightSetPicker .choiceBox { float: left; width: 33%; margin: 5px 0;}
 
+.positionChoose li { margin: 10px 60px 0; overflow: hidden;}
+.positionChoose li .checkBox { float: left;}
+.positionChoose li span { float: left; margin-left: 10px; line-height: 20px;}
 
 /* 财务管理 */
 .revenueClass { margin: 10px 0;}

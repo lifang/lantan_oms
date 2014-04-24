@@ -15,7 +15,7 @@
         <span>照片</span>
         <img src="<%= @store.img_url.nil? ? "" : @store.img_url.gsub("_img", "_img_#{Store::STORE_PICSIZE[0]}") %>"/>
         <button type="button" class="upload" onclick="upload_store_img(this)">上传</button>
-        <input type="file" style="display:none;" name="store_img"/>
+        <input type="file" style="display:none;" name="store_img" id="store_img"/>
       </div>
       <div class="perDtl" style="min-height: 260px; padding: 0 10px;">
         <div>
@@ -104,11 +104,11 @@
           <div class="choiceBox" style="margin: 10px 0;width: 300px;">
             <label>移动平台收银</label>
             <div class="checkBox <%= @store.cash_auth.to_i==Store::CASH_AUTH[:YES] ? "check" : "" %>" style="margin-right: 30px;">
-              <input value="1" type="checkbox" name="store_cash_auth" <% if @store.cash_auth.to_i==Store::CASH_AUTH[:YES] %>checked<% end %>/>
+              <input value="1" type="checkbox" name="store_cash_auth" onclick="select_checkbox(this)" <% if @store.cash_auth.to_i==Store::CASH_AUTH[:YES] %>checked<% end %>/>
             </div>
             <label>自动回访</label>
             <div class="checkBox <%= @store.auto_send.to_i==Store::AUTO_SEND[:YES] ? "check" : "" %>" style="margin-right: 30px;">
-              <input value="1" type="checkbox" name="store_auto_send" <% if @store.auto_send.to_i==Store::AUTO_SEND[:YES] %>checked<% end %>/>
+              <input value="1" type="checkbox" name="store_auto_send" onclick="select_checkbox(this)" <% if @store.auto_send.to_i==Store::AUTO_SEND[:YES] %>checked<% end %>/>
             </div>
           </div>
         </div>

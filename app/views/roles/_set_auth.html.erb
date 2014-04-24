@@ -1,0 +1,47 @@
+<form action="/stores/<%= @store.id %>/roles/set_auth_commit" method="post">
+  <input type="hidden" name="role_id" value="<%= @role.id %>"/>
+  <div style="overflow: hidden;">
+    <% @menus.each do |m| %>
+      <div class="rightSet">
+        <div class="rightSetTit">
+          <div class="choiceBox">
+            <label><%= m.name %></label>
+            <div class="checkBox <%= @role_menu_rela.include?(m.id) ? "check" : "" %>" style="margin-left: 10px;">
+              <input type="checkbox" name="menus[]" value="<%= m.id %>" onclick="select_menus(this)" <% if @role_menu_rela.include?(m.id) %>checked<% end %>/>
+            </div>
+          </div>
+        </div>
+        <div class="rightSetPicker">
+          <% r = RolesHelper::ROLES[m.controller_name.to_sym] %>
+          <% r.each_with_index do |ele, index| %>
+            <% if index != 0 %>
+              <div class="choiceBox">
+                <label title="<%= ele[1][0] %>"><%= ele[1][0] %></label>
+                <div class="checkBox <%= @role_model_rela[m.id] && @role_model_rela[m.id]&ele[1][1]==ele[1][1] ? "check" : "" %>" style="margin-left: 10px;">
+                  <input type="checkbox" name="roles[<%= m.id %>][]" value="<%= ele[1][1] %>" onclick="select_roles(this)" <% if @role_model_rela[m.id] && @role_model_rela[m.id]&ele[1][1]==ele[1][1] %>checked<% end %>/>
+                </div>
+              </div>
+            <% end %>
+          <% end if r  %>
+        </div>
+      </div>
+    <% end %>
+  </div>
+  <div class="cf" style="text-align: center; margin: 10px;">
+    <button class="orangeBtn2" type="button" onclick="set_auth_commit(this)">确定</button>
+    <button class="greyBtn" type="button" onclick="set_auth_cancel()">取消</button>
+  </div>
+</form>
+
+<script type="text/javascript">
+  $(function(){
+    var ls = $(".rightSetPicker .choiceBox").find("label");
+    $.each(ls, function(){
+      var txt = $(this).text();
+      if(txt.length > 7){
+        $(this).text(txt.substring(0, 7)+"..");
+      };
+      $(this).css("width", "95px");
+    })
+  })
+</script>

@@ -12,11 +12,7 @@ $(function(){
     $(".loginAct").on("click",".chkbox",function(){
         $(this).toggleClass("check");
     });
-	
-    $(".second_box").on("click", ".close", function(){
-        $(this).parents(".second_box").hide();
-        $(".second_bg").hide();
-    });	
+		
 	
     $("tr").each(function(){
         var table = $(this).parents(".table1");
@@ -37,9 +33,6 @@ $(function(){
         $(this).toggleClass("open");
     });
 	
-    $(".checkBox,.radioBox").on("click","input",function(){
-        $(this).parent().toggleClass("check");
-    });
 	
 });
 
@@ -56,7 +49,7 @@ function tishi(message){
     jQuery('#tishi_div').fadeTo("slow",1);
     $("#tishi_div .x").click(function(){
         $("#tishi_div").css('display','none');
-        stopPropagation(arguments[1]);
+        //stopPropagation(arguments[1]);
     })
     setTimeout(function(){
         jQuery('#tishi_div').fadeTo("slow",0);

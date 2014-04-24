@@ -1,0 +1,16 @@
+$("#waiting").hide();
+$(".second_bg2").hide();
+<% if @status==0 %>
+tishi("数据错误!");
+<% else %>
+var sids = $(".table1").find("input[name='s_id']");
+$.each(sids, function(){
+  if($(this).val()==<%= @staff_id %>){
+    $(this).parent().find("td:nth-child(3)").text("<%= @role_names.nil? ? "" : "#{@role_names}" %>");
+  }
+});
+$("#set_staff_roles").hide();
+$("#set_staff_roles").empty();
+$(".second_bg").hide();
+tishi("分配成功!");
+<% end %>

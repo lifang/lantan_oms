@@ -1,5 +1,6 @@
 #encoding: utf-8
 module ApplicationHelper
+  include RolesHelper
 
   def has_sign?
     store_id = params[:store_id]

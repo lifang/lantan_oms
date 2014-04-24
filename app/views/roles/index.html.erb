@@ -1,0 +1,60 @@
+<%= javascript_include_tag "roles" %>
+<div class="main_tit"><h1>权限设置</h1></div>
+<div class="main_con" style="overflow: hidden;">
+  <div class="topInfo">
+    <p><span><%= @manager %></span><span><%= @normal_user %></span></p>
+    <p><span>管理员</span><span>用户</span></p>
+  </div>
+  <div class="toolbar">
+    <div class="funcBox">
+      <a href="/stores/<%= @store.id %>/roles" class="hover"><span>权限配置</span></a>
+      <a href="/stores/<%= @store.id %>/set_staffs"><span>用户设定</span></a>
+    </div>
+  </div>
+  <div class="roleBox">
+    <div style="text-align:right;">
+      <button type="button" class="greenBtn" onclick="new_role(<%= @store.id %>)" id="new_role_button">新建角色</button>
+    </div>
+    <% @roles.each do |r| %>
+      <div class="role">
+        <div class="roleImg">
+          <img src="/assets/roleImg.png" />
+          <div class="roleAct" name="role_act_div">
+            <button class="editBtn" title="编辑" onclick="edit_role('<%= r.name %>', <%= r.id %>, <%= @store.id %>)"></button>
+            <button class="setBtn" title="设定权限" onclick="set_auth(<%= r.id %>, <%= @store.id %>)"></button>
+            <button class="deleteBtn" title="删除" onclick="delete_role(<%= r.id %>, <%= @store.id %>, this)"></button>
+          </div>
+        </div>
+        <div class="roleInfo">
+          <p><%= r.name %></p>
+          <p>类型：<%= r.role_type.to_i==Role::ROLE_TYPE[:NORMAL] ? "员工" : "管理员" %></p>
+          <div class="starBox">
+            <span class="star" style="<%= @role_auth_hash[r.id].nil? ? "width: 0%" : "width: #{@role_auth_hash[r.id]}%" %>"></span>
+            <div class="starCover"></div>
+          </div>
+        </div>
+      </div>
+    <% end %>
+  </div>
+  <div id="set_auth_div" style="display: none;">  <!--设置权限层-->
+  </div>
+</div>
+
+<div class="second_box" id="set_role">  <!--设置和新建角色层-->
+    <div class="second_content" style="width: 450px;">
+      <span class="close" title="关闭">×</span>
+      <h1></h1>
+      <div class="infoBox">
+        <div class="rwdDtl">
+          <p>
+            <label>名称</label>
+            <input type="text" style="width: 262px;" id="set_role_name"/>
+          </p>
+        </div>
+      </div>
+      <div class="scdBoxAct">
+        <button class="orangeBtn2" id="role_commit_button">确认</button>
+        <button class="greyBtn" onclick="set_role_cancel()">取消</button>
+      </div>
+    </div>
+  </div>

@@ -1,0 +1,20 @@
+<% if @status == 0 %>
+  $("#waiting").hide();
+  $(".second_bg2").hide();
+  tishi("新建失败!");
+  <% else %>
+  $("#positions_div").html("<%= j(render "positions_list") %>");
+  $.ajax({
+    type: "get",
+    url: "/stores/"+<%= @store.id %>+"/set_functions",
+    dataType: "script",
+    data: {
+      type : 0
+    }
+  });
+  $("#waiting").hide();
+  $(".second_bg2").hide();
+  tishi("新建成功!");
+  $("#new_position_name").val("");
+  $("#new_position").hide();
+<% end %>

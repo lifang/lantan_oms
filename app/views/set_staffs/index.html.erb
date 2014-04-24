@@ -1,0 +1,40 @@
+<%= javascript_include_tag "set_staffs" %>
+<div class="main_tit"><h1>用户设定</h1></div>
+<div class="main_con" style="overflow: hidden;">
+  <div class="toolbar">
+    <div class="searchBox">
+      <label>员工姓名</label>
+      <input type="text" value="<%= @name.nil? || @name=="" ? "" : @name %>" id="search_staff_name"/>
+      <button class="orangeBtn" onclick="search_staff(<%= @store.id %>)">查询</button>
+    </div>
+    <div class="funcBox">
+      <a href="/stores/<%= @store.id %>/roles"><span>权限配置</span></a>
+      <a href="/stores/<%= @store.id %>/set_staffs" class="hover"><span>用户设定</span></a>
+    </div>
+  </div>
+  <div>
+    <table class="table1">
+      <tr>
+        <th>员工姓名</th>
+        <th width="40%">职位</th>
+        <th>操作</th>
+      </tr>
+      <% @staffs.each do |s| %>
+        <tr>
+          <input type="hidden" name="s_id" value="<%= s.id %>"/>
+          <td><%= s.name %></td>
+          <td width="40%"><%= @roles[s.id].nil? ? "" : @roles[s.id].map(&:name).join(",") %></td>
+          <td>
+            <button class="greenBtn scd_btn" onclick="set_staff_roles(<%= s.id %>, <%= @store.id %>)">分配角色</button>
+          </td>
+        </tr>
+      <% end %>
+    </table>
+  </div>
+  <% if @staffs.any? %>
+    <%= will_paginate @staffs, :previous_label => "上一页", :next_label => "下一页", :class => "page" %>
+  <% end %>
+</div>
+
+<div class="second_box positionChoose" id="set_staff_roles">   <!--设置用户角色-->
+</div>

@@ -36,6 +36,7 @@ class Staff < ActiveRecord::Base
   STATUS = {:normal => 0, :afl => 1, :vacation => 2, :resigned => 3, :deleted => 4}
   VALID_STATUS = [STATUS[:normal], STATUS[:afl], STATUS[:vacation]]
   STATUS_NAME = {0 => "在职", 1 => "请假", 2 => "休假", 3 => "离职", 4 => "删除"}
+  PerPage = 20
   scope :normal, where(:status => STATUS[:normal])
   scope :valid, where(:status => VALID_STATUS)
   scope :not_deleted, where("status != #{STATUS[:deleted]}")

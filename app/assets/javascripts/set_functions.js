@@ -414,7 +414,56 @@ function edit_position_commit(dpt_id, position_id, store_id, obj){  //编辑职�
 }
 
 function new_position(dpt_id, store_id){    //新建职务
+    $("#new_position_commit_button").removeAttr("onclick");
+    $("#new_position_commit_button").attr("onclick", "new_position_commit("+dpt_id+","+store_id+")");
     popup2("#new_position");
+}
+
+function new_position_commit(dpt_id, store_id){     //新建职务验证并提交
+    var p_name = $.trim($("#new_position_name").val());
+    if(p_name==""){
+        tishi("职务名称不能为空!");
+    }else if(get_str_len(p_name)>16){
+        tishi("名称长度不得超过16个字符!");
+    }else{
+        popup2("#waiting");
+        $.ajax({
+            type: "get",
+            url: "/stores/"+store_id+"/set_functions/new_valid",
+            data: {
+                name : p_name,
+                type : 1,
+                dpt_id : dpt_id
+            },
+            dataType: "json",
+            success: function(data){
+                if(data.status==0){
+                    $("#waiting").hide();
+                    tishi("该部门下已有同名的职务!");
+                }else{
+                    $.ajax({
+                        type: "post",
+                        url: "/stores/"+store_id+"/set_functions/new_position",
+                        data: {
+                            name : p_name,
+                            dpt_id : dpt_id
+                        },
+                        dataType: "script",
+                        error: function(){
+                            $("#waiting").hide();
+                            $(".second_bg2").hide();
+                            tishi("数据错误!");
+                        }
+                    })
+                }
+            },
+            error: function(){
+                $("#waiting").hide();
+                $(".second_bg2").hide();
+                tishi("数据错误!");
+            }
+        })
+    }
 }
 
 function new_cancel_button(){    //新建 部门 职务 商品 物料 服务 取消

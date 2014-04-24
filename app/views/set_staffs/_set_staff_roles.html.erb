@@ -1,0 +1,20 @@
+<%= form_tag "/stores/#{@store.id}/set_staffs/#{@staff.id}", :method => :put, :remote => true do %>
+<div class="second_content" style="width: 450px;">
+  <span class="close" title="关闭">×</span>
+  <h1>分配职位</h1>
+  <ul>
+    <li>
+      <% @roles.each do |r| %>
+      <div class="checkBox <%= @staff_roles.include?(r.id) ? "check" : "" %>">
+        <input type="checkbox" value="<%= r.id %>" name="roles[]" onclick="select_roles(this)" <% if @staff_roles.include?(r.id) %>checked<% end %>/>
+      </div>
+      <span style="width: 130px;"><%= r.name %></span>
+      <% end %>
+    </li>
+  </ul>
+  <div class="scdBoxAct">
+    <button class="greenBtn" type="submit" onclick="set_staff_roles_commit()">确定</button>
+    <button class="greyBtn" type="button" onclick="set_staff_roles_cancel()">取消</button>
+  </div>
+</div>
+<% end %>

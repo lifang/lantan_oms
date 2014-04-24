@@ -19,20 +19,9 @@
         <input type="text" style="width: 200px;" id="set_functions_edit_name" value="<%= @obj.name %>"/>
       </p>
       <% if @type == 0 %>
-        <div style="line-height: 28px; margin-bottom: 10px;">
-          <label style="float: left;">职务</label>
-          <ul class="position">
-            <% @positions.each do |p| %>
-              <li>
-                <span><%= p.name %></span>
-                <input type="text" style="display:none;" onblur="edit_position_commit(<%= @obj.id %>, <%= p.id %>, <%= @store.id %>, this)"/>
-                <button class="greenBtn" onclick="edit_position(this)">编辑</button>
-                <button class="greenBtn" onclick="del_position(<%= p.id %>, <%= @store.id %>, this)">删除</button>
-              </li>
-            <% end if @positions && @positions.any? %>
-          </ul>
-        </div>
-        <button class="orangeBtn2" style="top: 16px;position: absolute;right: 0;" onclick="new_position(<%= @obj.id %>, <%= @store.id %>)">新建职务</button>
+      <div id="positions_div">
+        <%= render "positions_list" %>
+      </div>
       <% end %>
     </div>
   </div>
