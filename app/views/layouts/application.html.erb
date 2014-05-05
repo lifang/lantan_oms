@@ -1,7 +1,7 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml">
   <head>
-    <title>LantanOms_<%= @title %></title>
+    <title><%= @title %></title>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     <%= stylesheet_link_tag "application", "style" %>
     <%= javascript_include_tag "application", "main" %>
@@ -23,9 +23,9 @@
       </div>
       <div class="nav">
         <ul class="topMenu cf">
-          <li class="tmItem tmItem1 <%= is_hover("xianchang") ? "hover" : "" %>">
-            <a class="fst_menu_a" href="javacript:void(0)">现场管理</a>
-            <% if is_hover("xianchang") %>
+          <li class="tmItem tmItem1 <%= is_hover("stations", "arrange_staffs") ? "hover" : "" %>">
+            <a class="fst_menu_a" href="/stores/<%= @store.id %>/stations">现场管理</a>
+            <% if is_hover("stations", "arrange_staffs") %>
               <%= render "layouts/nav_second_menu" %>
             <% end %>
           </li>

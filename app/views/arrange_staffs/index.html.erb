@@ -1,0 +1,59 @@
+<%= javascript_include_tag "arrange_staffs" %>
+<div class="main_tit"><h1>技师分配</h1></div>
+<div class="main_con">
+  <%= form_tag "/stores/#{@store.id}/arrange_staffs", :method => :post do %>
+  <table class="table1" id="arrange_staff_table">
+    <tr>
+      <th>工位</th>
+      <th>选择技师</th>
+      <th>状态</th>
+    </tr>
+    <% @stations.each do |s| %>
+      <% ssr = @station_staff_relations && @station_staff_relations[s.id] ? @station_staff_relations[s.id] : nil %>
+      <tr>
+        <td><%= s.name %></td>
+        <td name="station_staffs_td">
+          <div class="selectBox">
+            <span></span>
+            <div class="openDownIcon"></div>
+            <select name="station_staffs[<%= s.id %>][staff1]">
+              <option value="0">------</option>
+              <% @staffs.each do |staff| %>
+                <option value="<%= staff.id %>" <% if ssr && ssr[0].id == staff.id %>selected<% end %>><%= staff.name %></option>
+              <% end %>
+            </select>
+          </div><div class="selectBox">
+            <span></span>
+            <div class="openDownIcon"></div>
+            <select name="station_staffs[<%= s.id %>][staff2]">
+              <option value="0">------</option>
+              <% @staffs.each do |staff| %>
+                <option value="<%= staff.id %>" <% if ssr && ssr[1].id == staff.id %>selected<% end %>><%= staff.name %></option>
+              <% end %>
+            </select>
+          </div>
+        </td>
+        <td name="station_status_td">
+          <div class="selectBox">
+            <span></span>
+            <div class="openDownIcon"></div>
+            <select name="station_status[<%= s.id %>]">
+              <% Station::STAT_NAME.each do |k, v| %>
+                <option value="<%= k %>" <% if s.status==k %>selected<% end %>><%= v %></option>
+              <% end %>
+            </select>
+          </div>
+        </td>
+      </tr>
+    <% end %>
+  </table>
+  <div class="scdBoxAct">
+    <button class="greenBtn" type="button" onclick="arrange_staffs_valid(this)">确定</button>
+   </div>
+  <% end %>
+</div>
+
+
+
+
+

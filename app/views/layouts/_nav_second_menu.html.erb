@@ -1,8 +1,8 @@
-<% if is_hover("xianchang") %>
+<% if is_hover("stations", "arrange_staffs") %>
   <div class="scdMenuBox">
     <ul class="scdMenu cf">
-      <li <% if is_hover("xianchang1") %>class="hover"<% end %>><a class="scd_menu_a" href="javacript:void(0)">施工现场</a></li>
-      <li <% if is_hover("xianchang2") %>class="hover"<% end %>><a class="scd_menu_a" href="javacript:void(0)">技术分配</a></li>
+      <li <% if is_hover("stations") %>class="hover"<% end %>><a class="scd_menu_a" href="/stores/<%= @store.id %>/stations">施工现场</a></li>
+      <li <% if is_hover("arrange_staffs") %>class="hover"<% end %>><a class="scd_menu_a" href="/stores/<%= @store.id %>/arrange_staffs">分配技师</a></li>
       <li <% if is_hover("xianchang3") %>class="hover"<% end %>><a class="scd_menu_a" href="javacript:void(0)">出勤</a></li>
     </ul>
   </div>

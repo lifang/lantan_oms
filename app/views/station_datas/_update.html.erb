@@ -1,0 +1,24 @@
+<img class="stationImg" src="/assets/station_icon.png" />
+  <div class="stationInfo">
+    <h1><%= @station.name %>
+      <div class="stationAct">
+        <a title="编辑" onclick="edit_station(<%= @store.id %>, <%= @station.id %>)"><button class="edit"></button></a>
+        <a title="删除"><button class="delete"></button></a>
+      </div>
+    </h1>
+    <div class="stationInfolist">
+      <h2>项目</h2>
+      <% if @has_services.any? %>
+        <% @has_services.each_with_index do |hs, index| %>
+          <p><%= index+1 %>、<%= hs %></p>
+        <% end %>
+      <% else %>
+        <p>无</p>
+      <% end %>
+    </div>
+    <div class="stationInfolist">
+      <h2>工位设备</h2>
+      <p>1、暂无</p>
+      <p>2、暂无</p>
+    </div>
+  </div>

@@ -1,0 +1,8 @@
+$("#waiting").hide();
+$(".second_bg").hide();
+<% if @work_order.nil? %>
+tishi("数据错误!");
+<% else %>
+$("#show_work_order").html("<%= j(render "show") %>");
+popup("#show_work_order");
+<% end %>

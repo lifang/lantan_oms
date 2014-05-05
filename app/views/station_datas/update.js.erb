@@ -1,0 +1,11 @@
+$("#waiting").hide();
+$(".second_bg2").hide();
+<% if @status == 0 %>
+tishi("编辑失败!");
+<% else %>
+$(".second_bg").hide();
+$("#station_form").hide();
+$("#station_form").empty();
+$("#station_div_<%= @station.id %>").html("<%= j(render "update") %>");
+tishi("编辑成功!");
+<% end %>
