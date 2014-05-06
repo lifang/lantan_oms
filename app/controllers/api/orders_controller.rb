@@ -41,7 +41,7 @@ class Api::OrdersController < ApplicationController
 
   #用户界面（个人信息，订单列表）
   def user_and_order
-    info = Staff.staff_and_order params[:staff_id]
-    render :json => {}
+    order_count,has_pay,orders_now = Staff.staff_and_order params[:staff_id]
+    render :json => {:order_count => order_count,:has_pay=> has_pay,:orders_now => orders_now}
   end
 end
