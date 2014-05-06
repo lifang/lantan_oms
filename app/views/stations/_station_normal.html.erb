@@ -1,0 +1,42 @@
+<% if staffs.nil? || staffs.length < 2 %>
+  <div class="washingCar on">
+    <p class="station">
+      <span><%= station.name %></span>
+      <span class="clock"></span>
+      <span>--:--</span>
+    </p>
+    <p>&nbsp;</p>
+    <img src="/assets/washing.png" width="90px" />
+    <p>&nbsp;</p>
+    <p>技师：未分配技师,请<a href="/stores/<%= @store.id %>/arrange_staffs" style="color:#1338ff;">分配</a></p>
+  </div>
+<% else %>
+  <% if work_orders.nil? %>
+    <div class="washingCar on">
+      <p class="station">
+        <span><%= station.name %></span>
+        <span class="clock"></span>
+        <span>--:--</span>
+      </p>
+      <p>&nbsp;</p>
+      <img src="/assets/station_free.png" width="90px" />
+      <p>&nbsp;</p>
+      <p>技师：<%= staffs[0].name %>、<%= staffs[1].name %></p>
+    </div>
+  <% else %>
+    <a onclick="show_work_order(<%= @store.id %>, <%= work_orders[0].id %>)">
+      <div class="washingCar on">
+        <p class="station">
+          <span><%= station.name %></span>
+          <span class="clock"></span>
+          <span name="daojishi" sec="<%=  work_orders[0].ended_at.to_i - Time.now.to_i %>">
+          </span>
+        </p>
+        <p><%= work_orders[0].num %></p>
+        <img src="/assets/washing.png" width="90px" />
+        <p><%= wo_get_product_name(work_orders[0].order_id) %></p>
+        <p>技师：<%= staffs[0].name %>、<%= staffs[1].name %></p>
+      </div>
+    </a>
+  <% end %>
+<% end %>

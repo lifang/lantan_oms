@@ -1,0 +1,45 @@
+<%= javascript_include_tag "stations" %>
+<meta http-equiv="refresh" content="3000" />
+<div class="main_tit"><h1>施工现场</h1></div>
+<div class="main_con" id="shigongxianchang">
+  <h2 class="waitingTit">等待施工</h2>
+  <div class="waitingArea">
+    <% @wait_wo.each do |ww| %>
+    <a onclick="show_work_order(<%= @store.id %>, <%= ww.id %>)">
+      <div class="waitingCar">
+        <span><%= ww.num %></span>
+      </div>
+      </a>
+    <% end if @wait_wo %>
+  </div>
+
+  <h2 class="washingTit">正在施工</h2>
+  <div class="washingArea">
+    <% @stations.each do |s| %>
+      <% if s.status != Station::STAT[:NORMAL] %>
+        <%= render "station_exception", {:station => s} %>
+      <% else %>
+        <%= render "station_normal", {:station => s,
+          :staffs => @station_staff_relations && @station_staff_relations[s.id] ? @station_staff_relations[s.id] : nil,
+          :work_orders => @serving_wo && @serving_wo[s.id] ? @serving_wo[s.id] : nil} %>
+      <% end %>
+    <% end %>
+  </div>
+
+  <h2 class="endTit">等待付款</h2>
+  <div class="endArea">
+    <% @finished_wo.each do |fw| %>
+    <a onclick="show_work_order(<%= @store.id %>, <%= fw.id %>)">
+      <div class="waitingCar">
+        <span><%= fw.num %></span>
+      </div>
+    </a>
+    <% end if @finished_wo %>
+  </div>
+
+</div>
+
+
+<div class="second_box" id="show_work_order">  <!--显示工位订单详情-->
+
+</div>

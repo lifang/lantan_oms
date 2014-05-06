@@ -23,7 +23,13 @@ LantanOms::Application.routes.draw do
 
   resources :stores do
     resources :welcomes
-    resources :station_datas
+    resources :stations
+    resources :arrange_staffs
+    resources :station_datas do
+      collection do
+        get :name_valid
+      end
+    end
     resources :roles do
       collection do
         post :role_name_valid, :set_auth_commit

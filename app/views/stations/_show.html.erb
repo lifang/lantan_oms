@@ -1,0 +1,46 @@
+<div class="second_content" style="width: 650px;">
+  <span class="close" title="关闭">×</span>
+  <h1>详情</h1>
+  <div class="billInfo">
+    <div>
+      <label>单号：</label>
+      <span style="width: 150px;"><%= @work_order.ocode %></span>
+      <label>开单时间：</label>
+      <span><%= @work_order.start_time.nil? ? "" : @work_order.start_time.strftime("%m-%d %H:%M") %></span>
+      <label>开单员：</label>
+      <span><%= @work_order.front_name.nil? ? "--" : @work_order.front_name %></span>
+    </div>
+    <div>
+      <label>施工技师：</label>
+      <span style="width: 150px;">
+        <%= @work_order.con1_name.nil? ? "--" : @work_order.con1_name %>、<%= @work_order.con2_name.nil? ? "--" : @work_order.con2_name %>
+      </span>
+      <label>工位：</label>
+      <span style="width: 100px;"><%= @work_order.sname.nil? ? "未指定" : @work_order.sname %></span>
+    </div>
+  </div>
+  <div class="billDtl">
+    <table>
+      <tr>
+        <th>项目</th>
+        <th>数量</th>
+        <th>单价</th>
+        <th>小计</th>
+      </tr>
+      <tr>
+        <td><%= @opr.name if @opr %></td>
+        <td><%= @opr.pro_num.to_i if @opr %></td>
+        <td><%= @opr.price if @opr %></td>
+        <td><%= @opr.total_price if @opr %></td>
+      </tr>
+    </table>
+    <div class="billTotle">
+      <span>总计：</span>
+      <span><%= @opr.total_price if @opr %></span>
+    </div>
+  </div>
+  <div class="scdBoxAct2">
+    <button class="yesBtn">施工结束付款</button>
+    <button class="noBtn">取消业务单</button>
+  </div>
+</div>

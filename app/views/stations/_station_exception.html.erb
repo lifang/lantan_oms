@@ -1,0 +1,37 @@
+<% if station.status == Station::STAT[:WRONG] %>
+  <div class="washingCar">
+    <p class="station">
+      <span><%= station.name %></span>
+      <span class="clock"></span>
+      <span>--:--</span>
+    </p>
+    <p>&nbsp;</p>
+    <img src="/assets/station_error.png" width="90px" />
+    <p>&nbsp;</p>
+    <p>技师：--、--</p>
+  </div>
+<% elsif station.status == Station::STAT[:LACK] %>
+  <div class="washingCar">
+    <p class="station">
+      <span><%= station.name %></span>
+      <span class="clock"></span>
+      <span>--:--</span>
+    </p>
+    <p>&nbsp;</p>
+    <img src="/assets/station_lack_staffs.png" width="90px" />
+    <p>&nbsp;</p>
+    <p>技师：--、--</p>
+  </div>
+<% elsif station.status == Station::STAT[:NO_SERVICE] %>
+  <div class="washingCar">
+    <p class="station">
+      <span><%= station.name %></span>
+      <span class="clock"></span>
+      <span>--:--</span>
+    </p>
+    <p>&nbsp;</p>
+    <img src="/assets/station_lack_item.png" width="90px" />
+    <p>&nbsp;</p>
+    <p>技师：--、--</p>
+  </div>
+<% end %>

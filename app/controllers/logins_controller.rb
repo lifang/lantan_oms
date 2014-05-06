@@ -1,5 +1,5 @@
 #encoding: utf-8
-class LoginsController < ApplicationController
+class LoginsController < ApplicationController  #登陆
   layout :false
   def index
 

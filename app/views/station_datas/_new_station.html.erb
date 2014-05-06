@@ -1,20 +1,20 @@
 <div class="second_content" style="width: 650px;">
-  <%= form_tag "/stores/#{@store.id}/station_datas/#{@station.id}", :method => "put", :remote => :true do %>
+  <%= form_tag "/stores/#{@store.id}/station_datas", :method => "post" do %>
     <span class="close" title="关闭">×</span>
-    <h1>编辑工位</h1>
+    <h1>新建工位</h1>
     <div>
       <div class="perDtl" style="float: left; margin-top: 41px;">
-        <p><label>名称</label><input type="text" name="station_name" id="station_name" value="<%= @station.name %>"/></p>
-        <p><label>编号</label><input type="text"  name="station_code" id="station_code" value="<%= @station.code %>"/></p>
+        <p><label>名称</label><input type="text" name="station_name" id="station_name" /></p>
+        <p><label>编号</label><input type="text"  name="station_code" id="station_code"/></p>
         <div style="overflow: hidden;">
           <label style="float:left;">带工控机</label>
           <ul style="float:left;margin: 4px;">
-            <li class="checkBox <%= @station.is_has_controller==true ? "check" : "" %>">
-              <input type="checkbox" name="station_has_controller" onclick="select_serv(this)" value="1" <% if @station.is_has_controller==true %>checked<% end %>/>
+            <li class="checkBox">
+              <input type="checkbox" name="station_has_controller" onclick="select_serv(this)" value="1"/>
             </li>
           </ul>
         </div>
-        <p><label>采集器编号</label><input type="text" name="station_collector_code" id="station_collector_code" value="<%= @station.collector_code %>"/></p>
+        <p><label>采集器编号</label><input type="text" name="station_collector_code" id="station_collector_code"/></p>
       </div>
       <div class="newStationJob">
         <h2>选择工位可进行的服务</h2>
@@ -29,8 +29,8 @@
             <div class="jobClass_1" id="servs_div_<%= k %>" style="<%= k==first_c_id ? "display: block;" : "display: none;" %>">
               <div class="choiceBox">
                 <% v.each do |serv| %>
-                  <div class="checkBox <%= @station_services.include?(serv.id) ? "check" : "" %>">
-                    <input type="checkbox" name="station_servs[]" value="<%= serv.id %>" onclick="select_serv(this)" <% if @station_services.include?(serv.id) %>checked<% end %>/>
+                  <div class="checkBox">
+                    <input type="checkbox" name="station_servs[]" value="<%= serv.id %>" onclick="select_serv(this)"/>
                   </div>
                   <label><%= serv.name %></label>
                 <% end %>
@@ -42,7 +42,7 @@
       </div>
     </div>
     <div class="scdBoxAct">
-      <button class="orangeBtn2" type="button" onclick="edit_station_commit(this, <%= @station.id %>, <%= @store.id %>)">确认</button>
+      <button class="orangeBtn2" type="button" onclick="new_station_commit(this, <%= @store.id %>)">确认</button>
       <button class="greyBtn" type="button" onclick="station_cancel()">取消</button>
     </div>
   <% end %>
