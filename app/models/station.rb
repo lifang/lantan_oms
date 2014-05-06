@@ -16,6 +16,13 @@ class Station < ActiveRecord::Base
   PerPage = 10
   validates :name, :presence => true
   validate :unique_code
-  
+
+
+
+  def self.make_data(store_id)
+    return  "select c.num,w.station_id,o.front_staff_id,s.name,w.status,w.order_id from work_orders w inner join orders o on w.order_id=o.id inner join car_nums c on c.id=o.car_num_id
+    inner join staffs s on s.id=o.front_staff_id where current_day='#{Time.now.strftime("%Y%m%d")}' and
+    w.status in (#{WorkOrder::STAT[:SERVICING]},#{WorkOrder::STAT[:WAIT_PAY]}) and w.store_id=#{store_id}"
+  end
 
 end

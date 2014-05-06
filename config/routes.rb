@@ -43,6 +43,16 @@ LantanOms::Application.routes.draw do
     end
     resources :set_staffs
   end
+
+
+
+  namespace :api do
+    resources :orders do
+      collection do
+        get :index_list
+      end
+    end
+  end
   # Sample resource route with sub-resources:
   #   resources :products do
   #     resources :comments, :sales
@@ -66,7 +76,7 @@ LantanOms::Application.routes.draw do
 
   # You can have the root of your site routed with "root"
   # just remember to delete public/index.html.
-   root :to => "logins#index"
+  root :to => "logins#index"
 
   # See how all your routes lay out with "rake routes"
 

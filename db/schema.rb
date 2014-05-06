@@ -163,8 +163,8 @@ ActiveRecord::Schema.define(:version => 20140421034448) do
     t.integer  "order_index"
     t.string   "name"
     t.integer  "parent_id"
-    t.datetime "created_at"
-    t.datetime "updated_at"
+    t.datetime "created_at",  :null => false
+    t.datetime "updated_at",  :null => false
   end
 
   add_index "cities", ["created_at"], :name => "index_cities_on_created_at"
@@ -505,13 +505,12 @@ ActiveRecord::Schema.define(:version => 20140421034448) do
   add_index "materials", ["types"], :name => "index_materials_on_types"
 
   create_table "menus", :force => true do |t|
-    t.string   "controller"
+    t.string   "controller_name"
     t.string   "name"
-    t.datetime "created_at", :null => false
-    t.datetime "updated_at", :null => false
+    t.datetime "created_at",      :null => false
+    t.datetime "updated_at",      :null => false
   end
 
-  add_index "menus", ["controller"], :name => "index_menus_on_controller"
   add_index "menus", ["created_at"], :name => "index_menus_on_created_at"
   add_index "menus", ["updated_at"], :name => "index_menus_on_updated_at"
 
@@ -779,7 +778,7 @@ ActiveRecord::Schema.define(:version => 20140421034448) do
     t.string   "description"
     t.integer  "types"
     t.string   "service_code"
-    t.boolean  "status"
+    t.boolean  "status",                                        :default => true
     t.text     "introduction"
     t.boolean  "is_service"
     t.integer  "staff_level"
@@ -894,11 +893,11 @@ ActiveRecord::Schema.define(:version => 20140421034448) do
 
   create_table "role_model_relations", :force => true do |t|
     t.integer  "role_id"
-    t.integer  "num",        :limit => 8
-    t.string   "model_name"
+    t.integer  "menu_id"
+    t.integer  "num",        :limit => 8, :default => 0
     t.integer  "store_id"
-    t.datetime "created_at",              :null => false
-    t.datetime "updated_at",              :null => false
+    t.datetime "created_at",                             :null => false
+    t.datetime "updated_at",                             :null => false
   end
 
   add_index "role_model_relations", ["created_at"], :name => "index_role_model_relations_on_created_at"
@@ -1180,8 +1179,8 @@ ActiveRecord::Schema.define(:version => 20140421034448) do
     t.boolean  "is_chain"
     t.datetime "created_at",                      :null => false
     t.datetime "updated_at",                      :null => false
-    t.datetime "sale_start_time"
-    t.datetime "sale_end_time"
+    t.string   "sale_start_time"
+    t.string   "sale_end_time"
   end
 
   add_index "stores", ["city_id"], :name => "index_stores_on_city_id"

@@ -202,4 +202,37 @@ module RolesHelper
     #render :json => {:menu => menus_hash, :rmr => rmrs, :count => total_auth_count}
   end
 
+
+    #是否有权限访问后台
+  def has_authority?
+    user = Staff.find cookies[:user_id] if cookies[:user_id]
+    roles = user.roles if user and Staff::VALID_STATUS.include?(user.status)
+    return !roles.blank?
+  end
+
+  
+  #罗列当前用户的所有权限
+  def session_role(user_id)
+    user = Staff.includes(:roles => :role_model_relations).find user_id
+    roles = user.roles
+    user_roles = []
+    model_role = {}
+    roles.each do |role|
+      user_roles << role.id
+      model_roles = role.role_model_relations
+      model_roles.each do |m|
+        model_name = m.model_name
+        if model_role[model_name.to_sym]
+          model_role[model_name.to_sym] = model_role[model_name.to_sym].to_i|m.num.to_i
+        else
+          model_role[model_name.to_sym] = m.num.to_i
+        end
+      end if model_roles
+    end if roles
+    #    session[:model_role] = model_role
+    cookies[:model_role] = {:value => model_role.to_a.join(","), :secure  => true}
+    #    session[:user_roles] = user_roles
+    cookies[:user_roles] = {:value => user_roles.join(","), :secure  => true}
+  end
+
 end

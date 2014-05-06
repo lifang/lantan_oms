@@ -53,4 +53,34 @@ class Staff < ActiveRecord::Base
   S_EDUCATION = {:GRADUATE => 0,  :UNIVERSITY => 1, :COLLEGE => 2, :SENIOR => 3, :JUNIOR => 4, :PRIMARY => 5, :NONE => 6}
   #员工性别
   N_SEX = {0 => "男", 1 => "女"}
+
+
+
+  def has_password?(submitted_password)
+		encrypted_password == encrypt(submitted_password)
+	end
+
+  def encrypt_password
+    self.encrypted_password=encrypt(password)
+  end
+
+
+  private
+  def encrypt(string)
+    self.salt = make_salt if new_record?
+    secure_hash("#{salt}--#{string}")
+  end
+
+  def make_salt
+    secure_hash("#{Time.new.utc}--#{password}")
+  end
+
+  def secure_hash(string)
+    Digest::SHA2.hexdigest(string)
+  end
+
+  def self.staff_and_order staff_id
+    order_count = Staff.find_by_sql("SELECT count(*) from staffs s INNER JOIN orders o on s.id = o.front_staff_id
+where date_format(o.created_at,'%Y-%m')=date_format(now(),'%Y-%m') and o.status in (1,2,3,4) and s.id = #{staff_id}")
+  end
 end

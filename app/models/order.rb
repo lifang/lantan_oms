@@ -12,7 +12,7 @@ class Order < ActiveRecord::Base
   has_many :revisit_order_relations
   has_many :o_pcard_relations
   has_many :complaints
-  hash_many :tech_orders
+  #  hash_many :tech_orders
 
   IS_VISITED = {:YES => 1, :NO => 0} #1 已访问  0 未访问
   STATUS = {:NORMAL => 0, :SERVICING => 1, :WAIT_PAYMENT => 2, :BEEN_PAYMENT => 3, :FINISHED => 4, :DELETED => 5, :INNORMAL => 6,
@@ -34,5 +34,29 @@ class Order < ActiveRecord::Base
   DIRECT = {0=>"报损", 1=>"回库"}
   IS_RETURN = {:YES=>1,:NO=>0} #0  成功交易  1退货
   RETURN = {0 =>"成功交易" , 1 => "已退单"} 
-  
+
+
+  #施工中的订单
+  def self.working_orders store_id
+    stations =Station.where("store_id=#{store_id} and status !=#{Station::STAT[:DELETED]}")
+    sql = "select c.num,w.station_id,w.status,w.order_id from work_orders w inner join orders o on w.order_id=o.id inner join car_nums c on c.id=o.car_num_id
+where w.current_day= '#{Time.now.strftime("%Y%m%d")}' and w.status in (#{WorkOrder::STAT[:SERVICING]},#{WorkOrder::STAT[:WAIT_PAY]},#{WorkOrder::STAT[:WAIT]}) and w.store_id=#{store_id}"
+    work_orders = WorkOrder.find_by_sql(sql).group_by {|work_order| work_order.status}
+    of_waiting = work_orders[WorkOrder::STAT[:WAIT]]
+    orders_id = work_orders[WorkOrder::STAT[:SERVICING]].nil? ? [] : work_orders[WorkOrder::STAT[:SERVICING]].map(&:order_id)
+    of_working = work_orders[WorkOrder::STAT[:SERVICING]].group_by { |working| working.station_id } if work_orders[WorkOrder::STAT[:SERVICING]]
+    of_completed = work_orders[WorkOrder::STAT[:WAIT_PAY]]
+    products = Product.find_by_sql("select id,name from products where status=#{Product::STATUS[:NORMAL]} and is_service = #{Product::PROD_TYPES[:SERVICE]} and store_id = #{store_id}")
+    order_pro_rel = Product.joins(" p INNER JOIN order_prod_relations opr on p.id=opr.product_id").
+      joins("inner join work_orders wo on wo.order_id=opr.order_id").select("p.id,p.name,opr.order_id,wo.station_id").
+      where(["opr.order_id in (?)",orders_id]).group_by{|order_pro| order_pro.station_id}
+    stations_order = []
+    stations.each do |station|
+       station_obj = station.attributes
+       station_obj['of_working'] = of_working.present? && of_working[station.id].present? ?  of_working[station.id] : []
+       station_obj['service'] = order_pro_rel.present? && order_pro_rel[station.id].present? ? order_pro_rel[station.id] : []
+       stations_order << station_obj
+    end if stations
+    return [of_waiting,stations_order, of_completed,products]
+  end
 end
