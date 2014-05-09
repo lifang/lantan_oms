@@ -32,4 +32,9 @@ class Product < ActiveRecord::Base
   scope :commonly_used, where(:commonly_used => true)
   PACK_SERVIE  = {0=>"产品套装服务"}
   PACK ={:PACK => 0}
+  #产品列表
+  def self.products_arr store_id,product_name
+    product_list = Product.find_by_sql("SELECT id,name,types,description,introduction,img_url,status
+            FROM products where store_id=#{store_id} and name like '#{product_name}' order by status")
+  end
 end

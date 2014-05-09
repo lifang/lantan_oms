@@ -86,7 +86,7 @@ class Staff < ActiveRecord::Base
     order_count = stafforders.length
     has_pay = stafforders.map(&:price).inject(0) { |sum,e| sum + e }
 
-    #当前正在进行的订单
+    #当前正在进行中的订单
     order_now = Order.find_by_sql("SELECT o.id,o.code,cn.num,o.price sum_price from orders o INNER JOIN  car_nums cn on cn.id=o.car_num_id
         where date_format(o.created_at,'%Y-%m')=date_format(now(),'%Y-%m')
         and o.status in (#{Order::STATUS[:NORMAL]},#{Order::STATUS[:SERVICING]},#{Order::STATUS[:WAIT_PAYMENT]}) and o.front_staff_id = #{staff_id}")
