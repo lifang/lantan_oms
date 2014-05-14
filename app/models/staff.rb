@@ -53,4 +53,51 @@ class Staff < ActiveRecord::Base
   S_EDUCATION = {:GRADUATE => 0,  :UNIVERSITY => 1, :COLLEGE => 2, :SENIOR => 3, :JUNIOR => 4, :PRIMARY => 5, :NONE => 6}
   #员工性别
   N_SEX = {0 => "男", 1 => "女"}
+
+
+
+  def has_password?(submitted_password)
+		encrypted_password == encrypt(submitted_password)
+	end
+
+  def encrypt_password
+    self.encrypted_password=encrypt(password)
+  end
+
+
+  private
+  def encrypt(string)
+    self.salt = make_salt if new_record?
+    secure_hash("#{salt}--#{string}")
+  end
+
+  def make_salt
+    secure_hash("#{Time.new.utc}--#{password}")
+  end
+
+  def secure_hash(string)
+    Digest::SHA2.hexdigest(string)
+  end
+
+  def self.staff_and_order staff_id
+    #本月完成订单数量和总金额
+    stafforders = Order.find_by_sql("SELECT o.id,o.price from orders o where date_format(o.created_at,'%Y-%m')=date_format(now(),'%Y-%m') 
+        and o.status in (#{Order::STATUS[:BEEN_PAYMENT]},#{Order::STATUS[:FINISHED]}) and o.front_staff_id = #{staff_id}")
+    order_count = stafforders.length
+    has_pay = stafforders.map(&:price).inject(0) { |sum,e| sum + e }
+
+    #当前正在进行中的订单
+    order_now = Order.find_by_sql("SELECT o.id,o.code,cn.num,o.price sum_price from orders o INNER JOIN  car_nums cn on cn.id=o.car_num_id
+        where date_format(o.created_at,'%Y-%m')=date_format(now(),'%Y-%m')
+        and o.status in (#{Order::STATUS[:NORMAL]},#{Order::STATUS[:SERVICING]},#{Order::STATUS[:WAIT_PAYMENT]}) and o.front_staff_id = #{staff_id}")
+    order_detail = OrderProdRelation.select("order_id,price,pro_num,total_price,t_price").
+      where(["order_id in (1)", order_now.map(&:id)]).group_by{|order_pro| order_pro.order_id}
+    orders_now = []
+    order_now.each do |order|
+      order_attr = order.attributes
+      order_attr['detail'] = order_detail.present? && order_detail[order.id].present? ? order_detail[order.id] : []
+      orders_now << order_attr
+    end
+    return [order_count,has_pay,orders_now]
+  end
 end

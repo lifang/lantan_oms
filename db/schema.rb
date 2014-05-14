@@ -166,8 +166,8 @@ ActiveRecord::Schema.define(:version => 20140507030626) do
     t.integer  "order_index"
     t.string   "name"
     t.integer  "parent_id"
-    t.datetime "created_at"
-    t.datetime "updated_at"
+    t.datetime "created_at",  :null => false
+    t.datetime "updated_at",  :null => false
   end
 
   add_index "cities", ["created_at"], :name => "index_cities_on_created_at"
@@ -781,7 +781,7 @@ ActiveRecord::Schema.define(:version => 20140507030626) do
     t.string   "description"
     t.integer  "types"
     t.string   "service_code"
-    t.boolean  "status"
+    t.boolean  "status",                                        :default => true
     t.text     "introduction"
     t.boolean  "is_service"
     t.integer  "staff_level"
@@ -896,11 +896,11 @@ ActiveRecord::Schema.define(:version => 20140507030626) do
 
   create_table "role_model_relations", :force => true do |t|
     t.integer  "role_id"
-    t.integer  "num",        :limit => 8
     t.integer  "menu_id"
+    t.integer  "num",        :limit => 8, :default => 0
     t.integer  "store_id"
-    t.datetime "created_at",              :null => false
-    t.datetime "updated_at",              :null => false
+    t.datetime "created_at",                             :null => false
+    t.datetime "updated_at",                             :null => false
   end
 
   add_index "role_model_relations", ["created_at"], :name => "index_role_model_relations_on_created_at"
