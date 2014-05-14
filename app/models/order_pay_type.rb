@@ -9,5 +9,16 @@ class OrderPayType < ActiveRecord::Base
   PAY_STATUS = {:UNCOMPLETE =>1,:COMPLETE =>0} #1 挂账未结账  0  已结账
   FAVOUR = [PAY_TYPES[:SALE],PAY_TYPES[:IS_FREE],PAY_TYPES[:DISCOUNT_CARD],PAY_TYPES[:FAVOUR],PAY_TYPES[:CLEAR]]
   FINCANCE_TYPES = {0 => "现金", 1 => "银行卡", 2 => "储值卡", 3 => "套餐卡", 5 => "免单", 6 => "打折卡",9=>"挂账"}
-    
+
+  def self.order_pay_types(orders)
+    return OrderPayType.find(:all, :conditions => ["order_id in (?)", orders]).inject(Hash.new){|hash,t|
+      hash[t.order_id].nil? ? hash[t.order_id] = [t.pay_type ==PAY_TYPES[:HANG] ? PAY_TYPES_NAME[t.pay_type]+"(#{PAY_NAME[t.pay_status]})" : PAY_TYPES_NAME[t.pay_type]] : hash[t.order_id] << (t.pay_type ==PAY_TYPES[:HANG] ? PAY_TYPES_NAME[t.pay_type]+"(#{PAY_NAME[t.pay_status]})" : PAY_TYPES_NAME[t.pay_type]);
+      hash[t.order_id]=hash[t.order_id].uniq;hash}
+  end
+
+  def self.pay_order_types(orders)
+    OrderPayType.select(" ifnull(sum(price),0) sum,order_id,pay_type").where(:order_id=>orders).group('order_id,pay_type').inject(Hash.new){
+      |hash,o| hash[o.order_id].nil? ? hash[o.order_id]={o.pay_type=>o.sum} : hash[o.order_id][o.pay_type]=o.sum;hash}
+  end
+
 end

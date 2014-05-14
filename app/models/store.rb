@@ -51,7 +51,7 @@ class Store < ActiveRecord::Base
   MAX_SIZE = 5242880  #图片尺寸最大不得超过5MB
   STORE_PICSIZE = [1000,50]
   
-  def self.upload_img(img,store_id)
+  def self.upload_img(img,store_id)   #上传门店图片
     path = ""
     msg = ""
     if img.size > MAX_SIZE
@@ -77,6 +77,18 @@ class Store < ActiveRecord::Base
       end
     end
     return [path, msg]
+  end
+
+  def self.get_store_satisfy store_id    #获取门店的满意度
+    orders = Order.find(:all, :select => "is_pleased",
+      :conditions => [" store_id = ? and status in (#{Order::STATUS[:BEEN_PAYMENT]}, #{Order::STATUS[:FINISHED]}) and
+       date_format(created_at,'%Y-%m-%d') >= ? and date_format(created_at,'%Y-%m-%d') <= ?",
+        store_id,Time.now.months_ago(1).beginning_of_month.strftime("%Y-%m-%d"), Time.now.months_ago(1).end_of_month.strftime("%Y-%m-%d")])
+    un_pleased_size = 0
+    orders.collect { |o| un_pleased_size += 1 if o.is_pleased == Order::IS_PLEASED[:BAD] }
+    pleased = orders.size == 0 ? 0 : (orders.size - un_pleased_size)*100/orders.size
+    unpleased = orders.size == 0 ? 0 : 100 - pleased
+    return [pleased, unpleased]
   end
 
 end

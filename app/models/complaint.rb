@@ -24,4 +24,15 @@ class Complaint < ActiveRecord::Base
   VIOLATE_N = {true=>"是",false=>"否"}
   SEX = {:MALE =>1,:FEMALE =>0,:NONE=>2} # 0 未选择 1 男 2 女
 
+  #获取用户的投诉
+  def self.customer_complaints(store_id, customer_id, per_page, page)
+    return Complaint.paginate_by_sql(["select c.id c_id, c.created_at, c.reason, c.suggestion, c.types, c.status, c.remark,
+          st.name st_name1, st2.name st_name2, o.code, o.id o_id from complaints c
+          left join orders o on o.id = c.order_id
+          left join staffs st on st.id = c.staff_id_1 left join staffs st2 on st2.id = c.staff_id_2
+          where c.store_id = ? and c.customer_id = ? ", store_id, customer_id],
+      :per_page => per_page, :page => page)
+    
+  end
+
 end

@@ -1,0 +1,7 @@
+<% if @type && @type.to_i == 1 %>
+$("#cus_order_list").html("<%= j(render :partial => "cus_order_list") %>");
+<% elsif @type && @type.to_i == 2  %>
+$("#cus_revist_list").html("<%= j(render :partial => "cus_revist_list") %>");
+<% elsif @type && @type.to_i == 3  %>
+$("#cus_complaint_list").html("<%= j(render :partial => "cus_complaint_list") %>");
+<% end %>

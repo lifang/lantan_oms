@@ -1,0 +1,57 @@
+<table class="table1" id="cus_revist_table">
+  <thead>
+    <tr>
+      <td>回访时间</td>
+      <td>类别</td>
+      <td>回访内容</td>
+      <td>客户回答</td>
+      <td>相关订单</td>
+      <td>操作</td>
+    </tr>
+  </thead>
+  <tbody>
+    <% @revisits.each do |revisit| %>
+      <tr name="cus_revist_tr">
+        <td width="18%"><%= revisit.created_at.strftime("%Y-%m-%d %H:%M:%S") if revisit.created_at %></td>
+        <td width="7%"><%= Revisit::TYPES_NAME[revisit.types] %></td>
+        <td width="23%"><%= truncate(revisit.content, :length => 15) %></td>
+        <td width="23%"><%= truncate(revisit.answer, :length => 15) %></td>
+        <td width="20%">
+          <a href="javascript:void(0)" onclick="show_order(<%= @store.id %>, <%= revisit.o_id %>)"><%= revisit.code %></a>
+        </td>
+        <td>
+          <a href="javascript:void(0)">详情</a>
+        </td>
+      </tr>
+    <% end %>
+  </tbody>
+</table>
+<% if @revisits.any? %>
+  <%= will_paginate @revisits, :previous_label => "上一页", :next_label => "下一页", :class => "page",
+    :id => "cus_revist_page"%>
+<% end %>
+<script type="text/javascript">
+  $(function(){
+    var i = $("#cus_revist_table").find("tr[name='cus_revist_tr']").index($(this));
+    if(i % 2 ==1 && i != 0){
+      $(this).css("background","#f5f5f5");
+    }else if(i % 2 ==0 && i != 0){
+      $(this).removeAttr("style");
+    };
+
+    $("#cus_revist_page").on("click", "a", function(){   //异步分页
+      var url = $(this).attr("href");
+      var type = 2;
+      $.ajax({
+        type: "get",
+        url: url,
+        dataType: "script",
+        data: {type : type},
+        error: function(){
+          tishi("数据错误!");
+        }
+      });
+      return false;
+    })
+  })
+</script>

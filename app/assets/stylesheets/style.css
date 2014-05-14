@@ -7,6 +7,7 @@ a { text-decoration: none; cursor: pointer;}
 button { cursor: pointer;}
 input,button,select,textarea{ outline: none}
 table { border-collapse: collapse;}
+.red {color: red;}
 
 .cf:after { clear: both; content:"."; display: block; height: 0; overflow: hidden; visibility:hidden;}
 
@@ -216,10 +217,12 @@ table { border-collapse: collapse;}
 .nav { width: 1100px; margin: 0 auto;}
 .topMenu { padding: 0 10px;}
 .topMenu li a { color: #979fb6;}
-.topMenu li.hover a.fst_menu_a,.topMenu li:hover a.fst_menu_a{ color: #f9fafe;}
-.topMenu li.hover .scdMenu li.hover a.scd_menu_a,.topMenu li.hover .scdMenu li:hover a.scd_menu_a { color: #f9fafe;}
-.tmItem { width: 120px; height: 40px; line-height: 40px; float: left; overflow: hidden; text-indent: 55px; cursor: pointer; padding: 20px 0;}
-.tmItem.hover,.tmItem:hover { background-color: #394264;}
+/*.topMenu li.hover a.fst_menu_a,.topMenu li:hover a.fst_menu_a{ color: #f9fafe;}
+.topMenu li.hover .scdMenu li.hover a.scd_menu_a,.topMenu li.hover .scdMenu li:hover a.scd_menu_a { color: #f9fafe;}*/
+.scdMenu li { color: #bbb;}
+.scdMenu li.hover,.scdMenu li:hover { color: #fff;}
+.tmItem { width: 120px; height: 40px; line-height: 40px; float: left; overflow: hidden; text-indent: 55px; cursor: pointer; padding: 20px 0; color: #bbb;}
+.tmItem.hover,.tmItem:hover { background-color: #394264; color: #fff;}
 .tmItem1 { background: url(/assets/navIcon.png) no-repeat 0px center; background-size: 999px 37px;}
 .tmItem2 { background: url(/assets/navIcon.png) no-repeat -118px center; background-size: 999px 37px;}
 .tmItem3 { background: url(/assets/navIcon.png) no-repeat -236px center; background-size: 999px 37px;}
@@ -416,6 +419,7 @@ td .selectBox { margin: 0 3px; border-radius: 3px;}
 .choiceBox { display: block; width: 250px; overflow: hidden;}
 .choiceBox label { float: left; line-height: 20px;}
 .choiceBox .checkBox { float: left;}
+.choiceBox .radioBox { float: left;}
 .infoBox textarea { border: 1px solid #E2E2E2; float: right; height: 120px; resize: none; width: 300px; color: #A9A8A8; padding: 3px;}
 
 .rwdDtl p { line-height: 28px; overflow: hidden; margin-bottom: 10px;}
@@ -504,7 +508,7 @@ td .selectBox { margin: 0 3px; border-radius: 3px;}
 .custmRecord li { float: left; line-height: 20px; padding: 5px 10px; background: #f5f5f5; border-top: 1px solid #ccc; border-right: 1px solid #ccc;}
 .custmRecord li:hover,.custmRecord li.hover { border-bottom: 1px solid #fff; background: #fff; color: #ff8828;}
 
-.cusCars { position: absolute; width: 160px; color: #f2f2f2;}
+.cusCars { position: absolute; width: 160px; color: #f2f2f2;right: 20px;}
 .cusCar { padding: 15px 0; margin: 15px 0 0;}
 .cusCar .infoBoxTit { left: 10px;}
 .cusCar p { line-height: 24px;}

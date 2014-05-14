@@ -1,0 +1,16 @@
+<tr name="add_car_tr" s_index="<%= @index %>">
+  <td><%= @buy_year %><input type="hidden" name="car_item[<%= @index %>]buy_year" value="<%= @buy_year %>"/></td>
+  <td name="add_car_num_td"><%= @car_num %><input type="hidden" name="car_item[<%= @index %>]car_num" value="<%= @car_num %>"/></td>
+  <td><%= @car_brand_text+"--"+@car_model_text %><input type="hidden" name="car_item[<%= @index %>]car_model" value="<%= @car_model %>"/></td>
+  <td><%= @car_distance=="" ? "----" : @car_distance %><input type="hidden" name="car_item[<%= @index %>]car_distance" value="<%= @car_distance %>"/></td>
+  <td>
+    <%= @last_inspection=="" ? "----" : @last_inspection %><input type="hidden" name="car_item[<%= @index %>]last_inspection" value="<%= @last_inspection %>"/>
+    <input type="hidden" name="car_item[<%= @index %>]inspection_type" value="<%= @inspection_type %>"/>
+  </td>
+  <td><%= @insurance_ended=="" ? "----" : @insurance_ended %><input type="hidden" name="car_item[<%= @index %>]insurance_ended" value="<%= @insurance_ended %>"/></td>
+  <td><%= @maint_distance=="" ? "----" : @maint_distance %><input type="hidden" name="car_item[<%= @index %>]maint_distance" value="<%= @maint_distance %>"/></td>
+
+  <td>
+    <button type="button" class="delete" title="删除" onclick="add_car_item_delete(this)"></button>
+  </td>
+</tr>

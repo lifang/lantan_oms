@@ -1,0 +1,70 @@
+<table class="table1" id="cus_complaint_table">
+  <thead>
+    <tr>
+      <td>投诉时间</td>
+      <td>投诉理由</td>
+      <td>投诉要求</td>
+      <td>责任人</td>
+      <td>相关订单</td>
+      <td>处理结果</td>
+      <td>操作</td>
+    </tr>
+  </thead>
+  <tbody>
+    <% @complaints.each do |complaint| %>
+      <tr name="cus_complaint_tr">
+        <td width="15%"><%= complaint.created_at.strftime("%Y-%m-%d %H:%M:%S") if complaint.created_at %></td>
+        <td width="15%"><%= complaint.reason.truncate(10) if complaint.reason%></td>
+        <td width="15%"><%= complaint.suggestion.truncate(10) if complaint.suggestion%></td>
+        <td width="15%">
+        <% if complaint.st_name1 or complaint.st_name2  %>
+            <%= complaint.st_name1 if complaint.st_name1 %><%= "，" + complaint.st_name2 if complaint.st_name2 %>
+          <% else %>
+          --
+          <% end %>
+        </td>
+        <td width="15%">
+          <a href="javascript:void(0)" onclick="show_order(<%= @store.id %>, <%= complaint.o_id %>)"><%= complaint.code %></a>
+
+        </td>
+        <td width="15%"><%= complaint.remark.truncate(10) if complaint.remark %></td>
+        <td>
+          <a href="javascript:void(0)">详细</a>
+          <% if complaint.status == true %>
+            <span style="padding:0 5px">已处理</span>
+          <% else %>
+            <a href="javascript:void(0)">处理</a>
+          <% end %>
+        </td>
+      </tr>
+    <% end %>
+  </tbody>
+</table>
+<% if @complaints.any? %>
+  <%= will_paginate @complaints, :previous_label => "上一页", :next_label => "下一页", :class => "page",
+    :id => "cus_complaint_page" %>
+<% end %>
+<script type="text/javascript">
+  $(function(){
+    var i = $("#cus_complaint_table").find("tr[name='cus_complaint_tr']").index($(this));
+    if(i % 2 ==1 && i != 0){
+      $(this).css("background","#f5f5f5");
+    }else if(i % 2 ==0 && i != 0){
+      $(this).removeAttr("style");
+    };
+    $("#cus_complaint_page").on("click", "a", function(){   //异步分页
+      var url = $(this).attr("href");
+      var type = 3;
+      $.ajax({
+        type: "get",
+        url: url,
+        dataType: "script",
+        data: {type : type},
+        error: function(){
+          tishi("数据错误!");
+        }
+      });
+      return false;
+    })
+  })
+</script>
