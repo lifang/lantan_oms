@@ -24,4 +24,13 @@ class Complaint < ActiveRecord::Base
   VIOLATE_N = {true=>"是",false=>"否"}
   SEX = {:MALE =>1,:FEMALE =>0,:NONE=>2} # 0 未选择 1 男 2 女
 
+  def self.mk_record store_id ,order_id,reason,request
+
+    #puts store_id ,order_id,reason,request
+    order  = Order.find_by_id order_id
+    complaint = Complaint.create(:order_id => order_id, :customer_id => order.customer_id, :reason => reason,
+      :suggestion => request, :status => STATUS[:UNTREATED], :store_id => store_id) if order
+    complaint
+  end
+
 end

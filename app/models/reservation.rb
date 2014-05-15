@@ -15,6 +15,6 @@ class Reservation < ActiveRecord::Base
 			left join car_models cm on cm.id = c.car_model_id
 			left join res_prod_relations rpr on rpr.reservation_id = r.id
 			left join products p on p.id=rpr.product_id
-      where r.store_id=1 and r.status != #{STATUS[:cancel]}  and r.created_at >= CURDATE() group by r.id order by r.status")
+      where r.store_id=#{store_id} and r.status != #{STATUS[:cancel]}  and r.created_at >= CURDATE() group by r.id order by r.status")
   end
 end
