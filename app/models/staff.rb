@@ -15,7 +15,7 @@ class Staff < ActiveRecord::Base
   has_many :material_losses
   belongs_to :store
   has_many  :tech_orders
-    
+  
   #门店员工职务
   S_COMPANY = {:BOSS=>0,:CHIC=>2,:FRONT =>3,:TECHNICIAN =>1,:OTHER=>4} #0 老板 2 店长 3接待 1 技师 4其他
   N_COMPANY = {1=>"技师",3=>"接待",2=>"店长",4=>"其他"}
@@ -53,7 +53,7 @@ class Staff < ActiveRecord::Base
   S_EDUCATION = {:GRADUATE => 0,  :UNIVERSITY => 1, :COLLEGE => 2, :SENIOR => 3, :JUNIOR => 4, :PRIMARY => 5, :NONE => 6}
   #员工性别
   N_SEX = {0 => "男", 1 => "女"}
-
+  attr_accessor :password
 
 
   def has_password?(submitted_password)
@@ -79,19 +79,21 @@ class Staff < ActiveRecord::Base
     Digest::SHA2.hexdigest(string)
   end
 
-  def self.staff_and_order staff_id
+  def self.staff_and_order staff_id,store_id
     #本月完成订单数量和总金额
     stafforders = Order.find_by_sql("SELECT o.id,o.price from orders o where date_format(o.created_at,'%Y-%m')=date_format(now(),'%Y-%m') 
-        and o.status in (#{Order::STATUS[:BEEN_PAYMENT]},#{Order::STATUS[:FINISHED]}) and o.front_staff_id = #{staff_id}")
+        and o.status in (#{Order::STATUS[:BEEN_PAYMENT]},#{Order::STATUS[:FINISHED]}) and o.front_staff_id = #{staff_id} and o.store_id=#{store_id}")
     order_count = stafforders.length
     has_pay = stafforders.map(&:price).inject(0) { |sum,e| sum + e }
 
     #当前正在进行中的订单
     order_now = Order.find_by_sql("SELECT o.id,o.code,cn.num,o.price sum_price from orders o INNER JOIN  car_nums cn on cn.id=o.car_num_id
         where date_format(o.created_at,'%Y-%m')=date_format(now(),'%Y-%m')
-        and o.status in (#{Order::STATUS[:NORMAL]},#{Order::STATUS[:SERVICING]},#{Order::STATUS[:WAIT_PAYMENT]}) and o.front_staff_id = #{staff_id}")
-    order_detail = OrderProdRelation.select("order_id,price,pro_num,total_price,t_price").
-      where(["order_id in (1)", order_now.map(&:id)]).group_by{|order_pro| order_pro.order_id}
+        and o.status in (#{Order::STATUS[:NORMAL]},#{Order::STATUS[:SERVICING]},#{Order::STATUS[:WAIT_PAYMENT]}) and o.front_staff_id = #{staff_id} and o.store_id=#{store_id}")
+    order_detail = OrderProdRelation.joins("opr inner join products p on p.id=opr.product_id").
+      select("p.name,opr.order_id,opr.price,opr.pro_num,opr.total_price,opr.t_price").
+      where(["order_id in (?)", order_now.map(&:id)]).group_by{|order_pro| order_pro.order_id}
+    
     orders_now = []
     order_now.each do |order|
       order_attr = order.attributes
