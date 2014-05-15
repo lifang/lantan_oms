@@ -1,0 +1,70 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <title>打印客户消费记录</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <%= stylesheet_link_tag "application", "style" %>
+    <%= javascript_include_tag "application", "main" %>
+    <%= csrf_meta_tags %>
+  </head>
+  <body>
+    <table class="table1" id="print_cus_orders_table">
+      <thead>
+        <tr>
+          <td>订单号</td>
+          <td>消费日期</td>
+          <td>消费项目</td>
+          <td>总价（元）</td>
+          <td>付款方式</td>
+          <td>是否满意</td>
+          <td>是否开票</td>
+        </tr>
+      </thead>
+      <tbody>
+        <% @orders.each do |order| %>
+          <tr name="print_cus_orders_tr">
+            <td><%= order.code %></td>
+            <td><%= order.created_at.strftime("%Y-%m-%d %H:%M:%S") %></td>
+            <td>
+              <table width="100%" border="0" cellspacing="1" cellpadding="0" class="s_table">
+                <tr name="cus_order_tr2">
+                  <td>名称</td>
+                  <td>单价</td>
+                  <td>数量</td>
+                </tr>
+                <% @product_hash[order.id].each do |p| %>
+                  <tr name="cus_order_tr2">
+                    <td><%= p.name %></td>
+                    <td><%= p.price %></td>
+                    <td><%= p.pro_num %></td>
+                  </tr>
+                <% end if @product_hash[order.id] %>
+              </table>
+            </td>
+            <td><%= order.price %></td>
+            <td><%= @order_pay_type[order.id].nil? ? "" : @order_pay_type[order.id].join(",") %></td>
+            <td><%= Order::IS_PLEASED_NAME[order.is_pleased] %></td>
+            <td><%= order.is_billing ? "是" : "否" %></td>
+          </tr>
+        <% end %>
+      </tbody>
+    </table>
+    <script type="text/javascript">
+      $(function(){
+        var i = $("#print_cus_orders_table").find("tr[name='print_cus_orders_tr']").index($(this));
+        if(i % 2 ==1 && i != 0){
+          $(this).css("background","#f5f5f5");
+        }else if(i % 2 ==0 && i != 0){
+          $(this).removeAttr("style");
+        };
+        var tr2 =  $("#print_cus_orders_table").find("tr[name='cus_order_tr2']");
+        $.each(tr2, function(){
+          $(this).removeAttr("style");
+        });
+      })
+    </script>
+  </body>
+</html>
+
+
+

@@ -1,0 +1,91 @@
+<%= javascript_include_tag "customers" %>
+<div class="main_tit"><h1>客户列表</h1></div>
+<% if @complaints.size > 0 %>
+<div class="leftBox" style=" position: absolute; width: 200px; border: 0;">
+  <div class="infoBlocks">
+    <p>有<%= @complaints.size %>条投诉</p>
+    <% @complaints.each do |c| %>
+    <div class="infoBlock">
+      <p><label>车牌号码：</label><%= c.num %></p>
+      <p><label>客户姓名：</label><%= c.name %></p>
+      <p><label>相关订单：</label><%= c.code %></p>
+    </div>
+    <% end %>
+    <p><button class="orangeBtn" onclick="show_and_hide_complaints(this)" style="padding: 0 5px; float: right;">展开</button></p>
+  </div>
+</div>
+<% end %>
+
+<div class="main_con">
+  <div class="topInfo">
+    <p>
+      <span><%= @cus_count %></span>
+      <span style="width:80px;"><%= "#{@satisfy[0]}%" %></span>
+    </p>
+    <p>
+      <span>客户数量</span>
+      <span style="width:80px;">本月满意度</span>
+    </p>
+  </div>
+  <div class="toolbar">
+    <div class="searchBox">
+      <%= form_tag "/stores/#{@store.id}/customers", :method => "get" do %>
+        <label>客户类型</label>
+        <div class="selectBox" id="search_cus_div">
+          <span>客户类型</span>
+          <div class="openDownIcon"></div>
+          <select onchange="search_cus_select(this)" name="is_vip">
+            <option value="-1" <% if @is_vip.nil? || @is_vip.to_i == -1 %>selected<% end %>>全部</option>
+            <option value="0" <% if @is_vip && @is_vip.to_i == 0 %>selected<% end %>>普通</option>
+            <option value="1" <% if @is_vip && @is_vip.to_i == 1 %>selected<% end %>>会员</option>
+          </select>
+        </div>
+        <label>客户姓名</label>
+        <input type="text" name="name" value="<%= @name.nil? ? "" : @name %>"/>
+        <label>车牌号</label>
+        <input type="text" name="num" value="<%= @num.nil? ? "" : @num %>"/>
+        <label>联系电话</label>
+        <input type="text" name="phone" value="<%= @phone.nil? ? "" : @phone %>"/>
+        <button class="orangeBtn" type="submit">查询</button>
+      <% end %>
+    </div>
+    <div class="funcBox">
+      <a href="javascript:void(0)" class="scd_btn" onclick="new_customer()"><span>新建客户</span></a>
+    </div>
+  </div>
+  <table class="table1">
+    <tr>
+      <th>姓名</th>
+      <th style="width:20%;">车牌号</th>
+      <th style="width:30%;">车型</th>
+      <th>联系电话</th>
+      <th>是否会员</th>
+      <th>客户属性</th>
+      <th>消费次数</th>
+      <th>功能</th>
+    </tr>
+    <% @customers.each do |c| %>
+      <tr>
+        <td ><%= c.name %></td>
+        <td style="width:20%;"><%= @cus_car_nums.nil? || @cus_car_nums[c.id].nil? ? "----" : @cus_car_nums[c.id].map(&:num).join(",") %></td>
+        <td style="width:30%;"><%= @cus_car_nums.nil? || @cus_car_nums[c.id].nil? ? "----" :
+              @cus_car_nums[c.id].inject([]){|arr, c| arr << "#{c.b_name}-#{c.m_name}";arr}.join(",") %></td>
+        <td><%= c.mobilephone %></td>
+        <td><%= c.is_vip ? "是" : "否" %></td>
+        <td><%= c.property.to_i==0 ? "个人客户" : "单位客户" %></td>
+        <td><%= @orders_count.nil? || @orders_count[c.id].nil? ? 0 : @orders_count[c.id].count %></td>
+        <td>
+          <a href="/stores/<%= @store.id %>/customers/<%= c.id %>"><button class="more" title="详细" ></button></a>
+          <button class="delete" title="删除" onclick="del_customer(<%= c.id %>, <%= @store.id %>)"></button>
+        </td>
+      </tr>
+    <% end %>
+  </table>
+  <% if @customers.any? %>
+  <%= will_paginate @customers, :previous_label => "上一页", :next_label => "下一页", :class => "page" %>
+  <% end %>
+</div>
+
+<div class="second_box" id="new_customer">
+  <%= render "new" %>
+</div>

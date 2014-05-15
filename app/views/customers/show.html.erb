@@ -1,0 +1,73 @@
+<%= javascript_include_tag "customers" %>
+<div class="main_tit"><h1>客户详情</h1></div>
+<div class="cusCars">
+  <div class="cusCar infoBox">
+    <span class="infoBoxTit">客户车辆</span>
+    <% if @cus_nums.blank? %>
+      <h5 style="text-align:center;">暂无</h5>
+    <% else %>
+      <% @cus_nums.each do |cn| %>
+        <img src="/assets/cusCar_1.jpg" width="160" />
+        <p><%= cn.num %></p>
+        <p><%= "#{cn.cbname}--#{cn.cmname}" %></p>
+        <div class="cusCarAct">
+          <button class="edit"></button>
+          <button class="delete"></button>
+        </div>
+      <% end %>
+    <% end %>
+  </div>
+</div>
+
+<div class="main_con">
+  <div class="topInfo">
+    <p>
+      <span><%= @order_count %></span>
+      <span>8</span>
+    </p>
+    <p>
+      <span>消费次数</span>
+      <span>满意度</span>
+    </p>
+  </div>
+
+  <div class="cusInfo">
+    <p><label>客户姓名：</label><%= @customer.name %></p>
+    <p><label>联系电话：</label><%= @customer.mobilephone %></p>
+    <p><label>单位：</label><%= @customer.property.to_i==0 ? "无" : @customer.group_name %></p>
+  </div>
+
+  <div class="toolbar noHidden">
+    <ul class="custmRecord">
+      <a onclick="show_diff_table(this, 1)" ><li class="hover">消费记录</li></a>
+      <a onclick="show_diff_table(this, 2)"><li>回访记录</li></a>
+      <a onclick="show_diff_table(this, 3)"><li>投诉记录</li></a>
+      <a onclick="show_diff_table(this, 4)"><li>储值卡消费记录</li></a>
+      <a onclick="show_diff_table(this, 5)"><li>套餐卡消费记录</li></a>
+    </ul>
+    <div class="funcBox">
+      <a href="javascript:void(0)" class="scd_btn" onclick="edit_customer(<%= @customer.id %>, <%= @store.id %>)"><span class="editTool">编辑</span></a>
+      <a href="javascript:void(0)" onclick="print_orders(<%= @store.id %>)"><span class="printTool">打印</span></a>
+      <a href="javascript:void(0)" onclick="del_customer(<%= @customer.id %>, <%= @store.id %>)"><span class="deleteTool">删除</span></a>
+    </div>
+  </div>
+  <div id="cus_order_list" name="cus_diff_div">
+    <%= render "cus_order_list" %>
+  </div>
+  <div id="cus_revist_list" name="cus_diff_div" style="display:none;">
+    <%= render "cus_revist_list" %>
+  </div>
+  <div id="cus_complaint_list" name="cus_diff_div" style="display:none;">
+    <%= render "cus_complaint_list" %>
+  </div>
+  <div id="cus_svcard_records_list" name="cus_diff_div" style="display:none;">
+    <%= render "cus_svcard_records_list" %>
+  </div>
+  <div id="cus_pcard_records_list" name="cus_diff_div" style="display:none;">
+    <%= render "cus_pcard_records_list" %>
+  </div>
+</div>
+<div class="second_box" id="edit_customer">   <!--编辑客户层-->
+</div>
+<div class="second_box" id="order_detail">   <!--订单详情层-->
+</div>

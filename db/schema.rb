@@ -11,7 +11,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20140421034448) do
+ActiveRecord::Schema.define(:version => 20140507030626) do
 
   create_table "accounts", :force => true do |t|
     t.integer  "types"
@@ -90,8 +90,8 @@ ActiveRecord::Schema.define(:version => 20140421034448) do
   create_table "car_brands", :force => true do |t|
     t.string   "name"
     t.integer  "capital_id"
-    t.datetime "created_at", :null => false
-    t.datetime "updated_at", :null => false
+    t.datetime "created_at"
+    t.datetime "updated_at"
   end
 
   add_index "car_brands", ["capital_id"], :name => "index_car_brands_on_capital_id"
@@ -102,8 +102,8 @@ ActiveRecord::Schema.define(:version => 20140421034448) do
   create_table "car_models", :force => true do |t|
     t.string   "name"
     t.integer  "car_brand_id"
-    t.datetime "created_at",   :null => false
-    t.datetime "updated_at",   :null => false
+    t.datetime "created_at"
+    t.datetime "updated_at"
   end
 
   add_index "car_models", ["car_brand_id"], :name => "index_car_models_on_car_brand_id"
@@ -115,9 +115,12 @@ ActiveRecord::Schema.define(:version => 20140421034448) do
     t.string   "num"
     t.integer  "car_model_id"
     t.integer  "buy_year"
-    t.integer  "distance",     :default => 0
-    t.datetime "created_at",                  :null => false
-    t.datetime "updated_at",                  :null => false
+    t.datetime "created_at"
+    t.datetime "updated_at"
+    t.integer  "distance",        :default => 0
+    t.datetime "insurance_ended"
+    t.datetime "last_inspection"
+    t.integer  "inspection_type"
   end
 
   add_index "car_nums", ["car_model_id"], :name => "index_car_nums_on_car_model_id"

@@ -20,9 +20,9 @@
       <div class="perDtl" style="min-height: 260px; padding: 0 10px;">
         <div>
           <div class="inputBox">
-            <p>所在地区</p>
-            <div class="selectBox selectBox3">
-              <span><%= @store_province.name if @store_province %></span>
+            <p><font class="red">*</font>所在地区</p>
+            <div class="selectBox selectBox3">         
+              <span style="line-height:30px;"><%= @store_province.name if @store_province %></span>
               <div class="openDownIcon"></div>
               <select name="store_prov_id">
                 <% @province.each do |p| %>
@@ -31,7 +31,7 @@
               </select>
             </div>
             <div class="selectBox selectBox3">
-              <span><%= @store_city.name if @store_city %></span>
+              <span style="line-height:30px;"><%= @store_city.name if @store_city %></span>
               <div class="openDownIcon"></div>
               <select name="store_city_id" id="store_city_id">
                 <option value="0">------</option>
@@ -42,7 +42,7 @@
             </div>
           </div>
           <div class="inputBox">
-            <p>门店坐标</p>
+            <p><font class="red">*</font>门店坐标</p>
             <input type="text" placeHolder="X:" name="store_x_position" id="store_x_position" value="<%= @store.position.split(",")[0] %>"/>
             <input type="text" placeHolder="Y:" name="store_y_position" id="store_y_position" value="<%= @store.position.split(",")[1] %>"/>
             <a href="http://api.map.baidu.com/lbsapi/getpoint/index.html" target="_blank" style="position: absolute;right: 18px;top: 61px;">
@@ -52,17 +52,17 @@
         </div>
         <div>
           <div class="inputBox">
-            <p>门店名称</p>
+            <p><font class="red">*</font>门店名称</p>
             <input type="text" value="<%= @store.name %>" style="width: 252px;" name="store_name" id="store_name"/>
           </div>
           <div class="inputBox">
-            <p>联系人</p>
+            <p><font class="red">*</font>联系人</p>
             <input type="text" value="<%= @store.contact %>" style="width: 252px;" name="store_contanct" id="store_contanct"/>
           </div>
         </div>
         <div>
           <div class="inputBox">
-            <p>详细地址</p>
+            <p><font class="red">*</font>详细地址</p>
             <input type="text" value="<%= @store.address %>" style="width: 252px;" name="store_address" id="store_address"/>
           </div>
           <div class="inputBox">
@@ -80,11 +80,11 @@
         </div>
         <div>
           <div class="inputBox">
-            <p>联系电话</p>
+            <p><font class="red">*</font>联系电话</p>
             <input type="text" value="<%= @store.phone %>" style="width: 252px;" name="store_phone" id="store_phone"/>
           </div>
           <div class="inputBox">
-            <p>营业时间</p>
+            <p><font class="red">*</font>营业时间</p>
             <input type="text" name="store_sale_stime" id="store_sale_stime" value="<%= @store.sale_start_time %>" class="Wdate" onclick="WdatePicker({dateFmt:'H:mm'});" readonly placeHolder="开始时间"/>
             <input type="text" name="store_sale_etime" id="store_sale_etime" value="<%= @store.sale_end_time %>" class="Wdate" onclick="WdatePicker({dateFmt:'H:mm'});" readonly placeHolder="结束时间"/>
           </div>
@@ -96,7 +96,7 @@
       <span class="infoBoxTit">其他设置</span>
       <div class="perDtl">
         <div class="inputBox">
-          <p>免单密码</p>
+          <p><font class="red">*</font>免单密码</p>
           <input type="text" style="width: 252px;" value="<%= @store.limited_password %>" name="store_lim_pwd" id="store_lim_pwd"/>
         </div>
         <div class="inputBox">

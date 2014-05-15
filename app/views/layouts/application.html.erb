@@ -23,61 +23,35 @@
       </div>
       <div class="nav">
         <ul class="topMenu cf">
-          <li class="tmItem tmItem1 <%= is_hover("stations", "arrange_staffs") ? "hover" : "" %>">
-            <a class="fst_menu_a" href="/stores/<%= @store.id %>/stations">现场管理</a>
-            <% if is_hover("stations", "arrange_staffs") %>
-              <%= render "layouts/nav_second_menu" %>
-            <% end %>
-          </li>
-          <li class="tmItem tmItem2 <%= is_hover("shouyin") ? "hover" : "" %>">
-            <a class="fst_menu_a" href="javacript:void(0)">收银管理</a>
-            <% if is_hover("shouyin") %>
-              <%= render "layouts/nav_second_menu" %>
-            <% end %>
-          </li>
-          <li class="tmItem tmItem3 <%= is_hover("yinxiao") ? "hover" : "" %>">
-            <a class="fst_menu_a" href="javacript:void(0)">营销管理</a>
-            <% if is_hover("yinxiao") %>
-              <%= render "layouts/nav_second_menu" %>
-            <% end %>
-          </li>
-          <li class="tmItem tmItem4 <%= is_hover("kefu") ? "hover" : "" %>">
-            <a class="fst_menu_a" href="javacript:void(0)">客户管理</a>
-            <% if is_hover("kefu") %>
-              <%= render "layouts/nav_second_menu" %>
-            <% end %>
-          </li>
-          <li class="tmItem tmItem5 <%= is_hover("tongji") ? "hover" : "" %>">
-            <a class="fst_menu_a" href="javacript:void(0)">统计管理</a>
-            <% if is_hover("tongji") %>
-              <%= render "layouts/nav_second_menu" %>
-            <% end %>
-          </li>
-          <li class="tmItem tmItem6 <%= is_hover("kucun") ? "hover" : "" %>">
-            <a class="fst_menu_a" href="javacript:void(0)">库存管理</a>
-            <% if is_hover("kucun") %>
-              <%= render "layouts/nav_second_menu" %>
-            <% end %>
-          </li>
-          <li class="tmItem tmItem7 <%= is_hover("caiwu") ? "hover" : "" %>">
-            <a class="fst_menu_a" href="javacript:void(0)">财务管理</a>
-            <% if is_hover("caiwu") %>
-              <%= render "layouts/nav_second_menu" %>
-            <% end %>
-          </li>
-          <li class="tmItem tmItem8 <%= is_hover("yuangong") ? "hover" : "" %>">
-            <a class="fst_menu_a" href="javacript:void(0)">员工管理</a>
-            <% if is_hover("yuangong") %>
-              <%= render "layouts/nav_second_menu" %>
-            <% end %>
-          </li>
-          <li class="tmItem tmItem9 <%= is_hover("station_datas", "set_stores", "set_functions", "roles", "set_staffs") ? "hover" : "" %>">
-            <a class="fst_menu_a" href="/stores/<%= @store.id %>/station_datas">系统设置</a>
-            <% if is_hover("station_datas", "set_stores", "set_functions", "roles", "set_staffs") %>
-              <%= render "layouts/nav_second_menu" %>
-            <% end %>
-          </li>
+          <a class="fst_menu_a" href="/stores/<%= @store.id %>/stations">
+            <li class="tmItem tmItem1 <%= is_hover("stations", "arrange_staffs") ? "hover" : "" %>">现场管理</li>
+          </a>
+          <a class="fst_menu_a" href="javacript:void(0)">
+            <li class="tmItem tmItem2 <%= is_hover("shouyin") ? "hover" : "" %>">收银管理</li>
+          </a>
+          <a class="fst_menu_a" href="javacript:void(0)">
+            <li class="tmItem tmItem3 <%= is_hover("yinxiao") ? "hover" : "" %>">营销管理</li>
+          </a>
+          <a class="fst_menu_a" href="/stores/<%= @store.id %>/customers">
+            <li class="tmItem tmItem4 <%= is_hover("customers") ? "hover" : "" %>">客户管理</li>
+          </a>
+          <a class="fst_menu_a" href="javacript:void(0)">
+            <li class="tmItem tmItem5 <%= is_hover("tongji") ? "hover" : "" %>">统计管理</li>
+          </a>
+          <a class="fst_menu_a" href="javacript:void(0)">
+            <li class="tmItem tmItem6 <%= is_hover("kucun") ? "hover" : "" %>">库存管理</li>
+          </a>
+          <a class="fst_menu_a" href="javacript:void(0)">
+            <li class="tmItem tmItem7 <%= is_hover("caiwu") ? "hover" : "" %>">财务管理</li>
+          </a>
+          <a class="fst_menu_a" href="javacript:void(0)">
+            <li class="tmItem tmItem8 <%= is_hover("yuangong") ? "hover" : "" %>">员工管理</li>
+          </a>
+          <a class="fst_menu_a" href="/stores/<%= @store.id %>/station_datas">
+            <li class="tmItem tmItem9 <%= is_hover("station_datas", "set_stores", "set_functions", "roles", "set_staffs") ? "hover" : "" %>">系统设置</li>
+          </a>
         </ul>
+        <%= render "layouts/nav_second_menu" %>
       </div>
     </div>
 

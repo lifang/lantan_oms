@@ -1,0 +1,11 @@
+<% if @type==0 %>
+  $("#car_brand").parents(".selectBox").find("span").first().text("------");
+  $("#car_brand").html("<option value='0'>------</option><% @brands.each do |b| %><option value='<%= b.id %>'><%= b.name %></option><% end %>");
+  $("#car_model").parents(".selectBox").find("span").first().text("------");
+  $("#car_model").html("<option value='0'>------</option>");
+<% elsif @type==1 %>
+  $("#car_model").parents(".selectBox").find("span").first().text("------");
+  $("#car_model").html("<option value='0'>------</option><% @models.each do |m| %><option value='<%= m.id %>'><%= m.name %></option><% end %>");
+<% end %>
+$("#waiting").hide();
+$(".second_bg2").hide();

@@ -55,4 +55,8 @@ module ApplicationHelper
     orders
   end
   
+  #保留金额的两位小数
+  def limit_float(num)
+    return (num*100).to_i/100.0
+  end
 end

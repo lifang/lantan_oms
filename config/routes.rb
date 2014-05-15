@@ -24,6 +24,12 @@ LantanOms::Application.routes.draw do
   resources :stores do
     resources :welcomes
     resources :stations
+    resources :customers do
+      collection do
+        get :add_car_get_datas, :print_orders, :show_order
+        post :add_car_item
+      end
+    end
     resources :arrange_staffs
     resources :station_datas do
       collection do
