@@ -6,5 +6,6 @@ class Fee < ActiveRecord::Base
 
   FEE_TYPES = {0=>"基本结算户",1=>"备用金",2=>"银行卡",3=>"私人垫付"}
   STATUS = ApplicationHelper::MODEL_STATUS #0 正常 1 删除 2 作废
+#   STATUS = {:NORMAL=>0,:DELETED=>1}
   STATUS_NAMES = {0=>"正常",1=>"删除"}
 end

@@ -1,7 +1,7 @@
 #encoding: utf-8
 module ApplicationHelper
   include RolesHelper
-
+  MODEL_STATUS={:NORMAL=>0,:DELETED=>1,:INVALID=>2}
   def has_sign?
     store_id = params[:store_id]
     if cookies[:store_id].nil? || cookies[:staff_id].nil? || cookies[:staff_name].nil? || cookies[:store_name].nil?

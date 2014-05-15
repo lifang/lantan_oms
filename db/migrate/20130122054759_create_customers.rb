@@ -16,7 +16,7 @@ class CreateCustomers < ActiveRecord::Migration
       t.string :salt
       t.integer :total_point
       t.integer :store_id
-      t.property :integer, :default => 0 #客户属性 个人/集团客户
+      t.integer :property, :default => 0 #客户属性 个人/集团客户
       t.string :group_name #集团名称(如果是集团客户)
       t.integer :allowed_debts, :default => 0 #是否允许欠账
       t.float :debts_money #欠账额度
