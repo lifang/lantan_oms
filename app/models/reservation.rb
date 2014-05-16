@@ -8,7 +8,7 @@ class Reservation < ActiveRecord::Base
   STATUS = {:normal => 0, :cancel => 2, :confirmed => 1} #2取消，1下单了
 
   def self.store_reservations store_id
-    self.find_by_sql(" select r.id, r.created_at,r.res_time,r.status,c.num,cu.name,cu.mobilephone,cu.other_way email,cm.name car_model_name,p.name pro_name
+    self.find_by_sql(" select r.id, r.created_at,r.res_time,r.status,c.num,cu.name,cu.is_vip,cu.mobilephone,cu.other_way email,cm.name car_model_name,p.name pro_name
      from reservations r inner join car_nums c on c.id=r.car_num_id
       left join customer_num_relations cnr on cnr.car_num_id = c.id
       left join customers cu on cu.id=cnr.customer_id
