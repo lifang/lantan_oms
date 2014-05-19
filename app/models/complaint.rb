@@ -24,12 +24,17 @@ class Complaint < ActiveRecord::Base
   VIOLATE_N = {true=>"是",false=>"否"}
   SEX = {:MALE =>1,:FEMALE =>0,:NONE=>2} # 0 未选择 1 男 2 女
 
-  def self.mk_record store_id ,order_id,reason,request
-
+  def self.mk_record store_id ,order_id,reason,request,types
     #puts store_id ,order_id,reason,request
     order  = Order.find_by_id order_id
-    complaint = Complaint.create(:order_id => order_id, :customer_id => order.customer_id, :reason => reason,
-      :suggestion => request, :status => STATUS[:UNTREATED], :store_id => store_id) if order
+    complaint=nil
+    if order
+      staff_id_1 = order.cons_staff_id_1.nil? ? nil : order.cons_staff_id_1
+      staff_id_2 = order.cons_staff_id_2.nil? ? nil : order.cons_staff_id_2
+      complaint = Complaint.create(:order_id => order_id, :customer_id => order.customer_id, :reason => reason,
+        :suggestion => request, :status => STATUS[:UNTREATED], :store_id => store_id,:staff_id_1=>staff_id_1,
+        :staff_id_2=>staff_id_2,:types=>types,:is_violation=>VIOLATE[:INVALID])
+    end
     complaint
   end
   #获取用户的投诉

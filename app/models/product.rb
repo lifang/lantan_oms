@@ -44,7 +44,6 @@ class Product < ActiveRecord::Base
       product_list = Product.find_by_sql("SELECT id,name,types,description,introduction,img_url,status
             FROM products where store_id=#{store_id} and name like '#{product_name}'
             and is_service = #{types} and status = #{STATUS[:NORMAL]} order by status")
-      p 111111111111,product_list
     end
     return product_list
   end

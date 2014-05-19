@@ -163,7 +163,7 @@ class Api::OrdersController < ApplicationController
 
   #投诉
   def complaint
-    complaint = Complaint.mk_record params[:store_id],params[:order_id],params[:reason],params[:request]
+    complaint = Complaint.mk_record params[:store_id],params[:order_id],params[:reason],params[:request],params[:types]
     render :json => {:status => (complaint.nil? ? 0 : 1)}
   end
 
