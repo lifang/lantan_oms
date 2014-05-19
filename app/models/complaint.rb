@@ -24,6 +24,19 @@ class Complaint < ActiveRecord::Base
   VIOLATE_N = {true=>"是",false=>"否"}
   SEX = {:MALE =>1,:FEMALE =>0,:NONE=>2} # 0 未选择 1 男 2 女
 
+  def self.mk_record store_id ,order_id,reason,request,types
+    #puts store_id ,order_id,reason,request
+    order  = Order.find_by_id order_id
+    complaint=nil
+    if order
+      staff_id_1 = order.cons_staff_id_1.nil? ? nil : order.cons_staff_id_1
+      staff_id_2 = order.cons_staff_id_2.nil? ? nil : order.cons_staff_id_2
+      complaint = Complaint.create(:order_id => order_id, :customer_id => order.customer_id, :reason => reason,
+        :suggestion => request, :status => STATUS[:UNTREATED], :store_id => store_id,:staff_id_1=>staff_id_1,
+        :staff_id_2=>staff_id_2,:types=>types,:is_violation=>VIOLATE[:INVALID])
+    end
+    complaint
+  end
   #获取用户的投诉
   def self.customer_complaints(store_id, customer_id, per_page, page)
     return Complaint.paginate_by_sql(["select c.id c_id, c.created_at, c.reason, c.suggestion, c.types, c.status, c.remark,
@@ -32,7 +45,6 @@ class Complaint < ActiveRecord::Base
           left join staffs st on st.id = c.staff_id_1 left join staffs st2 on st2.id = c.staff_id_2
           where c.store_id = ? and c.customer_id = ? ", store_id, customer_id],
       :per_page => per_page, :page => page)
-    
   end
 
   def self.make_code store_id

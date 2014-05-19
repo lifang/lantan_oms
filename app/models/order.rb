@@ -117,29 +117,39 @@ class Order < ActiveRecord::Base
   end
 
 
-  #施工中的订单
+  #  #施工中的订单
+  #  def self.working_orders store_id
+  #    stations =Station.where("store_id=#{store_id} and status !=#{Station::STAT[:DELETED]}")
+  #    sql = "select c.num,w.station_id,w.status,w.order_id from work_orders w inner join orders o on w.order_id=o.id inner join car_nums c on c.id=o.car_num_id
+  # where w.current_day= '#{Time.now.strftime("%Y%m%d")}' and w.status in (#{WorkOrder::STAT[:SERVICING]},#{WorkOrder::STAT[:WAIT_PAY]},#{WorkOrder::STAT[:WAIT]}) and w.store_id=#{store_id}#"
+  #    work_orders = WorkOrder.find_by_sql(sql).group_by {|work_order| work_order.status}
+  #    of_waiting = work_orders[WorkOrder::STAT[:WAIT]]
+  #    orders_id = work_orders[WorkOrder::STAT[:SERVICING]].nil? ? [] : work_orders[WorkOrder::STAT[:SERVICING]].map(&:order_id)
+  #    of_working = work_orders[WorkOrder::STAT[:SERVICING]].group_by { |working| working.station_id } if work_orders[WorkOrder::STAT[:SERVICING]]
+  #    of_completed = work_orders[WorkOrder::STAT[:WAIT_PAY]]
+  #    products = Product.find_by_sql("select id,name from products where status=#{Product::STATUS[:NORMAL]} and is_service = #{Product::PROD_TYPES[:SERVICE]} and store_id = #{store_id}")
+  #    order_pro_rel = Product.joins(" p INNER JOIN order_prod_relations opr on p.id=opr.product_id").
+  #      joins("inner join work_orders wo on wo.order_id=opr.order_id").select("p.id,p.name,opr.order_id,wo.station_id").
+  #      where(["opr.order_id in (?)",orders_id]).group_by{|order_pro| order_pro.station_id}
+  #    stations_order = []
+  #    stations.each do |station|
+  #      station_obj = station.attributes
+  #      station_obj['of_working'] = of_working.present? && of_working[station.id].present? ?  of_working[station.id] : []
+  #      station_obj['service'] = order_pro_rel.present? && order_pro_rel[station.id].present? ? order_pro_rel[station.id] : []
+  #      stations_order << station_obj
+  #    end if stations
+  #    return [of_waiting,stations_order, of_completed,products]
+  #  end
+
+  #正在进行中的订单
   def self.working_orders store_id
-    stations =Station.where("store_id=#{store_id} and status !=#{Station::STAT[:DELETED]}")
-    sql = "select c.num,w.station_id,w.status,w.order_id from work_orders w inner join orders o on w.order_id=o.id inner join car_nums c on c.id=o.car_num_id
-where w.current_day= '#{Time.now.strftime("%Y%m%d")}' and w.status in (#{WorkOrder::STAT[:SERVICING]},#{WorkOrder::STAT[:WAIT_PAY]},#{WorkOrder::STAT[:WAIT]}) and w.store_id=#{store_id}"
-    work_orders = WorkOrder.find_by_sql(sql).group_by {|work_order| work_order.status}
-    of_waiting = work_orders[WorkOrder::STAT[:WAIT]]
-    orders_id = work_orders[WorkOrder::STAT[:SERVICING]].nil? ? [] : work_orders[WorkOrder::STAT[:SERVICING]].map(&:order_id)
-    of_working = work_orders[WorkOrder::STAT[:SERVICING]].group_by { |working| working.station_id } if work_orders[WorkOrder::STAT[:SERVICING]]
-    of_completed = work_orders[WorkOrder::STAT[:WAIT_PAY]]
-    products = Product.find_by_sql("select id,name from products where status=#{Product::STATUS[:NORMAL]} and is_service = #{Product::PROD_TYPES[:SERVICE]} and store_id = #{store_id}")
-    order_pro_rel = Product.joins(" p INNER JOIN order_prod_relations opr on p.id=opr.product_id").
-      joins("inner join work_orders wo on wo.order_id=opr.order_id").select("p.id,p.name,opr.order_id,wo.station_id").
-      where(["opr.order_id in (?)",orders_id]).group_by{|order_pro| order_pro.station_id}
-    stations_order = []
-    stations.each do |station|
-      station_obj = station.attributes
-      station_obj['of_working'] = of_working.present? && of_working[station.id].present? ?  of_working[station.id] : []
-      station_obj['service'] = order_pro_rel.present? && order_pro_rel[station.id].present? ? order_pro_rel[station.id] : []
-      stations_order << station_obj
-    end if stations
-    return [of_waiting,stations_order, of_completed,products]
+    return Order.find_by_sql(["select o.id, c.num, o.status, wo.id wo_id, wo.status wo_status from orders o inner join car_nums c on c.id=o.car_num_id
+      inner join customers cu on cu.id=o.customer_id left join work_orders wo on wo.order_id = o.id
+and wo.status not in (#{WorkOrder::STAT[:WAIT_PAY]},#{WorkOrder::STAT[:COMPLETE]},#{WorkOrder::STAT[:CANCELED]}, #{WorkOrder::STAT[:END]})
+      where o.status in (#{STATUS[:NORMAL]}, #{STATUS[:SERVICING]}, #{STATUS[:WAIT_PAYMENT]}, #{STATUS[:BEEN_PAYMENT]}, #{STATUS[:FINISHED]})
+      and DATE_FORMAT(o.created_at, '%Y%m%d')=DATE_FORMAT(NOW(), '%Y%m%d') and cu.status=? and o.store_id = ? order by o.status", Customer::STATUS[:NOMAL], store_id])
   end
+
 
   #订单详情
   def self.order_details order_id
@@ -157,8 +167,6 @@ INNER JOIN products p on opr.product_id = p.id where order_id = #{order_id}")
     return [order_details,order_pro,staff_store]
   end
 
-
-
   def self.search_by_car_num store_id,car_num, car_id
     customer = nil
     working_orders = []
@@ -166,8 +174,8 @@ INNER JOIN products p on opr.product_id = p.id where order_id = #{order_id}")
     sql = "select c.id customer_id,c.name,c.mobilephone,c.other_way email,c.birthday birth,c.sex,cn.buy_year year,
       cn.id car_num_id,cn.num,cm.name model_name,cb.name brand_name
       from customer_num_relations cnr
-      inner join car_nums cn on cn.id=cnr.car_num_id and cn.num='#{car_num}'
-      inner join customers c on c.id=cnr.customer_id and c.status=#{Customer::STATUS[:NOMAL]}
+      inner join car_nums cn on cn.id=cnr.car_num_id 
+      inner join customers c on c.id=cnr.customer_id and c.status=#{Customer::STATUS[:NOMAL]} and cn.num='#{car_num}' or c.mobilephone='#{car_num}'
       left join car_models cm on cm.id=cn.car_model_id
       left join car_brands cb on cb.id=cm.car_brand_id "
     customer = CustomerNumRelation.find_by_sql sql
@@ -526,5 +534,4 @@ INNER JOIN products p on opr.product_id = p.id where order_id = #{order_id}")
     arr[1] = order
     arr
   end
-
 end

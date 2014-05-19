@@ -8,7 +8,7 @@ class Sale < ActiveRecord::Base
       where("is_service = true")
     end
   end
-  scope :valid, where("((ended_at > '#{Time.now}' and disc_time_types = #{DISC_TIME[:TIME]}) or disc_time_types!= #{DISC_TIME[:TIME]}) and is_subsidy = true and status=#{STATUS[:RELEASE]}")
+  
   STATUS={:UN_RELEASE =>0,:RELEASE =>1,:DESTROY =>2} #0 未发布 1 发布 2 删除
   STATUS_NAME={0=>"未发布",1=>"已发布",2=>"已删除"}
   DISC_TYPES = {:FEE =>1,:DIS =>0} #1 优惠金额  0 优惠折扣
@@ -17,5 +17,5 @@ class Sale < ActiveRecord::Base
   DISC_TIME_NAME ={1=>"本年度每天",2=>"本年度每月",3=>"本年度每年",4=>"本年度每周" }
   SUBSIDY = { :NO=>0,:YES=>1} # 0 不补贴 1 补贴
   TOTAL_DISC = [DISC_TIME[:DAY],DISC_TIME[:MONTH],DISC_TIME[:YEAR],DISC_TIME[:WEEK]]
-
+  scope :valid, where("((ended_at > '#{Time.now}' and disc_time_types = #{DISC_TIME[:TIME]}) or disc_time_types!= #{DISC_TIME[:TIME]}) and is_subsidy = true and status=#{STATUS[:RELEASE]}")
 end

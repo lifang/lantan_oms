@@ -68,7 +68,8 @@ LantanOms::Application.routes.draw do
   namespace :api do
     resources :orders do
       collection do
-        get :index_list,:user_and_order,:order_details,:user_and_order,:search_car,:products_list
+        get :index_list,:user_and_order,:order_details,:user_and_order,:search_car,:products_list,
+          :new_index_list,:construction_site,:reservation_list,:complaint
       end
     end
   end

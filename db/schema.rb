@@ -38,47 +38,6 @@ ActiveRecord::Schema.define(:version => 20140516080203) do
 
   add_index "back_good_records", ["material_id"], :name => "index_back_good_records_on_material_id"
 
-  create_table "c_pcard_relations", :force => true do |t|
-    t.integer  "customer_id"
-    t.integer  "package_card_id"
-    t.datetime "ended_at"
-    t.integer  "status"
-    t.string   "content"
-    t.float    "price"
-    t.integer  "order_id"
-    t.integer  "return_types",    :default => 0
-    t.integer  "store_id"
-    t.datetime "created_at",                     :null => false
-    t.datetime "updated_at",                     :null => false
-  end
-
-  add_index "c_pcard_relations", ["customer_id"], :name => "index_c_pcard_relations_on_customer_id"
-  add_index "c_pcard_relations", ["order_id"], :name => "index_c_pcard_relations_on_order_id"
-  add_index "c_pcard_relations", ["package_card_id"], :name => "index_c_pcard_relations_on_package_card_id"
-  add_index "c_pcard_relations", ["status"], :name => "index_c_pcard_relations_on_status"
-  add_index "c_pcard_relations", ["updated_at"], :name => "index_c_pcard_relations_on_updated_at"
-
-  create_table "c_svc_relations", :force => true do |t|
-    t.integer  "customer_id"
-    t.integer  "sv_card_id"
-    t.decimal  "total_price",  :precision => 20, :scale => 2, :default => 0.0
-    t.decimal  "left_price",   :precision => 20, :scale => 2, :default => 0.0
-    t.string   "id_card"
-    t.boolean  "is_billing"
-    t.string   "verify_code"
-    t.integer  "order_id"
-    t.boolean  "status"
-    t.integer  "return_types",                                :default => 0
-    t.string   "password"
-    t.integer  "store_id"
-    t.datetime "created_at",                                                   :null => false
-    t.datetime "updated_at",                                                   :null => false
-  end
-
-  add_index "c_svc_relations", ["customer_id"], :name => "index_c_svc_relations_on_customer_id"
-  add_index "c_svc_relations", ["sv_card_id"], :name => "index_c_svc_relations_on_sv_card_id"
-  add_index "c_svc_relations", ["updated_at"], :name => "index_c_svc_relations_on_updated_at"
-
   create_table "capitals", :force => true do |t|
     t.string   "name"
     t.datetime "created_at"
@@ -91,8 +50,8 @@ ActiveRecord::Schema.define(:version => 20140516080203) do
   create_table "car_brands", :force => true do |t|
     t.string   "name"
     t.integer  "capital_id"
-    t.datetime "created_at"
-    t.datetime "updated_at"
+    t.datetime "created_at", :null => false
+    t.datetime "updated_at", :null => false
   end
 
   add_index "car_brands", ["capital_id"], :name => "index_car_brands_on_capital_id"
@@ -103,8 +62,8 @@ ActiveRecord::Schema.define(:version => 20140516080203) do
   create_table "car_models", :force => true do |t|
     t.string   "name"
     t.integer  "car_brand_id"
-    t.datetime "created_at"
-    t.datetime "updated_at"
+    t.datetime "created_at",   :null => false
+    t.datetime "updated_at",   :null => false
   end
 
   add_index "car_models", ["car_brand_id"], :name => "index_car_models_on_car_brand_id"
@@ -116,14 +75,14 @@ ActiveRecord::Schema.define(:version => 20140516080203) do
     t.string   "num"
     t.integer  "car_model_id"
     t.integer  "buy_year"
-    t.datetime "created_at"
-    t.datetime "updated_at"
     t.integer  "distance",        :default => 0
+    t.datetime "created_at",                     :null => false
+    t.datetime "updated_at",                     :null => false
     t.datetime "insurance_ended"
     t.datetime "last_inspection"
     t.integer  "inspection_type"
-    t.integer  "maint_distance"
     t.string   "vin_code"
+    t.integer  "maint_distance",  :default => 0
   end
 
   add_index "car_nums", ["car_model_id"], :name => "index_car_nums_on_car_model_id"
@@ -204,6 +163,22 @@ ActiveRecord::Schema.define(:version => 20140516080203) do
   add_index "complaints", ["staff_id_2"], :name => "index_complaints_on_staff_id_2"
   add_index "complaints", ["store_id"], :name => "index_complaints_on_store_id"
   add_index "complaints", ["types"], :name => "index_complaints_on_types"
+
+  create_table "customer_cards", :force => true do |t|
+    t.integer  "customer_id"
+    t.integer  "types"
+    t.integer  "status"
+    t.integer  "card_id"
+    t.decimal  "amt",             :precision => 16, :scale => 2, :default => 0.0
+    t.string   "package_content"
+    t.decimal  "discount",        :precision => 2,  :scale => 2, :default => 0.0
+    t.datetime "ended_at"
+    t.datetime "created_at",                                                      :null => false
+    t.datetime "updated_at",                                                      :null => false
+  end
+
+  add_index "customer_cards", ["card_id"], :name => "index_customer_cards_on_card_id"
+  add_index "customer_cards", ["customer_id"], :name => "index_customer_cards_on_customer_id"
 
   create_table "customer_num_relations", :force => true do |t|
     t.integer  "customer_id"
@@ -1213,16 +1188,24 @@ ActiveRecord::Schema.define(:version => 20140516080203) do
     t.string   "name"
     t.string   "img_url"
     t.integer  "types"
-    t.decimal  "price",       :precision => 20, :scale => 2, :default => 0.0
+    t.decimal  "price",          :precision => 20, :scale => 2, :default => 0.0
     t.float    "discount"
     t.string   "description"
     t.integer  "store_id"
     t.integer  "use_range"
-    t.integer  "status",                                     :default => 1
-    t.datetime "created_at",                                                  :null => false
-    t.datetime "updated_at",                                                  :null => false
+    t.integer  "status",                                        :default => 1
+    t.datetime "created_at",                                                     :null => false
+    t.datetime "updated_at",                                                     :null => false
+    t.decimal  "more_price",     :precision => 20, :scale => 2, :default => 0.0
+    t.decimal  "totle_price",    :precision => 20, :scale => 2, :default => 0.0
+    t.datetime "started_at"
+    t.datetime "ended_at"
+    t.integer  "date_types"
+    t.integer  "date_month"
+    t.integer  "create_staffid"
   end
 
+  add_index "sv_cards", ["create_staffid"], :name => "index_sv_cards_on_create_staffid"
   add_index "sv_cards", ["types"], :name => "index_sv_cards_on_types"
 
   create_table "svc_return_records", :force => true do |t|
@@ -1238,24 +1221,6 @@ ActiveRecord::Schema.define(:version => 20140516080203) do
 
   add_index "svc_return_records", ["created_at"], :name => "index_svc_return_records_on_created_at"
   add_index "svc_return_records", ["store_id"], :name => "index_svc_return_records_on_store_id"
-
-  create_table "svcard_prod_relations", :force => true do |t|
-    t.integer  "product_id"
-    t.integer  "product_num"
-    t.integer  "sv_card_id"
-    t.float    "base_price"
-    t.float    "more_price"
-    t.integer  "product_discount"
-    t.string   "category_id"
-    t.string   "pcard_ids"
-    t.datetime "created_at",       :null => false
-    t.datetime "updated_at",       :null => false
-  end
-
-  add_index "svcard_prod_relations", ["created_at"], :name => "index_svcard_prod_relations_on_created_at"
-  add_index "svcard_prod_relations", ["product_id"], :name => "index_svcard_prod_relations_on_product_id"
-  add_index "svcard_prod_relations", ["sv_card_id"], :name => "index_svcard_prod_relations_on_sv_card_id"
-  add_index "svcard_prod_relations", ["updated_at"], :name => "index_svcard_prod_relations_on_updated_at"
 
   create_table "svcard_use_records", :force => true do |t|
     t.integer  "c_svc_relation_id"
