@@ -508,7 +508,7 @@ td .selectBox { margin: 0 3px; border-radius: 3px;}
 .custmRecord li { float: left; line-height: 20px; padding: 5px 10px; background: #f5f5f5; border-top: 1px solid #ccc; border-right: 1px solid #ccc;}
 .custmRecord li:hover,.custmRecord li.hover { border-bottom: 1px solid #fff; background: #fff; color: #ff8828;}
 
-.cusCars { position: absolute; width: 160px; color: #f2f2f2;right: 20px;}
+.cusCars { position: absolute; width: 160px; color: #f2f2f2;right: 20px; padding-bottom: 80px;}
 .cusCar { padding: 15px 0; margin: 15px 0 0;}
 .cusCar .infoBoxTit { left: 10px;}
 .cusCar p { line-height: 24px;}
@@ -533,7 +533,7 @@ td .selectBox { margin: 0 3px; border-radius: 3px;}
 
 .res { width: 400px; float: left; margin: 10px;}
 .res h2 { color: #31343D; font-size: 18px; font-weight: normal; text-align: center;}
-.tabDiv { border: 1px solid #ccc; position: relative; height: 300px;}
+.tabDiv { border: 1px solid #ccc; position: relative; height: 300px;overflow: auto;}
 .thBg {
     height: 30px;
     width: 100%;
@@ -556,11 +556,12 @@ td .selectBox { margin: 0 3px; border-radius: 3px;}
 .shortMsg li:last-child { border: 0;}
 .shortMsg li .msgChoose { text-align: center; float: left; width: 185px; height: 30px; line-height: 30px; background: url(/assets/selectIcon.png) no-repeat 150px center; background-size: 35px 30px;}
 .shortMsg li .msgAdd { float: left; width: 30px; height: 30px; background: url(/assets/add.png) no-repeat 2px center; background-size: 25px 25px;}
-.shortMsg li .msgChooseItem { position: absolute; top: 30px; line-height: 24px; width: 300px; text-indent: 20px; padding: 0 10px; border: 1px solid #ccc; box-shadow: -1px 1px 3px rgba(0,0,0,0.3); margin-bottom: 10px; display: none;}
+.shortMsg li .msgChooseItem { position: absolute; top: 30px; line-height: 24px; width: 217px; text-indent: 20px; border: 1px solid #ccc; box-shadow: -1px 1px 3px rgba(0,0,0,0.3); margin-bottom: 10px; display: none;background: #fff;height: 200px;overflow: auto;}
 .shortMsg li.hover .msgChooseItem { display: block;}
 .shortMsg textarea { resize: none; height: 200px; width: 878px; border: 1px solid #ccc; border-top: 0;}
 .shortMsg .msgAct { padding: 5px 20px; text-align: right; border: 1px solid #ccc; border-top: 0;}
-
+.msgChooseItem p {position: relative; padding: 5px 25px 5px 5px; line-height: 20px;}
+.msgChooseItem p:hover { background: #eee;}
 
 /* 营销管理 */
 .cardBox { width: 205px; margin: 10px; float: left;}

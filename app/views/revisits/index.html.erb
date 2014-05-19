@@ -1,0 +1,116 @@
+<%= javascript_include_tag "revisits" %>
+<div class="main_tit"><h1>客户回访</h1></div>
+<div class="main_con">
+  <div class="topInfo">
+    <p>
+      <span><%= @visited %></span>
+      <span><%= @unvisited %></span>
+    </p>
+    <p>
+      <span>已回访客户</span>
+      <span>未回访客户</span>
+    </p>
+  </div>
+  <div class="toolbar" style="height: 72px;">
+    <%= form_tag "/stores/#{@store.id}/revisits", :id => "search_revi_form", :method => "get" do %>
+      <div class="searchBox" style="padding: 18px 0; float: left;">
+        <input type="text" name="search_revi_st_time" id="search_revi_st_time" placeholder="开始时间" class="Wdate" onclick="WdatePicker();" readonly
+               value="<%= @st_time.nil? || @st_time=="" ? "" : @st_time %>"/>
+        <input type="text" name="search_revi_end_time" id="search_revi_end_time" placeholder="结束时间" class="Wdate" onclick="WdatePicker();" readonly
+               value="<%= @ed_time.nil? || @ed_time=="" ? "" : @ed_time %>"/>
+      </div>
+      <div class="searchBox" style="float: left;">
+        <input type="text" name="search_revi_carnum" id="search_revi_carnum" placeholder="车牌号码"
+               value="<%= @car_num.nil? || @car_num=="" ? "" : @car_num %>"/>
+        <div class="selectBox">
+          <span>是否会员</span>
+          <div class="openDownIcon"></div>
+          <select name="search_revi_is_vip">
+            <option value="-1" <% if @is_vip.nil? || @is_vip.to_i==-1 %>selected<% end %>>客户类型</option>
+            <option value="0" <% if @is_vip && @is_vip.to_i==0 %>selected<% end %>>普通</option>
+            <option value="1" <% if @is_vip && @is_vip.to_i==1 %>selected<% end %>>会员</option>
+          </select>
+        </div>
+        <div class="selectBox">
+          <span>客户属性</span>
+          <div class="openDownIcon"></div>
+          <select name="search_revi_cus_property">
+            <option value="-1" <% if @cus_property.nil? || @cus_property.to_i==-1 %>selected<% end %>>客户属性</option>
+            <option value="0" <% if @cus_property && @cus_property.to_i==0 %>selected<% end %>>个人客户</option>
+            <option value="1" <% if @cus_property && @cus_property.to_i==1 %>selected<% end %>>单位客户</option>
+          </select>
+        </div>
+        <div class="selectBox">
+          <span>回访状态</span>
+          <div class="openDownIcon"></div>
+          <select name="search_revi_return_status">
+            <option value="-1" <% if @return_status.nil? || @return_status.to_i==-1 %>selected<% end %>>回访状态</option>
+            <option value="0" <% if @return_status && @return_status.to_i==0 %>selected<% end %>>未回访</option>
+            <option value="1" <% if @return_status && @return_status.to_i==1 %>selected<% end %>>已回访</option>
+          </select>
+        </div>
+      </div>
+
+      <div class="searchBox" style="float: left;">
+        <div class="checkBox <%= @srsc.nil? == false && @srsc.to_i==1 ? "check" : "" %>" style="float:left;">
+          <input type="checkbox" name="srsc" value="1" onclick="search_revi_select_type(this,1)"
+                 <% if @srsc && @srsc.to_i==1 %>checked<% end %>/>
+        </div>
+        <label>消费满</label>
+        <input type="text" style="width:50px;" id="search_revi_count" name="search_revi_count"
+               value="<%= @count.nil? || @count=="" ? "" : @count %>"
+               <% if @srsc.nil? || @srsc.to_i==0 %>disabled<% end %> />
+        <label>次</label>
+        <div class="checkBox <%= @srsm.nil? == false && @srsm.to_i==1 ? "check" : "" %>" style="float:left;">
+          <input type="checkbox" name="srsm" value="1" onclick="search_revi_select_type(this,2)"
+                 <% if @srsm && @srsm.to_i==1 %>checked<% end %>/>
+        </div>
+        <label>消费满</label>
+        <input type="text" style="width:50px;" id="search_revi_money" name="search_revi_money"
+               value="<%= @money.nil? || @money=="" ? "" : @money %>"
+               <% if @srsm.nil? || @srsm.to_i==0 %>disabled<% end %> />
+        <label>元</label>
+      </div>
+
+      <div class="searchBox" style="padding: 18px 0; display: inline-block;">
+        <button class="orangeBtn" type="button" onclick="search_revi_valid(this)">查询</button>
+      </div>
+    <% end %>
+  </div>
+
+  <table class="table1">
+    <tr>
+      <th></th>
+      <th>姓名</th>
+      <th>车牌号</th>
+      <th>车型</th>
+      <th>联系电话</th>
+      <th>属性</th>
+      <th>相关订单</th>
+      <th>是否回访</th>
+      <th>功能</th>
+    </tr>
+    <% @orders.each do |o| %>
+      <tr>
+        <td></td>
+        <td><%= o.name %></td>
+        <td><%= o.num %></td>
+        <td><%= o.cmname.nil? || o.cbname.nil? ? "------" : "#{o.cmname}--#{o.cbname}" %></td>
+        <td><%= o.mobilephone %></td>
+        <td><%= o.property.to_i==0 ? "个人客户" : "单位客户" %></td>
+        <td><a href="javascript:void(0)" onclick="show_order(<%= @store.id %>, <%= o.o_id %>)"><%= o.code %></a></td>
+        <td><%= o.is_visited ? "已回访" : "未回访" %></td>
+        <td><a href="javascript:void(0)" onclick="new_revisit(<%= @store.id %>, <%= o.o_id %>)">回访</a></td>
+      </tr>
+    <% end %>
+  </table>
+  <% if @orders.any? %>
+    <%= will_paginate @orders, :previous_label => "上一页", :next_label => "下一页", :class => "page" %>
+  <% end %>
+</div>
+<div class="second_box" id="order_detail">   <!--订单详情层-->
+</div>
+<div class="second_box" id="revisit_div">  <!--回访弹出层-->
+</div>
+
+

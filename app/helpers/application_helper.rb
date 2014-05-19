@@ -1,7 +1,10 @@
 #encoding: utf-8
 module ApplicationHelper
+  require 'net/http'
+  require "uri"
+  require 'openssl'
   include RolesHelper
-
+  include MessageManagesHelper
   def has_sign?
     store_id = params[:store_id]
     if cookies[:store_id].nil? || cookies[:staff_id].nil? || cookies[:staff_name].nil? || cookies[:store_name].nil?
@@ -29,5 +32,17 @@ module ApplicationHelper
   #保留金额的两位小数
   def limit_float(num)
     return (num*100).to_i/100.0
+  end
+
+  def create_get_http(url,route)
+    uri = URI.parse(url)
+    http = Net::HTTP.new(uri.host, uri.port)
+    if uri.port==443
+      http.use_ssl = true
+      http.verify_mode = OpenSSL::SSL::VERIFY_NONE
+    end
+    request= Net::HTTP::Get.new(route)
+    back_res =http.request(request)
+    return JSON back_res.body
   end
 end

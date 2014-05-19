@@ -33,7 +33,7 @@
             <li class="tmItem tmItem3 <%= is_hover("yinxiao") ? "hover" : "" %>">营销管理</li>
           </a>
           <a class="fst_menu_a" href="/stores/<%= @store.id %>/customers">
-            <li class="tmItem tmItem4 <%= is_hover("customers") ? "hover" : "" %>">客户管理</li>
+            <li class="tmItem tmItem4 <%= is_hover("customers", "revisits", "message_manages") ? "hover" : "" %>">客户管理</li>
           </a>
           <a class="fst_menu_a" href="javacript:void(0)">
             <li class="tmItem tmItem5 <%= is_hover("tongji") ? "hover" : "" %>">统计管理</li>

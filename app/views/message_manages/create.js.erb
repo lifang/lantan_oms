@@ -1,0 +1,10 @@
+$("#waiting").hide();
+$(".second_bg2").hide();
+<% if @status == 0 %>
+tishi("新建失败!");
+<% else %>
+$(".second_bg").hide();
+$("#new_msg_temp_div").hide();
+$("#new_msg_temp_cont").val("");
+tishi("新建成功!");
+<% end %>

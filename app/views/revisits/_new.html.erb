@@ -1,0 +1,113 @@
+<div class="second_content" style="width: 730px;">
+  <span class="close" title="关闭">×</span>
+  <h1>客户回访</h1>
+  <div class="returnVisitDtl">
+    <div class="personBill">
+      <div class="personInfo">
+        <label>客户姓名：</label>
+        <span><%= @customer.name if @customer %></span>
+        <label>车牌号：</label>
+        <span><%= @car_num.num if @car_num %></span>
+        <label>联系电话：</label>
+        <span><%= @customer.mobilephone if @customer %></span>
+        <label>客户属性：</label>
+        <span><%= @customer.property.to_i==0 ? "个人" : "单位" if @customer %></span>
+      </div>
+    </div>
+    <table class="table1">
+      <tr>
+        <th style="width:30%;">订单号</th>
+        <th style="width:40%;">项目</th>
+        <th>付款方式</th>
+      </tr>
+      <tr>
+        <td  style="width:30%;"><%= @order.code if @order %></td>
+        <td style="width:40%;">
+          <table style="width:100%;">
+            <tr>
+              <td>名称</td>
+              <td>数量</td>
+              <td>单价</td>
+              <td>小计</td>
+            </tr>
+            <% @order_prods.each do |op| %>
+              <tr>
+                <td><%= op.name %></td>
+                <td><%= op.pro_num %></td>
+                <td><%= op.price %></td>
+                <td><%= op.total_price %></td>
+              </tr>
+            <% end if @order_prods %>
+          </table>
+        </td>
+        <td><%= @op.join(",") %></td>
+      </tr>
+    </table>
+    <div style="line-height: 30px; text-align: right;">
+      <label>金额总计：</label>
+      <span><%= @order.price %></span>
+    </div>
+    <%= form_tag "/stores/#{@store.id}/revisits", :id => "new_revist_form", :remote => true do %>
+      <div class="form_1">
+        <div class="form_row">
+          <input type="hidden" name="revi_order_id" value="<%= @order.id %>"/>
+          <input type="hidden" name="revi_customer_id" value="<%= @customer.id %>"/>
+          <label><font class="red">*</font>回访标题</label>
+          <input type="text" id="revi_title" name="revi_title"/>
+          <div>
+            <label>回访类型</label>
+            <div class="selectBox" style="width: 95px;">
+              <span style="width: 75px;">回访类别</span>
+              <div class="openDownIcon"></div>
+              <select name="revi_type">
+                <% Revisit::TYPES_NAME.each do |k, v| %>
+                  <option value="<%= k %>"><%= v %></option>
+                <% end %>
+              </select>
+            </div>
+          </div>
+        </div>
+        <div class="form_row">
+          <label><font class="red">*</font>回访内容</label>
+          <textarea style="width: 572px;" name="revi_content" id="revi_content"></textarea>
+        </div>
+        <div class="form_row">
+          <label><font class="red">*</font>客户反馈</label>
+          <textarea style="width: 572px;" name="revi_answer" id="revi_answer"></textarea>
+        </div>
+        <div class="form_row">
+          <label>&nbsp;</label>
+          <span style="float: left;">转投诉</span>
+          <div class="checkBox" style="margin: 2px;">
+            <input type="checkbox" name="is_complaint" value="1"/>
+          </div>
+        </div>
+        <div class="form_row" style="text-align: right; margin-right: 40px; margin-top: -30px;">
+          <button class="orangeBtn2" type="button" onclick="new_revi_valid(this)">确定</button>
+        </div>
+      </div>
+    <% end %>
+  </div>
+</div>
+
+<script type="text/javascript">
+  $(function(){
+    var ss = $("#new_revist_form").find("option:selected");
+    $.each(ss, function(){
+      var txt = $(this).text();
+      $(this).parents(".selectBox").find("span").first().text(txt);
+    });
+    $("#new_revist_form").on("change", "select", function(){
+      var txt = $(this).find("option:selected").text();
+      $(this).parent().find("span").first().text(txt);
+    });
+
+    $("#new_revist_form").on("click", "input[type='checkbox']", function(){
+        if($(this).attr("checked")=="checked"){
+          $(this).parent().attr("class", "checkBox check");
+        }else{
+          $(this).parent().attr("class", "checkBox");
+        }
+    })
+  })
+</script>

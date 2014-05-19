@@ -21,12 +21,12 @@
       <a class="scd_menu_a" href="javacript:void(0)"><li <% if is_hover("yinxiao4") %>class="hover"<% end %>>卡类</li></a>
     </ul>
   </div>
-<% elsif is_hover("customers") %>
+<% elsif is_hover("customers", "revisits", "message_manages") %>
   <div class="scdMenuBox">
     <ul class="scdMenu cf">
       <a class="scd_menu_a" href="/stores/<%= @store.id %>/customers"><li <% if is_hover("customers") %>class="hover"<% end %>>客户列表</li></a>
-      <a class="scd_menu_a" href="javacript:void(0)"><li <% if is_hover("kehu2") %>class="hover"<% end %>>客户回访</li></a>
-      <a class="scd_menu_a" href="javacript:void(0)"><li <% if is_hover("kehu3") %>class="hover"<% end %>>短信管理</li></a>
+      <a class="scd_menu_a" href="/stores/<%= @store.id %>/revisits"><li <% if is_hover("revisits") %>class="hover"<% end %>>客户回访</li></a>
+      <a class="scd_menu_a" href="/stores/<%= @store.id %>/message_manages"><li <% if is_hover("message_manages") %>class="hover"<% end %>>短信管理</li></a>
     </ul>
   </div>
 <% elsif is_hover("tongji") %>

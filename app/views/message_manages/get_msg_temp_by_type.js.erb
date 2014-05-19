@@ -1,0 +1,5 @@
+$("#waiting").hide();
+$(".second_bg").hide();
+$("#msg_temp_div").find(".msgChooseItem").remove();
+$("#msg_temp_div").find("li[name='msg_li_<%= @type %>']").append("<%= j(render :partial => "get_msg_temps_item") %>");
+$(".msgChooseItem").show();
