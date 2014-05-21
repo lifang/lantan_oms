@@ -62,7 +62,7 @@ LantanOms::Application.routes.draw do
     resources :orders do
       collection do
         get :index_list,:user_and_order,:order_details,:user_and_order,:search_car,:products_list,
-          :new_index_list,:construction_site,:reservation_list,:complaint
+          :new_index_list,:construction_site,:reservation_list,:complaint,:reservation_isaccept
       end
     end
   end

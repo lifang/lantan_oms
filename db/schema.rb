@@ -11,7 +11,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20140515085015) do
+ActiveRecord::Schema.define(:version => 20140520030009) do
 
   create_table "accounts", :force => true do |t|
     t.integer  "types"
@@ -173,6 +173,7 @@ ActiveRecord::Schema.define(:version => 20140515085015) do
     t.datetime "ended_at"
     t.datetime "created_at",                                                      :null => false
     t.datetime "updated_at",                                                      :null => false
+    t.integer  "order_id"
   end
 
   add_index "customer_cards", ["card_id"], :name => "index_customer_cards_on_card_id"
@@ -1204,6 +1205,7 @@ ActiveRecord::Schema.define(:version => 20140515085015) do
     t.integer  "date_types"
     t.integer  "date_month"
     t.integer  "create_staffid"
+    t.string   "apply_content"
   end
 
   add_index "sv_cards", ["create_staffid"], :name => "index_sv_cards_on_create_staffid"
