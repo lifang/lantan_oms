@@ -42,6 +42,79 @@ class Order < ActiveRecord::Base
       left join staffs c2 on c2.id = o.cons_staff_id_2 left join staffs c3 on c3.id = o.return_staff_id where o.id = ?", order_id]).first
   end
 
+  #根据需要回访的订单列出客户
+  def self.get_order_customers(store_id, started_at, ended_at, car_num, is_vip, property, return_status, count, money)
+    ids = []
+    if count || money
+      s_sql = ["select c.id, o.id oid,o.price from customers c inner join orders o on c.id=o.customer_id
+        where c.store_id=? and o.status in (?)", store_id, [STATUS[:BEEN_PAYMENT], STATUS[:FINISHED]],]
+      unless started_at.nil? || started_at==""
+        s_sql[0] += " and o.created_at>=?"
+        s_sql << started_at
+      end
+      unless ended_at.nil? || ended_at==""
+        s_sql[0] += " and o.created_at<=?"
+        s_sql << ended_at
+      end
+      if count && money.nil?
+        s_sql[0] += " group by c.id having count(c.id)>=?"
+        s_sql << count.to_i
+        ids = self.find_by_sql(s_sql).map(&:id)
+      elsif money && count.nil?
+        s_sql[0] += " group by c.id having sum(o.price)>=?"
+        s_sql << money.to_i
+        ids = self.find_by_sql(s_sql).map(&:id)
+      elsif money && count
+        s_sql[0] += " group by c.id having count(c.id)>=? and sum(o.price)>=?"
+        s_sql << count.to_i << money.to_i
+        ids = self.find_by_sql(s_sql).map(&:id)
+      end
+    end
+    sql = ["select cu.id cu_id, cu.name, cu.mobilephone, cu.property, o.code, o.id o_id, o.is_visited, 
+      o.price o_price, o.created_at o_time, cn.num, cm.name cmname, cb.name cbname from customers cu
+      inner join orders o on o.customer_id = cu.id 
+      left join car_nums cn on cn.id = o.car_num_id
+      left join car_models cm on cn.car_model_id=cm.id
+      left join car_brands cb on cm.car_brand_id=cb.id
+      where cu.status=? and cu.store_id=? and o.store_id=? and o.status in (?)", Customer::STATUS[:NOMAL],
+      store_id, store_id, [STATUS[:BEEN_PAYMENT], STATUS[:FINISHED]]]
+    unless started_at.nil? || started_at==""
+      sql[0] += " and o.created_at>=?"
+      sql << started_at
+    end
+    unless ended_at.nil? || ended_at==""
+      sql[0] += " and o.created_at<=?"
+      sql << ended_at
+    end
+    if car_num
+      sql[0] += " and cn.num like ?"
+      sql << "%#{car_num.strip.gsub(/[%_]/){|x| '\\' + x}}%"
+    end
+    if is_vip && is_vip.to_i != -1
+      sql[0] += " and cu.is_vip=?"
+      sql << is_vip.to_i
+    end
+    if property && property.to_i != -1
+      sql[0] += " and cu.property=?"
+      sql << property.to_i
+    end
+    if return_status && return_status.to_i != -1
+      sql[0] += " and o.is_visited=?"
+      sql << return_status.to_i
+    end
+    if count || money
+      if ids.any?
+        sql[0] += " and cu.id in (?)"
+        sql << ids.uniq
+        order = self.find_by_sql(sql)
+      else
+        order = []
+      end
+    else
+      order = self.find_by_sql(sql)
+    end
+    return order
+  end
 
 
   #  #施工中的订单

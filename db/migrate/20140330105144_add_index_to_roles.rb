@@ -9,8 +9,6 @@ class AddIndexToRoles< ActiveRecord::Migration
     add_index :customer_num_relations, :created_at
     add_index :goal_sale_types, :created_at
     add_index :image_urls, :created_at
-    add_index :m_order_types, :created_at
-    add_index :mat_order_items, :created_at
     add_index :menus, :created_at
     add_index :order_pay_types, :created_at
     add_index :order_prod_relations, :created_at
@@ -38,9 +36,7 @@ class AddIndexToRoles< ActiveRecord::Migration
     add_index :goal_sales, :updated_at
     add_index :image_urls, :updated_at
     add_index :m_order_types, :updated_at
-    add_index :mat_in_orders, :updated_at
     add_index :mat_order_items, :updated_at
-    add_index :mat_out_orders, :updated_at
     add_index :menus, :updated_at
     add_index :message_records, :updated_at
     add_index :notices, :updated_at
@@ -73,7 +69,6 @@ class AddIndexToRoles< ActiveRecord::Migration
     add_index :staff_gr_records, :created_at
     add_index :orders, :created_at
     add_index :mat_in_orders, :created_at
-    add_index :mat_out_orders, :created_at
     add_index :suppliers, :created_at
     add_index :stores, :created_at
     add_index :sales, :created_at

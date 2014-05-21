@@ -1,11 +1,11 @@
 #encoding: utf-8
 require 'date'
-class MaterialOrder < ActiveRecord::Base
-  has_many :mat_order_items
-  has_many :mat_out_orders
-  has_many  :mat_in_orders
-  has_many  :m_order_types
-  has_many :materials, :through => :mat_order_items
+class ProductOrder < ActiveRecord::Base
+  has_many :prod_order_items
+  has_many :prod_out_orders
+  has_many  :prod_in_orders
+  has_many  :prod_order_types
+  has_many :products, :through => :prod_order_items
   belongs_to :supplier
 
   STATUS = {:no_pay => 0, :pay => 1, :cancel => 4}

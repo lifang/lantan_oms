@@ -1,0 +1,5 @@
+<div class="msgChooseItem">
+  <% @msg_temps.each do |mt| %>
+  <p style="cursor: pointer;" onclick="add_temp_to_msg(this)"><%= mt.content %></p>
+  <% end %>
+</div>

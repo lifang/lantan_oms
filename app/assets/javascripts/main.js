@@ -49,7 +49,7 @@ function tishi(message){
     jQuery('#tishi_div').fadeTo("slow",1);
     $("#tishi_div .x").click(function(){
         $("#tishi_div").css('display','none');
-        //stopPropagation(arguments[1]);
+    //stopPropagation(arguments[1]);
     })
     setTimeout(function(){
         jQuery('#tishi_div').fadeTo("slow",0);
@@ -70,7 +70,11 @@ function popup(t){      //弹出一级菜单
     var z_layer_height = $(t).height();
 
     var left = (win_width-layer_width)/2;
+
     var top = (win_height-z_layer_height)/2 + scolltop;
+    if(top<30){
+        top = 30;
+    };
     $(".second_bg").css("height",doc_height);
     $(t).css('top',top);
     $(t).css('left',left);
@@ -94,6 +98,9 @@ function popup2(t){      //弹出二级菜单
 
     var left = (win_width-layer_width)/2;
     var top = (win_height-z_layer_height)/2 + scolltop;
+    if(top<30){
+        top = 30;
+    };
     $(".second_bg2").css("height",doc_height);
     $(t).css('top',top);
     $(t).css('left',left);
@@ -118,4 +125,21 @@ function get_str_len(str){      //获取名称长度
         }
     }
     return a;
+}
+
+function show_order(store_id, order_id){    //点击显示订单详情
+    popup("#waiting");
+    $.ajax({
+        type: "get",
+        url: "/stores/"+store_id+"/customers/show_order",
+        dataType: "script",
+        data: {
+            order_id : order_id
+        },
+        error: function(){
+            $("#waiting").hide();
+            $(".second_bg").hide();
+            tishi("数据错误!");
+        }
+    })
 }

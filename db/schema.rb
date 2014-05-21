@@ -40,17 +40,18 @@ ActiveRecord::Schema.define(:version => 20140520030009) do
 
   create_table "capitals", :force => true do |t|
     t.string   "name"
-    t.datetime "created_at", :null => false
-    t.datetime "updated_at", :null => false
+    t.datetime "created_at"
+    t.datetime "updated_at"
   end
 
   add_index "capitals", ["created_at"], :name => "index_capitals_on_created_at"
+  add_index "capitals", ["updated_at"], :name => "index_capitals_on_updated_at"
 
   create_table "car_brands", :force => true do |t|
     t.string   "name"
     t.integer  "capital_id"
-    t.datetime "created_at", :null => false
-    t.datetime "updated_at", :null => false
+    t.datetime "created_at"
+    t.datetime "updated_at"
   end
 
   add_index "car_brands", ["capital_id"], :name => "index_car_brands_on_capital_id"
@@ -61,8 +62,8 @@ ActiveRecord::Schema.define(:version => 20140520030009) do
   create_table "car_models", :force => true do |t|
     t.string   "name"
     t.integer  "car_brand_id"
-    t.datetime "created_at",   :null => false
-    t.datetime "updated_at",   :null => false
+    t.datetime "created_at"
+    t.datetime "updated_at"
   end
 
   add_index "car_models", ["car_brand_id"], :name => "index_car_models_on_car_brand_id"
@@ -74,13 +75,14 @@ ActiveRecord::Schema.define(:version => 20140520030009) do
     t.string   "num"
     t.integer  "car_model_id"
     t.integer  "buy_year"
+    t.datetime "created_at"
+    t.datetime "updated_at"
     t.integer  "distance",        :default => 0
-    t.datetime "created_at",                     :null => false
-    t.datetime "updated_at",                     :null => false
     t.datetime "insurance_ended"
     t.datetime "last_inspection"
     t.integer  "inspection_type"
-    t.integer  "maint_distance",  :default => 0
+    t.integer  "maint_distance"
+    t.string   "vin_code"
   end
 
   add_index "car_nums", ["car_model_id"], :name => "index_car_nums_on_car_model_id"
@@ -126,8 +128,8 @@ ActiveRecord::Schema.define(:version => 20140520030009) do
     t.integer  "order_index"
     t.string   "name"
     t.integer  "parent_id"
-    t.datetime "created_at",  :null => false
-    t.datetime "updated_at",  :null => false
+    t.datetime "created_at"
+    t.datetime "updated_at"
   end
 
   add_index "cities", ["created_at"], :name => "index_cities_on_created_at"
@@ -192,18 +194,6 @@ ActiveRecord::Schema.define(:version => 20140520030009) do
   add_index "customer_num_relations", ["customer_id"], :name => "index_customer_num_relations_on_customer_id"
   add_index "customer_num_relations", ["updated_at"], :name => "index_customer_num_relations_on_updated_at"
 
-  create_table "customer_store_relations", :force => true do |t|
-    t.integer  "customer_id"
-    t.integer  "store_id"
-    t.integer  "total_point"
-    t.boolean  "is_vip",      :default => false
-    t.datetime "created_at",                     :null => false
-    t.datetime "updated_at",                     :null => false
-  end
-
-  add_index "customer_store_relations", ["customer_id"], :name => "index_customer_store_relations_on_customer_id"
-  add_index "customer_store_relations", ["store_id"], :name => "index_customer_store_relations_on_store_id"
-
   create_table "customers", :force => true do |t|
     t.string   "name"
     t.string   "mobilephone"
@@ -219,7 +209,7 @@ ActiveRecord::Schema.define(:version => 20140520030009) do
     t.string   "username"
     t.string   "salt"
     t.integer  "total_point"
-    t.integer  "integer",            :default => 0
+    t.integer  "property",           :default => 0
     t.string   "group_name"
     t.integer  "allowed_debts",      :default => 0
     t.float    "debts_money"
@@ -227,6 +217,7 @@ ActiveRecord::Schema.define(:version => 20140520030009) do
     t.integer  "check_time"
     t.datetime "created_at",                            :null => false
     t.datetime "updated_at",                            :null => false
+    t.integer  "store_id"
   end
 
   add_index "customers", ["birthday"], :name => "index_customers_on_birthday"
@@ -357,133 +348,6 @@ ActiveRecord::Schema.define(:version => 20140520030009) do
   add_index "image_urls", ["product_id"], :name => "index_image_urls_on_product_id"
   add_index "image_urls", ["updated_at"], :name => "index_image_urls_on_updated_at"
 
-  create_table "m_order_types", :force => true do |t|
-    t.integer  "material_order_id"
-    t.integer  "pay_types"
-    t.decimal  "price",             :precision => 20, :scale => 2, :default => 0.0
-    t.datetime "created_at",                                                        :null => false
-    t.datetime "updated_at",                                                        :null => false
-  end
-
-  add_index "m_order_types", ["created_at"], :name => "index_m_order_types_on_created_at"
-  add_index "m_order_types", ["material_order_id"], :name => "index_m_order_types_on_material_order_id"
-  add_index "m_order_types", ["pay_types"], :name => "index_m_order_types_on_pay_types"
-  add_index "m_order_types", ["updated_at"], :name => "index_m_order_types_on_updated_at"
-
-  create_table "mat_in_orders", :force => true do |t|
-    t.integer  "material_order_id"
-    t.integer  "material_id"
-    t.integer  "material_num"
-    t.float    "price"
-    t.integer  "staff_id"
-    t.datetime "created_at",        :null => false
-    t.datetime "updated_at",        :null => false
-  end
-
-  add_index "mat_in_orders", ["created_at"], :name => "index_mat_in_orders_on_created_at"
-  add_index "mat_in_orders", ["material_id"], :name => "index_mat_in_orders_on_material_id"
-  add_index "mat_in_orders", ["material_order_id"], :name => "index_mat_in_orders_on_material_order_id"
-  add_index "mat_in_orders", ["staff_id"], :name => "index_mat_in_orders_on_staff_id"
-  add_index "mat_in_orders", ["updated_at"], :name => "index_mat_in_orders_on_updated_at"
-
-  create_table "mat_order_items", :force => true do |t|
-    t.integer  "material_order_id"
-    t.integer  "material_id"
-    t.integer  "material_num"
-    t.float    "price"
-    t.datetime "created_at",        :null => false
-    t.datetime "updated_at",        :null => false
-  end
-
-  add_index "mat_order_items", ["created_at"], :name => "index_mat_order_items_on_created_at"
-  add_index "mat_order_items", ["material_id"], :name => "index_mat_order_items_on_material_id"
-  add_index "mat_order_items", ["material_order_id"], :name => "index_mat_order_items_on_material_order_id"
-  add_index "mat_order_items", ["updated_at"], :name => "index_mat_order_items_on_updated_at"
-
-  create_table "mat_out_orders", :force => true do |t|
-    t.integer  "material_id"
-    t.integer  "staff_id"
-    t.integer  "material_num"
-    t.float    "price"
-    t.integer  "material_order_id"
-    t.integer  "types",             :limit => 1
-    t.integer  "store_id"
-    t.datetime "created_at",                     :null => false
-    t.datetime "updated_at",                     :null => false
-  end
-
-  add_index "mat_out_orders", ["created_at"], :name => "index_mat_out_orders_on_created_at"
-  add_index "mat_out_orders", ["material_id"], :name => "index_mat_out_orders_on_material_id"
-  add_index "mat_out_orders", ["material_order_id"], :name => "index_mat_out_orders_on_material_order_id"
-  add_index "mat_out_orders", ["staff_id"], :name => "index_mat_out_orders_on_staff_id"
-  add_index "mat_out_orders", ["updated_at"], :name => "index_mat_out_orders_on_updated_at"
-
-  create_table "material_losses", :force => true do |t|
-    t.integer  "loss_num"
-    t.integer  "staff_id"
-    t.integer  "store_id"
-    t.integer  "material_id"
-    t.datetime "created_at",  :null => false
-    t.datetime "updated_at",  :null => false
-  end
-
-  add_index "material_losses", ["material_id"], :name => "index_material_losses_on_material_id"
-  add_index "material_losses", ["staff_id"], :name => "index_material_losses_on_staff_id"
-
-  create_table "material_orders", :force => true do |t|
-    t.string   "code"
-    t.integer  "supplier_id"
-    t.integer  "supplier_type"
-    t.integer  "status"
-    t.integer  "staff_id"
-    t.decimal  "price",          :precision => 20, :scale => 2, :default => 0.0
-    t.datetime "arrival_at"
-    t.string   "logistics_code"
-    t.string   "carrier"
-    t.integer  "store_id"
-    t.string   "remark"
-    t.integer  "sale_id"
-    t.integer  "m_status"
-    t.datetime "created_at",                                                     :null => false
-    t.datetime "updated_at",                                                     :null => false
-  end
-
-  add_index "material_orders", ["code"], :name => "index_material_orders_on_code"
-  add_index "material_orders", ["m_status"], :name => "index_material_orders_on_m_status"
-  add_index "material_orders", ["sale_id"], :name => "index_material_orders_on_sale_id"
-  add_index "material_orders", ["staff_id"], :name => "index_material_orders_on_staff_id"
-  add_index "material_orders", ["status"], :name => "index_material_orders_on_status"
-  add_index "material_orders", ["store_id"], :name => "index_material_orders_on_store_id"
-  add_index "material_orders", ["supplier_id"], :name => "index_material_orders_on_supplier_id"
-  add_index "material_orders", ["supplier_type"], :name => "index_material_orders_on_supplier_type"
-
-  create_table "materials", :force => true do |t|
-    t.string   "name"
-    t.string   "code"
-    t.decimal  "price",                        :precision => 20, :scale => 2, :default => 0.0
-    t.integer  "storage"
-    t.integer  "types"
-    t.boolean  "status"
-    t.integer  "store_id"
-    t.string   "remark",       :limit => 1000
-    t.integer  "check_num"
-    t.float    "sale_price"
-    t.string   "unit"
-    t.boolean  "is_ignore",                                                   :default => false
-    t.integer  "material_low"
-    t.string   "code_img"
-    t.integer  "category_id"
-    t.decimal  "import_price",                 :precision => 20, :scale => 2
-    t.boolean  "create_prod"
-    t.datetime "created_at",                                                                     :null => false
-    t.datetime "updated_at",                                                                     :null => false
-  end
-
-  add_index "materials", ["name"], :name => "index_materials_on_name"
-  add_index "materials", ["status"], :name => "index_materials_on_status"
-  add_index "materials", ["store_id"], :name => "index_materials_on_store_id"
-  add_index "materials", ["types"], :name => "index_materials_on_types"
-
   create_table "menus", :force => true do |t|
     t.string   "controller_name"
     t.string   "name"
@@ -506,6 +370,14 @@ ActiveRecord::Schema.define(:version => 20140520030009) do
   add_index "message_records", ["status"], :name => "index_message_records_on_status"
   add_index "message_records", ["store_id"], :name => "index_message_records_on_store_id"
   add_index "message_records", ["updated_at"], :name => "index_message_records_on_updated_at"
+
+  create_table "message_temps", :force => true do |t|
+    t.integer  "types"
+    t.string   "content",    :null => false
+    t.integer  "store_id"
+    t.datetime "created_at", :null => false
+    t.datetime "updated_at", :null => false
+  end
 
   create_table "money_details", :force => true do |t|
     t.integer  "types"
@@ -738,6 +610,20 @@ ActiveRecord::Schema.define(:version => 20140520030009) do
   add_index "points", ["customer_id"], :name => "index_points_on_customer_id"
   add_index "points", ["target_id"], :name => "index_points_on_target_id"
 
+  create_table "prod_in_orders", :force => true do |t|
+    t.integer  "product_order_id"
+    t.integer  "product_id"
+    t.decimal  "product_num",      :precision => 20, :scale => 2
+    t.decimal  "price",            :precision => 20, :scale => 2
+    t.integer  "staff_id"
+    t.datetime "created_at",                                      :null => false
+    t.datetime "updated_at",                                      :null => false
+  end
+
+  add_index "prod_in_orders", ["product_id"], :name => "index_prod_in_orders_on_product_id"
+  add_index "prod_in_orders", ["product_order_id"], :name => "index_prod_in_orders_on_product_order_id"
+  add_index "prod_in_orders", ["staff_id"], :name => "index_prod_in_orders_on_staff_id"
+
   create_table "prod_mat_relations", :force => true do |t|
     t.integer  "product_id"
     t.integer  "material_num"
@@ -751,15 +637,96 @@ ActiveRecord::Schema.define(:version => 20140520030009) do
   add_index "prod_mat_relations", ["product_id"], :name => "index_prod_mat_relations_on_product_id"
   add_index "prod_mat_relations", ["updated_at"], :name => "index_prod_mat_relations_on_updated_at"
 
+  create_table "prod_order_items", :force => true do |t|
+    t.integer  "product_order_id"
+    t.integer  "product_id"
+    t.decimal  "product_num",      :precision => 20, :scale => 2
+    t.decimal  "price",            :precision => 20, :scale => 2
+    t.datetime "created_at",                                      :null => false
+    t.datetime "updated_at",                                      :null => false
+  end
+
+  add_index "prod_order_items", ["product_id"], :name => "index_prod_order_items_on_product_id"
+  add_index "prod_order_items", ["product_order_id"], :name => "index_prod_order_items_on_product_order_id"
+
+  create_table "prod_order_types", :force => true do |t|
+    t.integer  "product_order_id"
+    t.integer  "pay_types"
+    t.decimal  "price",            :precision => 20, :scale => 2
+    t.datetime "created_at",                                      :null => false
+    t.datetime "updated_at",                                      :null => false
+  end
+
+  add_index "prod_order_types", ["pay_types"], :name => "index_prod_order_types_on_pay_types"
+  add_index "prod_order_types", ["product_order_id"], :name => "index_prod_order_types_on_product_order_id"
+
+  create_table "prod_out_orders", :force => true do |t|
+    t.integer  "product_id"
+    t.integer  "staff_id"
+    t.decimal  "product_num",                   :precision => 20, :scale => 2
+    t.decimal  "price",                         :precision => 20, :scale => 2
+    t.integer  "product_order_id"
+    t.integer  "types",            :limit => 1
+    t.integer  "store_id"
+    t.datetime "created_at",                                                   :null => false
+    t.datetime "updated_at",                                                   :null => false
+  end
+
+  add_index "prod_out_orders", ["product_id"], :name => "index_prod_out_orders_on_product_id"
+  add_index "prod_out_orders", ["product_order_id"], :name => "index_prod_out_orders_on_product_order_id"
+  add_index "prod_out_orders", ["staff_id"], :name => "index_prod_out_orders_on_staff_id"
+
+  create_table "product_losses", :force => true do |t|
+    t.integer  "product_id"
+    t.decimal  "loss_num",   :precision => 20, :scale => 2
+    t.integer  "staff_id"
+    t.integer  "store_id"
+    t.datetime "created_at",                                :null => false
+    t.datetime "updated_at",                                :null => false
+  end
+
+  add_index "product_losses", ["product_id"], :name => "index_product_losses_on_product_id"
+  add_index "product_losses", ["staff_id"], :name => "index_product_losses_on_staff_id"
+
+  create_table "product_orders", :force => true do |t|
+    t.string   "code"
+    t.integer  "supplier_id"
+    t.integer  "supplier_type"
+    t.integer  "status"
+    t.integer  "staff_id"
+    t.decimal  "price",          :precision => 20, :scale => 2
+    t.datetime "arrival_at"
+    t.string   "logistics_code"
+    t.string   "carrier"
+    t.integer  "store_id"
+    t.string   "remark"
+    t.integer  "sale_id"
+    t.integer  "m_status"
+    t.datetime "created_at",                                    :null => false
+    t.datetime "updated_at",                                    :null => false
+  end
+
+  add_index "product_orders", ["code"], :name => "index_product_orders_on_code"
+  add_index "product_orders", ["m_status"], :name => "index_product_orders_on_m_status"
+  add_index "product_orders", ["sale_id"], :name => "index_product_orders_on_sale_id"
+  add_index "product_orders", ["staff_id"], :name => "index_product_orders_on_staff_id"
+  add_index "product_orders", ["status"], :name => "index_product_orders_on_status"
+  add_index "product_orders", ["store_id"], :name => "index_product_orders_on_store_id"
+  add_index "product_orders", ["supplier_id"], :name => "index_product_orders_on_supplier_id"
+  add_index "product_orders", ["supplier_type"], :name => "index_product_orders_on_supplier_type"
+
   create_table "products", :force => true do |t|
     t.string   "name"
+    t.string   "code"
     t.decimal  "base_price",     :precision => 20, :scale => 2, :default => 0.0
     t.decimal  "sale_price",     :precision => 20, :scale => 2, :default => 0.0
     t.string   "description"
+    t.text     "introduction"
+    t.string   "remark"
     t.integer  "types"
     t.string   "service_code"
     t.boolean  "status",                                        :default => true
-    t.text     "introduction"
+    t.boolean  "is_shelves",                                    :default => false
     t.boolean  "is_service"
     t.integer  "staff_level"
     t.integer  "staff_level_1"
@@ -767,17 +734,22 @@ ActiveRecord::Schema.define(:version => 20140520030009) do
     t.integer  "cost_time"
     t.integer  "store_id"
     t.string   "standard"
-    t.decimal  "deduct_percent", :precision => 20, :scale => 2, :default => 0.0
+    t.string   "unit"
+    t.decimal  "storage",        :precision => 20, :scale => 2, :default => 0.0
+    t.decimal  "check_num",      :precision => 20, :scale => 2, :default => 0.0
+    t.decimal  "low_warning",    :precision => 20, :scale => 2, :default => 0.0
+    t.boolean  "is_ignore",                                     :default => false
     t.decimal  "t_price",        :precision => 20, :scale => 2, :default => 0.0
     t.boolean  "is_auto_revist"
     t.integer  "auto_time"
     t.text     "revist_content"
-    t.integer  "prod_point",                                    :default => 0
-    t.decimal  "deduct_price",   :precision => 20, :scale => 2, :default => 0.0
+    t.integer  "prod_point"
     t.boolean  "show_on_ipad",                                  :default => true
     t.boolean  "commonly_used",                                 :default => false
     t.integer  "category_id"
     t.boolean  "is_added",                                      :default => false
+    t.decimal  "deduct_percent", :precision => 20, :scale => 2, :default => 0.0
+    t.decimal  "deduct_price",   :precision => 20, :scale => 2, :default => 0.0
     t.decimal  "techin_price",   :precision => 20, :scale => 2, :default => 0.0
     t.decimal  "techin_percent", :precision => 20, :scale => 2, :default => 0.0
     t.integer  "single_types"
@@ -873,11 +845,11 @@ ActiveRecord::Schema.define(:version => 20140520030009) do
 
   create_table "role_model_relations", :force => true do |t|
     t.integer  "role_id"
+    t.integer  "num",        :limit => 8
     t.integer  "menu_id"
-    t.integer  "num",        :limit => 8, :default => 0
     t.integer  "store_id"
-    t.datetime "created_at",                             :null => false
-    t.datetime "updated_at",                             :null => false
+    t.datetime "created_at",              :null => false
+    t.datetime "updated_at",              :null => false
   end
 
   add_index "role_model_relations", ["created_at"], :name => "index_role_model_relations_on_created_at"

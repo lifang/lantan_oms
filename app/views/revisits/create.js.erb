@@ -1,0 +1,7 @@
+<% if @status == 0 %>
+  $("#waiting").hide();
+  $(".second_bg").hide();
+  tishi("数据错误!");
+<% else %>
+  window.location.reload();
+<% end %>

@@ -1,0 +1,10 @@
+$("#waiting").hide();
+<% if @status == 0 %>
+  $(".second_bg").hide();
+  tishi("发送失败!");
+<% else %>
+  tishi("发送成功!");
+  setTimeout(function(){
+  window.location.reload();
+  }, 1500);
+<% end %>

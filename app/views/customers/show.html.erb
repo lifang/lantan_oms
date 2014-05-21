@@ -1,33 +1,31 @@
 <%= javascript_include_tag "customers" %>
 <div class="main_tit"><h1>客户详情</h1></div>
 <div class="cusCars">
-  <div class="cusCar infoBox">
-    <span class="infoBoxTit">客户车辆</span>
-    <% if @cus_nums.blank? %>
-      <h5 style="text-align:center;">暂无</h5>
-    <% else %>
-      <% @cus_nums.each do |cn| %>
+  <% if @cus_nums.blank? %>
+    <h5 style="text-align:center;">暂无</h5>
+  <% else %>
+    <% @cus_nums.each do |cn| %>
+      <div class="cusCar infoBox">
+        <span class="infoBoxTit">客户车辆</span>
         <img src="/assets/cusCar_1.jpg" width="160" />
         <p><%= cn.num %></p>
         <p><%= "#{cn.cbname}--#{cn.cmname}" %></p>
         <div class="cusCarAct">
-          <button class="edit"></button>
-          <button class="delete"></button>
+          <button class="edit" title="编辑" onclick="edit_car(<%= @store.id %>, <%= cn.id %>)"></button>
+          <button class="delete" title="删除" onclick="del_car(<%= @store.id %>, <%= cn.id %>)"></button>
         </div>
-      <% end %>
+      </div>
     <% end %>
-  </div>
+  <% end %>
 </div>
 
 <div class="main_con">
   <div class="topInfo">
     <p>
       <span><%= @order_count %></span>
-      <span>8</span>
     </p>
     <p>
       <span>消费次数</span>
-      <span>满意度</span>
     </p>
   </div>
 
@@ -70,4 +68,6 @@
 <div class="second_box" id="edit_customer">   <!--编辑客户层-->
 </div>
 <div class="second_box" id="order_detail">   <!--订单详情层-->
+</div>
+<div class="second_box" id="edit_car_div">   <!--编辑汽车层-->
 </div>

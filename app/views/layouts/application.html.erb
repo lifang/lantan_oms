@@ -33,13 +33,13 @@
             <li class="tmItem tmItem3 <%= is_hover("yinxiao") ? "hover" : "" %>">营销管理</li>
           </a>
           <a class="fst_menu_a" href="/stores/<%= @store.id %>/customers">
-            <li class="tmItem tmItem4 <%= is_hover("customers") ? "hover" : "" %>">客户管理</li>
+            <li class="tmItem tmItem4 <%= is_hover("customers", "revisits", "message_manages") ? "hover" : "" %>">客户管理</li>
           </a>
           <a class="fst_menu_a" href="javacript:void(0)">
             <li class="tmItem tmItem5 <%= is_hover("tongji") ? "hover" : "" %>">统计管理</li>
           </a>
-          <a class="fst_menu_a" href="javacript:void(0)">
-            <li class="tmItem tmItem6 <%= is_hover("kucun") ? "hover" : "" %>">库存管理</li>
+          <a class="fst_menu_a" href="/stores/<%= @store.id %>/storages/mat_index">
+            <li class="tmItem tmItem6 <%= is_hover("storages") ? "hover" : "" %>">库存管理</li>
           </a>
           <a class="fst_menu_a" href="javacript:void(0)">
             <li class="tmItem tmItem7 <%= is_hover("caiwu") ? "hover" : "" %>">财务管理</li>
@@ -65,7 +65,11 @@
       <%= yield %>
 
     </div>
-    <div class="footer"></div>
+    <div class="footer">
+      <% if request.url.include?("storages") %>
+      <%= render "/storages/storage_button"  %>
+      <% end %>
+    </div>
     <div class="second_bg"></div> <!--一级菜单遮罩层-->
     <div class="second_bg2"></div> <!--二级菜单遮罩层-->
     <div class="tab_Prompt" id="waiting"> <!--等待层-->

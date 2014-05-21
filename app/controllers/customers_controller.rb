@@ -61,8 +61,7 @@ class CustomersController < ApplicationController
       orders = Order.where(["status in (?) and customer_id=? and store_id=?", Order::PRINT_CASH, @customer,
           @store.id])
       @order_count = orders.length
-      @orders = orders.paginate(:page => params[:page] ||= 1, :per_page => 2)
-      @product_hash = OrderProdRelation.order_products(@orders)
+      @orders = orders.paginate(:page => params[:page] ||= 1, :per_page => 1)
       @order_pay_type = OrderPayType.order_pay_types(@orders)
       @pay_types = OrderPayType.pay_order_types(@orders.map(&:id))
     end
@@ -117,7 +116,8 @@ class CustomersController < ApplicationController
               :insurance_ended => v["insurance_ended"].nil? || v["insurance_ended"]=="" ? nil : v["insurance_ended"],
               :last_inspection => v["last_inspection"].nil? ||  v["last_inspection"]=="" ? nil :  v["last_inspection"],
               :inspection_type => v["inspection_type"].nil? || v["inspection_type"]=="" ? nil : v["inspection_type"],
-              :maint_distance => v["maint_distance"].nil? || v["maint_distance"]=="" ? nil : v["maint_distance"])
+              :maint_distance => v["maint_distance"].nil? || v["maint_distance"]=="" ? nil : v["maint_distance"],
+              :vin_code => v["vin_code"].nil? || v["vin_code"]=="" ? nil : v["vin_code"])
             CustomerNumRelation.create(:customer_id => customer.id, :car_num_id => car_num.id, :store_id => @store.id)
           end if car_item
           flash[:notice] = "编辑成功!"
@@ -168,7 +168,8 @@ class CustomersController < ApplicationController
               :insurance_ended => v["insurance_ended"].nil? || v["insurance_ended"]=="" ? nil : v["insurance_ended"],
               :last_inspection => v["last_inspection"].nil? ||  v["last_inspection"]=="" ? nil :  v["last_inspection"],
               :inspection_type => v["inspection_type"].nil? || v["inspection_type"]=="" ? nil : v["inspection_type"],
-              :maint_distance => v["maint_distance"].nil? || v["maint_distance"]=="" ? nil : v["maint_distance"])
+              :maint_distance => v["maint_distance"].nil? || v["maint_distance"]=="" ? nil : v["maint_distance"],
+              :vin_code => v["vin_code"].nil? || v["vin_code"]=="" ? nil : v["vin_code"])
             CustomerNumRelation.create(:customer_id => customer.id, :car_num_id => car_num.id, :store_id => @store.id)
           end if car_item
           flash[:notice] = "创建成功!"
@@ -215,6 +216,7 @@ class CustomersController < ApplicationController
     @insurance_ended = params[:insurance_ended]
     @maint_distance = params[:maint_distance]
     @car_num = params[:car_num]
+    @vin_code = params[:vin_code]
     @index = params[:index].to_i
   end
 
@@ -235,6 +237,66 @@ class CustomersController < ApplicationController
       where opt.order_id = ? group by opt.pay_type",
         @order[0].id]).group_by { |item| item.pay_type } if @order[0]
 
+  end
+
+  #编辑车辆
+  def edit_car
+    cn_id = params[:carnum_id].to_i
+    @car_num = CustomerNumRelation.find_by_sql(["select cn.*, cm.id cmid, cb.id cbid, cp.id cpid
+        from car_nums cn left join car_models cm on cn.car_model_id=cm.id
+        left join car_brands cb on cm.car_brand_id=cb.id
+        left join capitals cp on cb.capital_id=cp.id
+        where cn.id=?", cn_id]).first
+    @brands = CarBrand.where(["capital_id=?", @car_num.cpid.to_i]) if @car_num && @car_num.cpid
+    @models = CarModel.where(["car_brand_id=?", @car_num.cbid.to_i]) if @car_num && @car_num.cbid
+    @capitals = Capital.all
+  end
+
+  #更新车辆
+  def update_car
+    car_num_id = params[:car_num_id].to_i
+    car_num = params[:car_num]
+    @status = 1
+    @msg = ""
+    car = CustomerNumRelation.joins(:car_num).where(["customer_num_relations.store_id=? and car_nums.id!=? and
+        car_nums.num=?", @store.id, car_num_id, car_num,]).first
+    if car
+      @status = 0
+      @msg = "车牌号#{car_num}已被注册!"
+    else
+      CarNum.transaction do
+        hash = {:num => car_num, :car_model_id => params[:car_model].to_i, :buy_year => params[:buy_year],
+          :distance => params[:distance].to_i, :insurance_ended => params[:insurance_ended],
+          :last_inspection => params[:last_inspection], :inspection_type => params[:inspection_type].to_i,
+          :maint_distance => params[:maint_distance], :vin_code => params[:vin_code]
+        }
+        begin
+          car_num = CarNum.find_by_id(car_num_id)
+          car_num.update_attributes(hash)
+          flash[:notice] = "编辑成功!"
+        rescue
+          @status = 0
+          @msg = "编辑失败!"
+        end
+      end
+    end
+  end
+
+  #删除车辆
+  def del_car
+    car_num_id = params[:car_num_id]
+    @status = 1
+    CarNum.transaction do
+      begin
+        cnr = CustomerNumRelation.find_by_car_num_id(car_num_id)
+        cnr.destroy
+        cn = CarNum.find_by_id(car_num_id)
+        cn.destroy
+        flash[:notice] = "删除成功!"
+      rescue
+        @status = 0
+      end
+    end
   end
   
   def get_title

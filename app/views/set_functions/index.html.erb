@@ -10,16 +10,12 @@
 
   <ul class="leftBox">
     <li class="storeLeftMenu_1 hover" id="menu_1"><a href="javascript:void(0)" onclick="set_functions_change_type(1, this)">门店组织架构</a></li>
-    <li class="storeLeftMenu_2" id="menu_2"><a href="javascript:void(0)" onclick="set_functions_change_type(2, this)">商品类别管理</a></li>
+    <li class="storeLeftMenu_2" id="menu_2"><a href="javascript:void(0)" onclick="set_functions_change_type(2, this)">物料(商品)类别管理</a></li>
     <li class="storeLeftMenu_3" id="menu_3"><a href="javascript:void(0)" onclick="set_functions_change_type(3, this)">服务类别管理</a></li>
   </ul>
 
   <div class="infoBox" style="padding: 15px 0;" id="dpt_div">
     <%= render "dpt_and_pos_list" %>
-  </div>
-
-  <div class="infoBox" style="padding: 15px 0;display:none;" id="goods_div">
-    <%= render "goods_list" %>
   </div>
   <div class="infoBox" style="padding: 15px 0;display:none;" id="materials_div">
     <%= render "materials_list" %>

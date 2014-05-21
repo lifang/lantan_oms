@@ -50,6 +50,7 @@ function new_customer(){    //新建客户
 }
 
 function edit_customer(customer_id, store_id){   //编辑客户
+    $("#edit_car_div").empty();
     popup("#waiting");
     $.ajax({
         type: "get",
@@ -226,6 +227,7 @@ function add_car(obj, store_id){    //添加车辆
     var insurance_ended = $("#insurance_ended").val();
     var maint_distance = $("#maint_distance").val();
     var car_num = $("#car_num").val();
+    var vin_code = $("#vin_code").val();
     var ing_flag = new RegExp(/^[0-9]*[1-9][0-9]*$/);
     var pattern = new RegExp("[`~@#$^&*()=:;,\\[\\].<>?~！@#￥……&*（）——|{}。，、？-]");
     if(buy_year==""){
@@ -278,6 +280,7 @@ function add_car(obj, store_id){    //添加车辆
                     insurance_ended : insurance_ended,
                     maint_distance : maint_distance,
                     car_num : car_num,
+                    vin_code : vin_code,
                     index : index
                 },
                 error: function(){
@@ -408,17 +411,67 @@ function print_orders(store_id){    //打印消费记录
     }
 }
 
-function show_order(store_id, order_id){    //点击显示订单详情
+
+function edit_car(store_id, carnum_id){     //编辑车辆
+    $("#edit_customer").empty();
     popup("#waiting");
     $.ajax({
         type: "get",
-        url: "/stores/"+store_id+"/customers/show_order",
+        url: "/stores/"+store_id+"/customers/edit_car",
         dataType: "script",
-        data: {order_id : order_id},
+        data: {
+            carnum_id : carnum_id
+        },
         error: function(){
             $("#waiting").hide();
             $(".second_bg").hide();
             tishi("数据错误!");
         }
     })
+}
+
+function update_car_valid(obj, car_num_id){     //编辑车辆验证
+    var buy_year = $("#buy_year").val();
+    var car_model = $("#car_model").val();
+    var car_distance = $("#distance").val();
+    var last_inspection = $("#last_inspection").val();
+    var insurance_ended = $("#insurance_ended").val();
+    var maint_distance = $("#maint_distance").val();
+    var car_num = $("#car_num").val();
+    var ing_flag = new RegExp(/^[0-9]*[1-9][0-9]*$/);
+    var pattern = new RegExp("[`~@#$^&*()=:;,\\[\\].<>?~！@#￥……&*（）——|{}。，、？-]");
+    if(buy_year==""){
+        tishi("车辆年份不能为空!");
+    }else if(car_model=="0"){
+        tishi("请选择车辆型号!");
+    }else if(car_distance!="" && ing_flag.test(car_distance)==false){
+        tishi("行驶里程请输入正整数!");
+    }else if(maint_distance!="" && ing_flag.test(maint_distance)==false){
+        tishi("保养里程请输入正整数!");
+    }else if(car_num==""){
+        tishi("车牌号码不能为空!");
+    }else if(car_num!="" && (pattern.test(car_num)==true || car_num.length != 7)){
+        tishi("车牌号码格式不正确!");
+    }else{
+        popup2("#waiting");
+        $(obj).parents("form").submit();
+    }
+}
+
+function del_car(store_id, car_num_id){
+    var flag = confirm("删除该车辆后,该车辆对应的消费、投诉等记录都将清除,请慎重操作。\r是否继续删除该车辆?");
+    if(flag){
+        popup("#waiting");
+        $.ajax({
+          type: "get",
+          url: "/stores/"+store_id+"/customers/del_car",
+          dataType: "script",
+          data: {car_num_id : car_num_id},
+          error: function(){
+              $("#waiting").hide();
+              $(".second_bg").hide();
+              tishi("数据错误!");
+          }
+        })
+    }
 }

@@ -1,0 +1,167 @@
+<%= javascript_include_tag "message_manages" %>
+<div class="main_tit"><h1>短信管理</h1></div>
+<div class="main_con">
+  <div class="toolbar" style="height: 72px;">
+    <%= form_tag "/stores/#{@store.id}/message_manages",  :method => "get", :id => "message_manages_form" do %>
+      <div class="searchBox" style="padding: 18px 0; float: left;">
+        <input type="text" name="search_revi_st_time" id="search_revi_st_time" placeholder="开始时间" class="Wdate" onclick="WdatePicker();" readonly
+               value="<%= @st_time.nil? || @st_time=="" ? "" : @st_time %>"/>
+        <input type="text" name="search_revi_end_time" id="search_revi_end_time" placeholder="结束时间" class="Wdate" onclick="WdatePicker();" readonly
+               value="<%= @ed_time.nil? || @ed_time=="" ? "" : @ed_time %>"/>
+      </div>
+      <div class="searchBox" style="float: left;">
+        <input type="text" name="search_revi_carnum" id="search_revi_carnum" placeholder="车牌号码"
+               value="<%= @car_num.nil? || @car_num=="" ? "" : @car_num %>"/>
+        <div class="selectBox">
+          <span></span>
+          <div class="openDownIcon"></div>
+          <select name="search_revi_is_vip">
+            <option value="-1" <% if @is_vip.nil? || @is_vip.to_i==-1 %>selected<% end %>>客户类型</option>
+            <option value="0" <% if @is_vip && @is_vip.to_i==0 %>selected<% end %>>普通</option>
+            <option value="1" <% if @is_vip && @is_vip.to_i==1 %>selected<% end %>>会员</option>
+          </select>
+        </div>
+        <div class="selectBox">
+          <span></span>
+          <div class="openDownIcon"></div>
+          <select name="search_revi_cus_property">
+            <option value="-1" <% if @cus_property.nil? || @cus_property.to_i==-1 %>selected<% end %>>客户属性</option>
+            <option value="0" <% if @cus_property && @cus_property.to_i==0 %>selected<% end %>>个人客户</option>
+            <option value="1" <% if @cus_property && @cus_property.to_i==1 %>selected<% end %>>单位客户</option>
+          </select>
+        </div>
+        <div class="selectBox">
+          <span></span>
+          <div class="openDownIcon"></div>
+          <select name="search_revi_return_status">
+            <option value="-1" <% if @return_status.nil? || @return_status.to_i==-1 %>selected<% end %>>回访状态</option>
+            <option value="0" <% if @return_status && @return_status.to_i==0 %>selected<% end %>>未回访</option>
+            <option value="1" <% if @return_status && @return_status.to_i==1 %>selected<% end %>>已回访</option>
+          </select>
+        </div>
+      </div>
+
+      <div class="searchBox" style="float: left;">
+        <div class="checkBox <%= @srsc.nil? == false && @srsc.to_i==1 ? "check" : "" %>" style="float:left;">
+          <input type="checkbox" name="srsc" value="1" onclick="search_revi_select_type(this,1)"
+                 <% if @srsc && @srsc.to_i==1 %>checked<% end %>/>
+        </div>
+        <label>消费满</label>
+        <input type="text" style="width:50px;" id="search_revi_count" name="search_revi_count"
+               value="<%= @count.nil? || @count=="" ? "" : @count %>"
+               <% if @srsc.nil? || @srsc.to_i==0 %>disabled<% end %> />
+        <label>次</label>
+        <div class="checkBox <%= @srsm.nil? == false && @srsm.to_i==1 ? "check" : "" %>" style="float:left;">
+          <input type="checkbox" name="srsm" value="1" onclick="search_revi_select_type(this,2)"
+                 <% if @srsm && @srsm.to_i==1 %>checked<% end %>/>
+        </div>
+        <label>消费满</label>
+        <input type="text" style="width:50px;" id="search_revi_money" name="search_revi_money"
+               value="<%= @money.nil? || @money=="" ? "" : @money %>"
+               <% if @srsm.nil? || @srsm.to_i==0 %>disabled<% end %> />
+        <label>元</label>
+      </div>
+
+      <div class="searchBox" style="padding: 18px 0; display: inline-block;">
+        <button class="orangeBtn" type="button" onclick="search_revi_valid(this)">查询</button>
+      </div>
+    <% end %>
+  </div>
+
+  <div class="chooseBox cf">
+    <div class="searchRes res">
+      <h2>查询结果</h2>
+      <div class="tabDiv">
+        <div class="thBg"></div>
+        <table id="unselected_table">
+          <tr>
+            <th>
+              <div class="checkBox">
+                <input type="checkBox" onclick="select_all_customer(this)"/>
+              </div>
+            </th>
+            <th>姓名</th>
+            <th>车牌号码</th>
+            <th>最近消费日期</th>
+            <th>消费金额</th>
+          </tr>
+          <% @customers.each do |k ,v| %>
+            <tr name="unselected_<%= k %>">
+              <td>
+                <div class="checkBox">
+                  <input type="hidden" name="unselected_cus_ids" value="<%= k %>"/>
+                  <input type="checkBox" onclick="select_customer(this, <%= k %>)"/>
+                </div>
+              </td>
+              <% name,num,time,price = get_customer_last_time_and_price(v) %>
+              <td><%= name %></td>
+              <td style="width:20%;" title="<%= num %>"><%= truncate(num, :length => 15) %></td>
+              <td><%= time %></td>
+              <td><%= price %></td>
+            </tr>
+          <% end %>
+        </table>
+      </div>
+    </div>
+    <div class="goAndBack">
+      <div class="goto"></div>
+      <div class="back"></div>
+    </div>
+    <div class="chosenRes res">
+      <h2>选中结果</h2>
+      <div class="tabDiv">
+        <div class="thBg"></div>
+        <table id="has_selected_table">
+          <tr>
+            <th style="width:20%;">姓名</th>
+            <th style="width:20%;">车牌号码</th>
+            <th style="width:30%;">最近消费日期</th>
+            <th style="width:20%;">消费金额</th>
+            <th style="width:10%;"></th>
+          </tr>
+        </table>
+      </div>
+    </div>
+  </div>
+
+  <div class="shortMsg" id="msg_temp_div">
+    <h2>短信内容</h2>
+    <ul class="cf">
+      <% MessageTemp::TYPE_NAME.each do |k, v| %>
+        <li name="msg_li_<%= k %>">
+          <span class="msgChoose" style="cursor:pointer;" onclick="get_msg_temp_by_type(<%= k %>, <%= @store.id %>)"><%= v %></span>
+          <span class="msgAdd scd_btn" style="cursor:pointer;" onclick="add_msg_temp_by_type(<%= k %>, '<%= v %>')"></span>
+        </li>
+      <% end %>
+    </ul>
+    <%= form_tag "/stores/#{@store.id}/message_manages/send_message", :id => "send_msg_form", :remote => "true" do  %>
+      <textarea name="send_msg_cont" id="send_msg_cont">
+      </textarea>
+    <input type="hidden" name="send_msg_ids" value=""/>
+      <div class="msgAct">
+        <button class="orangeBtn2" type="button" onclick="send_msg_valid(this)">发送</button>
+      </div>
+    <% end %>
+  </div>
+</div>
+
+<div class="second_box" id="new_msg_temp_div">
+  <div class="second_content" style="width: 730px;">
+    <span class="close" title="关闭">×</span>
+    <h1>新建短信模板</h1>
+    <div class="returnVisitDtl">
+      <%= form_tag "/stores/#{@store.id}/message_manages", :remote => "true" do %>
+        <div class="form_1">
+          <div class="form_row">
+            <label><font class="red">*</font>模板内容</label>
+            <textarea style="width: 572px;" name="new_msg_temp_cont" id="new_msg_temp_cont"></textarea>
+          </div>
+          <input type="hidden" name="new_msg_temp_type"/>
+          <div class="scdBoxAct2">
+            <button class="orangeBtn2" type="button" onclick="new_msg_temp_valid(this)">确定</button>
+          </div>
+        </div>
+      <% end %>
+    </div>
+  </div>
+</div>

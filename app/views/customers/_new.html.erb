@@ -150,6 +150,9 @@
           <label>保养里程</label><input type="text" id="maint_distance"/>
           <label><font class="red">*</font>车牌号码</label><input type="text" id="car_num"/>
         </div>
+        <div class="form_row">
+          <label>车架号</label><input type="text" id="vin_code"/>
+        </div>
         <div class="form_row" style="text-align:center;">
           <button class="greenBtn" type="button" onclick="add_car(this, <%= @store.id %>)">新增车辆</button>
         </div>
@@ -164,6 +167,7 @@
         <th>年检时间</th>
         <th>保险截止</th>
         <th>保养里程</th>
+        <th>车架号</th>
         <th>操作</th>
       </tr>
     </table>

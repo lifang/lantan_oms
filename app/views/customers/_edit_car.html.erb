@@ -1,0 +1,90 @@
+<div class="second_content" style="width: 730px;">
+  <span class="close" title="关闭">×</span>
+  <h1>编辑车辆</h1>
+  <div class="customerInfo infoBox cf">
+    <%= form_tag "/stores/#{@store.id}/customers/update_car", :id => "edit_car_form", :method => "post", :remote => true do %>
+    <div class="form_1">
+      <div class="form_row">
+        <input type="hidden" name="car_num_id" value="<%= @car_num.id %>"/>
+        <label><font class="red">*</font>车辆年份</label>
+        <input type="text" id="buy_year" name="buy_year" value="<%= @car_num.buy_year %>" class="Wdate" onclick="WdatePicker({dateFmt:'yyyy',maxDate:'%y'});" readonly/>
+        <label><font class="red">*</font>品牌型号</label>
+        <div>
+          <div class="selectBox" style="width: 95px;">
+            <span style="width: 75px;"></span>
+            <div class="openDownIcon"></div>
+            <select onchange="select_change(this, <%= @store.id %>)" id="car_capital">
+              <option value="0">------</option>
+              <% @capitals.each do |c| %>
+                <option value="<%= c.id %>" <% if @car_num.cpid.to_i==c.id %>selected<% end %>><%= c.name %></option>
+              <% end %>
+            </select>
+          </div>
+          <div class="selectBox" style="width: 95px;">
+            <span style="width: 75px;"></span>
+            <div class="openDownIcon"></div>
+            <select onchange="select_change(this,<%= @store.id %>)" id="car_brand">
+              <option value="0">------</option>
+              <% @brands.each do |b| %>
+                <option value="<%= b.id %>" <% if @car_num.cbid.to_i==b.id %>selected<% end %>><%= b.name %></option>
+              <% end if @brands %>
+            </select>
+          </div>
+          <div class="selectBox" style="width: 95px;">
+            <span style="width: 75px;"></span>
+            <div class="openDownIcon"></div>
+            <select onchange="select_change(this,<%= @store.id %>)" id="car_model" name="car_model">
+              <option value="0">------</option>
+              <% @models.each do |m| %>
+                <option value="<%= m.id %>" <% if @car_num.cmid.to_i==m.id %>selected<% end %>><%= m.name %></option>
+              <% end if @models %>
+            </select>
+          </div>
+        </div>
+
+      </div>
+      <div class="form_row">
+        <label>行驶里程</label><input type="text" id="distance" name="distance" value="<%= @car_num.distance %>"/>
+        <label>年检时间</label><input type="text" 
+              value="<%= @car_num.last_inspection.nil? ? "" : @car_num.last_inspection.strftime("%Y-%m-%d") %>"
+              id="last_inspection" name="last_inspection" class="Wdate" onclick="WdatePicker();" readonly/>
+        <label>年检规则</label>
+        <div class="choiceBox" style="margin: 0;">
+          <label style="width: 42px;">2年</label>
+          <div class="radioBox <%= @car_num.inspection_type.to_i==2 ? "check" : "" %>">
+            <input type="radio" name="inspection_type" value="2" onclick="select_inspection_type(this)"
+                   <% if @car_num.inspection_type.to_i==2 %>checked<% end %>/>
+          </div>
+          <label style="width: 42px;">1年</label>
+          <div class="radioBox <%= @car_num.inspection_type.to_i==1 ? "check" : "" %>">
+            <input type="radio" name="inspection_type" value="1" onclick="select_inspection_type(this)"
+                   <% if @car_num.inspection_type.to_i==1 %>checked<% end %>/>
+          </div>
+        </div>
+      </div>
+      <div class="form_row">
+        <label>保险截止</label><input type="text" id="insurance_ended" name="insurance_ended"
+                value="<%= @car_num.insurance_ended.nil? ? "" : @car_num.insurance_ended.strftime("%Y-%m-%d") %>"
+                class="Wdate" onclick="WdatePicker();" readonly/>
+        <label>保养里程</label><input type="text" id="maint_distance" name="maint_distance"
+                                  value="<%= @car_num.maint_distance %>"/>
+        <label><font class="red">*</font>车牌号码</label><input type="text" id="car_num" name="car_num"
+                                                            value="<%= @car_num.num %>"/>
+      </div>
+      <div class="form_row">
+        <label>车架号</label><input type="text" id="vin_code" name="vin_code" value="<%= @car_num.vin_code %>"/>
+      </div>
+      <div class="form_row" style="text-align:center;">
+        <button class="greenBtn" type="button" onclick="update_car_valid(this)">确定</button>
+      </div>
+    </div>
+    <% end %>
+  </div>
+</div>
+<script type="text/javascript">
+  var ss = $("#edit_car_form").find("option:selected");
+  $.each(ss, function(){
+    var txt = $(this).text();
+    $(this).parents(".selectBox").find("span").first().text(txt);
+  });
+</script>

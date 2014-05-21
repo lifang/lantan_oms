@@ -9,7 +9,7 @@
   </td>
   <td><%= @insurance_ended=="" ? "----" : @insurance_ended %><input type="hidden" name="car_item[<%= @index %>]insurance_ended" value="<%= @insurance_ended %>"/></td>
   <td><%= @maint_distance=="" ? "----" : @maint_distance %><input type="hidden" name="car_item[<%= @index %>]maint_distance" value="<%= @maint_distance %>"/></td>
-
+<td><%= @vin_code=="" ? "----" : @vin_code %><input type="hidden" name="car_item[<%= @index %>]vin_code" value="<%= @vin_code %>"/></td>
   <td>
     <button type="button" class="delete" title="删除" onclick="add_car_item_delete(this)"></button>
   </td>

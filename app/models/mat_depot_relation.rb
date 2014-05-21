@@ -1,4 +1,4 @@
 class MatDepotRelation < ActiveRecord::Base
-  belongs_to :material
+  belongs_to :product
   belongs_to :depot
 end
