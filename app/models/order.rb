@@ -217,7 +217,7 @@ INNER JOIN products p on p.id = ppr.product_id where pc.id in (?)",customercard_
           end
         end
         products << product
-      end
+      end if  packagecards[customercard.card_id]
       customer_card['products'] = products
       package_cards << customer_card
     end
@@ -237,7 +237,7 @@ INNER JOIN customer_cards cc on sc.id=cc.card_id where cc.status=1 and cc.types=
       products = Product.find_by_sql(["select p.id,p.name,p.sale_price from products p where p.id in (?) ",product_ids])
       discount_card['products'] = products
       discount_cards << discount_card
-    end
+    end if discountcards
 
     info = []
     customers.each do |customer|
