@@ -37,6 +37,11 @@ LantanOms::Application.routes.draw do
         post :send_message
       end
     end
+    resources :storages do
+      collection do
+        get :mat_index
+      end
+    end
     resources :arrange_staffs
     resources :station_datas do
       collection do

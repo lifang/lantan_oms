@@ -629,7 +629,7 @@ td .selectBox { margin: 0 3px; border-radius: 3px;}
 .moreList { position: absolute; display: none;}
 .moreBox:hover .moreList { display: block;}
 .moreList ul { margin-bottom: 80px; border: 1px solid #ccc;}
-.moreList li { line-height: 20px; width: 100px; text-align: left; text-indent: 10px;}
+.moreList li { line-height: 20px; width: 86px; text-align: left; text-indent: 10px;background: #fff;cursor: default;}
 .moreList li:hover { background: #FF9E2F; color: #fff;}
 
 

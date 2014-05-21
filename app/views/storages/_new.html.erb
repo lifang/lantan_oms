@@ -1,0 +1,98 @@
+<div class="second_content" style="width: 450px;">
+  <%= form_tag "/stores/#{@store.id}/storages" do %>
+    <span class="close" title="关闭">×</span>
+    <h1>新建产品</h1>
+    <div class="infoBox cf" style="padding-right: 40px;">
+      <div class="form_1">
+        <div class="form_row"><label>条形码：</label><input type="text" nam="code" id="code"/></div>
+        <div class="form_row"><label><font class="red">*</font>商品名称：</label><input type="text" name="name" id="name"/></div>
+        <div class="form_row"><label>商品规格：</label><input type="text" name="standard" id="standard"/></div>
+        <div class="form_row"><label>商品单位：</label><input type="text" name="unit" id="unit"/></div>
+        <div class="form_row"><label><font class="red">*</font>商品类别：</label>
+          <div class="selectBox">
+            <span>类别</span>
+            <div class="openDownIcon"></div>
+            <select name="types" id="types">
+              <option value="0">------</option>
+              <% @mat_type.each do |mt| %>
+                <option value="<%= mt.id %>"><%= mt.name %></option>
+              <% end %>
+            </select>
+          </div>
+        </div>
+        <div class="form_row"><label><font class="red">*</font>成本价：</label><input type="text" placeholder="0.00" name="t_price" id="t_price"/></div>
+        <div class="form_row"><label><font class="red">*</font>零售价：</label><input type="text" placeholder="0.00" name="base_price" id="base_price"/></div>
+        <div class="form_row"><label><font class="red">*</font>促销价：</label><input type="text" placeholder="0.00" name="sale_price" id="sale_price"/></div>
+        <div class="choiceBox" style="margin: 4px 0;">
+          <label>上架销售：</label>
+          <div class="checkBox">
+            <input type="checkbox" />
+          </div>
+        </div>
+      </div>
+      <div class="perPic" style="position: absolute; right: 40px; top: 15px;">
+        <span>照片</span>
+        <button class="upload">上传</button>
+      </div>
+      <div id="good_detail">
+        <div class="form_row"><label><font class="red">*</font>积分：</label><input type="text" placeholder="0" name="p_point" id="p_point"/></div>
+        <div class="form_row"><label><nobr>销售提成方式：</nobr></label>
+          <div class="radioBox check" style="float:left;"><input type="radio" name="xs_t_type" value="1"/></div>
+          <span style="width: 50px; float:left;">金额
+            </span>
+          <div class="radioBox" style="float:left;"><input type="radio" name="xs_t_type" value="2"/></div>
+          <span style="width: 50px; float:left;">百分点</span>
+        </div>
+        <div class="form_row"><label><font class="red">*</font>提成百分点：
+          </label><input type="text" placeholder="0.0"/>
+        </div>
+        <div class="choiceBox" style="margin: 4px 0;">
+          <label>需要施工：</label>
+          <div class="checkBox">
+            <input type="checkbox" />
+          </div>
+        </div>
+        <div class="form_row"><label><nobr>技师提成方式：</nobr></label>
+          <div class="radioBox check" style="float:left;"><input type="radio" name="js_t_type" value="1"/></div>
+          <span style="width: 50px; float:left;">金额</span>
+          <div class="radioBox" style="float:left;"><input type="radio" name="js_t_type" value="2"/></div>
+          <span style="width: 50px; float:left;">百分点</span>
+        </div>
+        <div class="form_row"><label><font class="red">*</font>技师提成：</label>
+          <input type="text" placeholder="0.0"/>
+        </div>
+        <div class="choiceBox" style="margin: 4px 0;">
+          <label>自动回访：</label>
+          <div class="checkBox">
+            <input type="checkbox" />
+          </div>
+        </div>
+        <div class="form_row"><label><font class="red">*</font>回访时间：</label>
+          <div class="selectBox">
+            <span></span>
+            <div class="openDownIcon"></div>
+            <select name="types" id="types">
+              <option value="0">------</option>
+              <% @revi_time.each do |t| %>
+                <option value="<%= t %>"><%= "#{t}小时" %></option>
+              <% end %>
+            </select>
+          </div>
+        </div>
+        <div class="form_row"><label>回访内容：</label>
+          <textarea style="width: 275px;height: 50px;"></textarea>
+        </div>
+        <div class="form_row"><label>简介：</label>
+          <textarea style="width: 275px;height: 50px;"></textarea>
+        </div>
+        <div class="form_row"><label>描述：</label>
+          <textarea style="width: 275px"></textarea>
+        </div>
+      </div>
+    </div>
+    <div class="scdBoxAct">
+      <button class="orangeBtn2">创建</button>
+      <button class="greyBtn">取消</button>
+    </div>
+  <% end %>
+</div>

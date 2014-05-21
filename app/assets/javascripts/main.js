@@ -49,7 +49,7 @@ function tishi(message){
     jQuery('#tishi_div').fadeTo("slow",1);
     $("#tishi_div .x").click(function(){
         $("#tishi_div").css('display','none');
-        //stopPropagation(arguments[1]);
+    //stopPropagation(arguments[1]);
     })
     setTimeout(function(){
         jQuery('#tishi_div').fadeTo("slow",0);
@@ -70,7 +70,11 @@ function popup(t){      //弹出一级菜单
     var z_layer_height = $(t).height();
 
     var left = (win_width-layer_width)/2;
+
     var top = (win_height-z_layer_height)/2 + scolltop;
+    if(top<30){
+        top = 30;
+    };
     $(".second_bg").css("height",doc_height);
     $(t).css('top',top);
     $(t).css('left',left);
@@ -94,6 +98,9 @@ function popup2(t){      //弹出二级菜单
 
     var left = (win_width-layer_width)/2;
     var top = (win_height-z_layer_height)/2 + scolltop;
+    if(top<30){
+        top = 30;
+    };
     $(".second_bg2").css("height",doc_height);
     $(t).css('top',top);
     $(t).css('left',left);

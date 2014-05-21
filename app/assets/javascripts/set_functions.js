@@ -1,14 +1,10 @@
-function set_functions_new(type){       //新建 0部门 1职务 2商品 3物料 4服务
+function set_functions_new(type){       //新建 0部门 1职务 3物料 4服务
     if(type==0){
         $("#set_functions_new").find("h1").first().text("新建部门");
-    }else if(type==1){
-
-    }else if(type==2){
-        $("#set_functions_new").find("h1").first().text("新建商品");
     }else if(type==3){
-        $("#set_functions_new").find("h1").first().text("新建物料");
+        $("#set_functions_new").find("h1").first().text("新建物料(商品)类别");
     }else if(type==4){
-        $("#set_functions_new").find("h1").first().text("新建服务");
+        $("#set_functions_new").find("h1").first().text("新建服务类别");
     }
     $("#new_commit_button").attr("onclick", "new_commit_button("+type+")");
     $("#set_functions_name").val("");
@@ -37,10 +33,6 @@ function new_commit_button(type){       //验证
                     $("#waiting").hide();
                     if(type==0){
                         tishi("已有同名的部门!");
-                    }else if(type==1){
-
-                    }else if(type==2){
-                        tishi("已有同名的商品类型!");
                     }else if(type==3){
                         tishi("已有同名的物料类型!");
                     }else if(type==4){
@@ -137,7 +129,6 @@ function set_functions_change_type(type, obj){   //切换页面显示类容
     if(type==1){
         $("#dpt_div").show();
     }else if(type==2){
-        $("#goods_div").show();
         $("#materials_div").show();
     }else if(type==3){
         $("#servs_div").show();
@@ -220,10 +211,6 @@ function set_funcions_delete(type, obj_id, store_id){     //删除
     var str = ""
     if(type==0){
         str = "确定删除该部门?"
-    }else if(type==1){
-
-    }else if(type==2){
-        str = "确定删除该商品类别?"
     }else if(type==3){
         str = "确定删除该物料类别?"
     }else if(type==4){

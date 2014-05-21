@@ -38,10 +38,10 @@
       <a class="scd_menu_a" href="javacript:void(0)"><li <% if is_hover("tongji4") %>class="hover"<% end %>>员工</li></a>
     </ul>
   </div>
-<% elsif is_hover("kucun") %>
+<% elsif is_hover("storages") %>
   <div class="scdMenuBox">
     <ul class="scdMenu cf">
-      <a class="scd_menu_a" href="javacript:void(0)"><li <% if is_hover("kucun1") %>class="hover"<% end %>>库存列表</li></a>
+      <a class="scd_menu_a" href="/stores/<%= @store.id %>/storages/mat_index"><li <% if is_hover("storages/mat_index") %>class="hover"<% end %>>库存列表</li></a>
       <a class="scd_menu_a" href="javacript:void(0)"><li <% if is_hover("kucun2") %>class="hover"<% end %>>出入库记录</li></a>
       <a class="scd_menu_a" href="javacript:void(0)"><li <% if is_hover("kucun3") %>class="hover"<% end %>>订货记录</li></a>
       <a class="scd_menu_a" href="javacript:void(0)"><li <% if is_hover("kucun4") %>class="hover"<% end %>>报损记录</li></a>
