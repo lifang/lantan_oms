@@ -81,8 +81,8 @@ class Api::OrdersController < ApplicationController
 
   #拒绝,受理,取消预约
   def reservation_isaccept
-   status,notice = Reservation.is_accept params[:reservation_id],params[:store_id],params[:types]
-   render :json => {:status =>  status,:notice =>notice }
+    status,notice = Reservation.is_accept params[:reservation_id],params[:store_id],params[:types]
+    render :json => {:status =>  status,:notice =>notice }
   end
 
   #产品（产品列表）搜索
@@ -91,17 +91,43 @@ class Api::OrdersController < ApplicationController
     product_name = params[:product_name].nil? || params[:product_name].strip == "" ? "%%" : "%"+ params[:product_name] +"%"
     if params[:store_id] && product_name
       status = 1
-      product_list = Product.products_arr params[:store_id],product_name,params[:types]
+      cards,services, products = Product.products_arr params[:store_id],product_name,params[:types]
     end
-    render :json=>{:status => status,:product_list=>product_list,:types=>params[:types] }
+    render :json=>{:status => status,:cards=>cards,:services=>services,:products=>products,:types=>params[:types] }
   end
 
   #根据车牌号或者手机号码查询客户
   def search_car
-    order,customer_cards,discount_cards = Order.search_by_car_num params[:store_id],params[:car_num], nil
-    result = {:status => 1,:customer => order,:customer_cards => customer_cards,:discount_cards=>discount_cards}
+    order,customer_cards,discount_cards,stored_cards = Order.search_by_car_num params[:store_id],params[:car_num], nil
+    result = {:status => 1,:customer => order,:customer_cards => customer_cards,:discount_cards=>discount_cards,:stored_cards => stored_cards}
     render :json => result
   end
+
+  #下单
+  def add
+    if params[:types].to_i==0 #查询出来的用户为1，手动输入的用户为0
+      Customer.customer_valid
+      Customer.customer_create params[:store_id],params[:name], params[:car_num],params[:mobilephone],params[:car_model_name],params[:car_brand_name],
+        params[:buy_year],params[:property],params[:sex],params[:vin],params[:maint_distance],params[:group_name]
+    end
+    #name姓名 car_num车牌号 mobilephone手机号码 car_model_name车品牌 car_brand_name车型 buy_year购买年份 property属性 sex性别 vin maint_distance里程 group_name公司名称
+
+
+
+    user_id = params[:user_id].nil? ? cookies[:user_id] : params[:user_id]
+    order = Order.make_record params[:c_id],params[:store_id],params[:car_num_id],params[:start],
+      params[:end],params[:prods],params[:price],params[:station_id],user_id
+    info = order[1].nil? ? nil : order[1].get_info
+    str = if order[0] == 0 || order[0] == 2
+      "数据出现异常"
+    elsif order[0] == 1
+      "success"
+    elsif order[0] == 3
+      "没可用的工位了"
+    end
+    render :json => {:status => order[0], :content => str, :order => info}
+  end
+
 
   #施工完成 -> 等待付款
   def work_order_finished
@@ -168,21 +194,6 @@ class Api::OrdersController < ApplicationController
   end
 
 
-  #下单
-  def add
-    user_id = params[:user_id].nil? ? cookies[:user_id] : params[:user_id]
-    order = Order.make_record params[:c_id],params[:store_id],params[:car_num_id],params[:start],
-      params[:end],params[:prods],params[:price],params[:station_id],user_id
-    info = order[1].nil? ? nil : order[1].get_info
-    str = if order[0] == 0 || order[0] == 2
-      "数据出现异常"
-    elsif order[0] == 1
-      "success"
-    elsif order[0] == 3
-      "没可用的工位了"
-    end
-    render :json => {:status => order[0], :content => str, :order => info}
-  end
 
 
   #返回订单

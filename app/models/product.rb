@@ -32,17 +32,32 @@ class Product < ActiveRecord::Base
   PACK ={:PACK => 0}
   #产品列表
   def self.products_arr store_id,product_name,types #0 为产品 1 为服务 2 为卡类
-    if types==2
-      package_card = PackageCard.find_by_sql("SELECT id,name,img_url,revist_content,status from package_cards
+    cards = []
+    services = []
+    products = []
+    if types.to_i==2
+      package_cards = PackageCard.find_by_sql("SELECT id,name,img_url,description from package_cards
                   where store_id = #{store_id} and name like '#{product_name}' and status = #{PackageCard::STAT[:NORMAL]}")
-      svcard = SvCard.find_by_sql("select id,name,img_url,types,description from sv_cards 
+      svcards = SvCard.find_by_sql("select id,name,img_url,types,description from sv_cards
                   where store_id = #{store_id} and name like '#{product_name}' and status = #{SvCard::STATUS[:NORMAL]}")
-      product_list = {:package_card =>package_card, :svcard=> svcard}
+
+      (package_cards || []).each do |package_card|
+        package_card["types"] = 2
+        cards << package_card
+      end
+      (svcards || []).each do |svcard|
+        cards << svcard
+      end
     else
       product_list = Product.find_by_sql("SELECT id,name,types,description,introduction,img_url,status
             FROM products where store_id=#{store_id} and name like '#{product_name}'
-            and is_service = #{types} and status = #{STATUS[:NORMAL]} order by status")
+            and is_service = #{types} and status = #{STATUS[:NORMAL]} and is_shelves =#{IS_SHELVES[:YES]} order by status")
+      if types==1
+        services = product_list
+      else
+        products = product_list
+      end
     end
-    return product_list
+    return [cards,services, products]
   end
 end

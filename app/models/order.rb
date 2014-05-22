@@ -223,14 +223,19 @@ INNER JOIN products p on p.id = ppr.product_id where pc.id in (?)",customercard_
     end
     #储值卡
     #该用户所购买的储值卡
-    sql='select cc.id,sc.name,sc.totle_price,sc.created_at from customer_cards cc
-INNER JOIN sv_cards sc on cc.card_id = sc.id where cc.types = 1 and cc.status=1  and cc.ended_at>CURDATE()'
-    customercards = CustomerCard.find_by_sql("select cc.id,cc.card_id,cc.types,cc.amt,cc.package_content,cc.ended_at,pc.name from customer_cards cc
-INNER JOIN package_cards pc on cc.card_id = pc.id and cc.types = 3 and cc.status=1 and cc.ended_at>CURDATE()
-and cc.customer_id=#{customer_id}")
+
+    stored_cards = CustomerCard.find_by_sql("SELECT cc.id,sc.name,sc.totle_price,sc.description,cc.created_at from sv_cards sc
+INNER JOIN customer_cards cc on sc.id=cc.card_id where cc.status=1 and cc.types=1 and cc.customer_id=#{customer_id}")
+    storedcards_id =  stored_cards.map(&:id)
+    stored_card_records = SvcardUseRecord.find_by_sql(["select sur.customer_card_id,sur.types,sur.use_price,sur.left_price,sur.created_at
+      from svcard_use_records sur where sur.customer_card_id in (?)",storedcards_id]).group_by{|stored_card_record| stored_card_record.customer_card_id}
+    stored_cards.each do |stored_card|
+      stored_card['records'] = stored_card_records[stored_card.id].nil? ? [] : stored_card_records[stored_card.id]
+    end
+    
     #打折卡
     discountcards = CustomerCard.find_by_sql("SELECT cc.id,sc.name,sc.totle_price,sc.discount,sc.apply_content,sc.description from sv_cards sc
-INNER JOIN customer_cards cc on sc.id=cc.card_id where cc.status=1 and cc.types=1 and cc.customer_id=#{customer_id}")
+INNER JOIN customer_cards cc on sc.id=cc.card_id where cc.status=1 and cc.types=2 and cc.customer_id=#{customer_id}")
     discount_cards =[]
     discountcards.each do |discount_card|
       product_ids = discount_card.apply_content.nil? ? [] : discount_card.apply_content.split(",")
@@ -262,7 +267,7 @@ INNER JOIN customer_cards cc on sc.id=cc.card_id where cc.status=1 and cc.types=
 
       info << customer
     end
-    return [info,package_cards,discount_cards]
+    return [info,package_cards,discount_cards,stored_cards]
   end
   #  def self.search_by_car_num store_id,car_num, car_id
   #    customer = nil
@@ -300,12 +305,12 @@ INNER JOIN customer_cards cc on sc.id=cc.card_id where cc.status=1 and cc.types=
   #          order_hash[:products] << {:name => product.name, :price => opr.price.to_f * opr.pro_num.to_i} if product
   #        end if order_prod_relations.present? && order_prod_relations[order.id].present?
   #
-  ##        #每个订单中的储值卡、打折卡
-  ##        csvc_relations[order.id].each do |csvc_r|
-  ##          sv_card = csvc_r.sv_card
-  ##          sv_price =  sv_card.sale_price
-  ##          order_hash[:products] << {:name => sv_card.try(:name), :price => sv_price}
-  ##        end if csvc_relations.present? && csvc_relations[order.id].present?
+  #        #每个订单中的储值卡、打折卡
+  #        csvc_relations[order.id].each do |csvc_r|
+  #          sv_card = csvc_r.sv_card
+  #         sv_price =  sv_card.sale_price
+  #         order_hash[:products] << {:name => sv_card.try(:name), :price => sv_price}
+  #        end if csvc_relations.present? && csvc_relations[order.id].present?
   #
   #        #每个订单中的套餐卡
   #        package_cards[order.id].each do |o_pc|
@@ -370,6 +375,7 @@ INNER JOIN customer_cards cc on sc.id=cc.card_id where cc.status=1 and cc.types=
     Order.transaction do
       #begin
       arr = self.get_prod_sale_card prods
+      p arr
       #2_id_card_type_（is_new）_price 储值卡格式
       #[[["0", "311", "9"], ["0", "310", "2"]], [], [[2,1,0,0,20],...], [["3", "10", "0", "310=2-311=7-"], ["3", "11", "0"], ["3", "10", "1", "311=2-"]]]
       sale_id = arr[1].size > 0 ? arr[1][0][1] : ""  #活动

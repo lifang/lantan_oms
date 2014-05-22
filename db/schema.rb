@@ -11,7 +11,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20140520062539) do
+ActiveRecord::Schema.define(:version => 20140522033006) do
 
   create_table "accounts", :force => true do |t|
     t.integer  "types"
@@ -1207,16 +1207,17 @@ ActiveRecord::Schema.define(:version => 20140520062539) do
   add_index "svc_return_records", ["store_id"], :name => "index_svc_return_records_on_store_id"
 
   create_table "svcard_use_records", :force => true do |t|
-    t.integer  "c_svc_relation_id"
+    t.integer  "customer_card_id"
     t.integer  "types"
     t.float    "use_price"
     t.float    "left_price"
     t.string   "content"
-    t.datetime "created_at",        :null => false
-    t.datetime "updated_at",        :null => false
+    t.datetime "created_at",       :null => false
+    t.datetime "updated_at",       :null => false
   end
 
-  add_index "svcard_use_records", ["c_svc_relation_id"], :name => "index_svcard_use_records_on_c_svc_relation_id"
+  add_index "svcard_use_records", ["customer_card_id"], :name => "index_svcard_use_records_on_c_svc_relation_id"
+  add_index "svcard_use_records", ["customer_card_id"], :name => "index_svcard_use_records_on_customer_card_id"
   add_index "svcard_use_records", ["types"], :name => "index_svcard_use_records_on_types"
   add_index "svcard_use_records", ["updated_at"], :name => "index_svcard_use_records_on_updated_at"
 
