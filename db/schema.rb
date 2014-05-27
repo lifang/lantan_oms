@@ -11,7 +11,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20140522033006) do
+ActiveRecord::Schema.define(:version => 20140527082533) do
 
   create_table "accounts", :force => true do |t|
     t.integer  "types"
@@ -472,7 +472,7 @@ ActiveRecord::Schema.define(:version => 20140522033006) do
 
   create_table "order_prod_relations", :force => true do |t|
     t.integer  "order_id"
-    t.integer  "product_id"
+    t.integer  "item_id"
     t.integer  "pro_num"
     t.decimal  "price",        :precision => 20, :scale => 2, :default => 0.0
     t.decimal  "total_price",  :precision => 20, :scale => 2, :default => 0.0
@@ -480,11 +480,12 @@ ActiveRecord::Schema.define(:version => 20140522033006) do
     t.integer  "return_types",                                :default => 0
     t.datetime "created_at",                                                   :null => false
     t.datetime "updated_at",                                                   :null => false
+    t.integer  "prod_types"
   end
 
   add_index "order_prod_relations", ["created_at"], :name => "index_order_prod_relations_on_created_at"
+  add_index "order_prod_relations", ["item_id"], :name => "index_order_prod_relations_on_product_id"
   add_index "order_prod_relations", ["order_id"], :name => "index_order_prod_relations_on_order_id"
-  add_index "order_prod_relations", ["product_id"], :name => "index_order_prod_relations_on_product_id"
   add_index "order_prod_relations", ["updated_at"], :name => "index_order_prod_relations_on_updated_at"
 
   create_table "orders", :force => true do |t|
@@ -493,7 +494,7 @@ ActiveRecord::Schema.define(:version => 20140522033006) do
     t.integer  "status"
     t.datetime "started_at"
     t.datetime "ended_at"
-    t.decimal  "price",               :precision => 20, :scale => 2, :default => 0.0
+    t.decimal  "price",             :precision => 20, :scale => 2, :default => 0.0
     t.boolean  "is_visited"
     t.integer  "is_pleased"
     t.boolean  "is_billing"
@@ -502,27 +503,23 @@ ActiveRecord::Schema.define(:version => 20140522033006) do
     t.integer  "cons_staff_id_2"
     t.integer  "station_id"
     t.integer  "sale_id"
-    t.string   "c_pcard_relation_id"
-    t.string   "c_svc_relation_id"
     t.boolean  "is_free"
     t.integer  "types"
     t.integer  "store_id"
     t.integer  "customer_id"
     t.datetime "auto_time"
-    t.integer  "return_types",                                       :default => 0
+    t.integer  "return_types",                                     :default => 0
     t.integer  "return_direct"
-    t.float    "return_fee",                                         :default => 0.0
+    t.float    "return_fee",                                       :default => 0.0
     t.integer  "return_staff_id"
     t.integer  "return_reason"
-    t.decimal  "front_deduct",        :precision => 20, :scale => 2, :default => 0.0
-    t.decimal  "technician_deduct",   :precision => 20, :scale => 2, :default => 0.0
+    t.decimal  "front_deduct",      :precision => 20, :scale => 2, :default => 0.0
+    t.decimal  "technician_deduct", :precision => 20, :scale => 2, :default => 0.0
     t.datetime "warn_time"
-    t.datetime "created_at",                                                          :null => false
-    t.datetime "updated_at",                                                          :null => false
+    t.datetime "created_at",                                                        :null => false
+    t.datetime "updated_at",                                                        :null => false
   end
 
-  add_index "orders", ["c_pcard_relation_id"], :name => "index_orders_on_c_pcard_relation_id"
-  add_index "orders", ["c_svc_relation_id"], :name => "index_orders_on_c_svc_relation_id"
   add_index "orders", ["car_num_id"], :name => "index_orders_on_car_num_id"
   add_index "orders", ["code"], :name => "index_orders_on_code"
   add_index "orders", ["cons_staff_id_1"], :name => "index_orders_on_cons_staff_id_1"

@@ -151,17 +151,6 @@ class Api::OrdersController < ApplicationController
     render :json => {:status => status, :orders => work_orders}
   end
 
-  #  #删除预约
-  #  def delete_reservation
-  #    reservation = Reservation.find_by_id params[:reservation_id]
-  #    status = 0
-  #    notice = '删除失败！'
-  #    if reservation && reservation.update_attributes(:status => Reservation::STATUS[:cancel])
-  #      status = 1
-  #      notice = '删除成功！'
-  #    end
-  #    render :json => {:status=> status,:notice=>notice}
-  #  end
   #预约排单
   def confirm_reservation
     reservation = Reservation.find_by_id_and_store_id params[:r_id].to_i,params[:store_id]
@@ -192,9 +181,6 @@ class Api::OrdersController < ApplicationController
     complaint = Complaint.mk_record params[:store_id],params[:order_id],params[:reason],params[:request],params[:types]
     render :json => {:status => (complaint.nil? ? 0 : 1)}
   end
-
-
-
 
   #返回订单
   def working_orders(store_id)
