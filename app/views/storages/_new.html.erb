@@ -1,14 +1,14 @@
 <div class="second_content" style="width: 450px;">
-  <%= form_tag "/stores/#{@store.id}/storages" do %>
+  <%= form_tag "/stores/#{@store.id}/storages", :multipart => true, :id => "new_p_form" do %>
     <span class="close" title="关闭">×</span>
     <h1>新建产品</h1>
     <div class="infoBox cf" style="padding-right: 40px;">
       <div class="form_1">
-        <div class="form_row"><label>条形码：</label><input type="text" nam="code" id="code"/></div>
-        <div class="form_row"><label><font class="red">*</font>商品名称：</label><input type="text" name="name" id="name"/></div>
-        <div class="form_row"><label>商品规格：</label><input type="text" name="standard" id="standard"/></div>
-        <div class="form_row"><label>商品单位：</label><input type="text" name="unit" id="unit"/></div>
-        <div class="form_row"><label><font class="red">*</font>商品类别：</label>
+        <div class="form_row"><label>条形码：</label><input type="text" name="code" id="code"/></div>
+        <div class="form_row"><label><font class="red">*</font>产品名称：</label><input type="text" name="name" id="name"/></div>
+        <div class="form_row"><label>产品规格：</label><input type="text" name="standard" id="standard"/></div>
+        <div class="form_row"><label>产品单位：</label><input type="text" name="unit" id="unit"/></div>
+        <div class="form_row"><label><font class="red">*</font>产品类别：</label>
           <div class="selectBox">
             <span>类别</span>
             <div class="openDownIcon"></div>
@@ -20,58 +20,58 @@
             </select>
           </div>
         </div>
-        <div class="form_row"><label><font class="red">*</font>成本价：</label><input type="text" placeholder="0.00" name="t_price" id="t_price"/></div>
-        <div class="form_row"><label><font class="red">*</font>零售价：</label><input type="text" placeholder="0.00" name="base_price" id="base_price"/></div>
-        <div class="form_row"><label><font class="red">*</font>促销价：</label><input type="text" placeholder="0.00" name="sale_price" id="sale_price"/></div>
+        <div class="form_row"><label><font class="red">*</font>成本价：</label><input type="text" name="t_price" id="t_price"/><span>(最多保留两位小数)</span></div>
+        <div class="form_row"><label><font class="red">*</font>零售价：</label><input type="text" name="base_price" id="base_price"/><span>(最多保留两位小数)</span></div>
+        <div class="form_row"><label><font class="red">*</font>促销价：</label><input type="text" name="sale_price" id="sale_price"/><span>(最多保留两位小数)</span></div>
         <div class="choiceBox" style="margin: 4px 0;">
           <label>上架销售：</label>
           <div class="checkBox">
-            <input type="checkbox" />
+            <input type="checkbox" name="is_shelves" id="is_shelves" value="1" onclick="has_shelves(this)"/>
           </div>
         </div>
       </div>
       <div class="perPic" style="position: absolute; right: 40px; top: 15px;">
         <span>照片</span>
-        <button class="upload">上传</button>
+        <button class="upload" type="button" onclick="up_img()">上传</button>
+        <input type="file" name="p_image" id="p_image" style="display:none;"/>
       </div>
-      <div id="good_detail">
-        <div class="form_row"><label><font class="red">*</font>积分：</label><input type="text" placeholder="0" name="p_point" id="p_point"/></div>
+      <div id="good_detail" style="display:none;">
+        <div class="form_row"><label><font class="red">*</font>积分：</label><input type="text" name="p_point" id="p_point"/></div>
         <div class="form_row"><label><nobr>销售提成方式：</nobr></label>
-          <div class="radioBox check" style="float:left;"><input type="radio" name="xs_t_type" value="1"/></div>
-          <span style="width: 50px; float:left;">金额
-            </span>
-          <div class="radioBox" style="float:left;"><input type="radio" name="xs_t_type" value="2"/></div>
+          <div class="radioBox check" style="float:left;"><input type="radio" name="xs_t_type" value="1" checked onclick="check_type(this)"/></div>
+          <span style="width: 50px; float:left;">金额</span>
+          <div class="radioBox" style="float:left;"><input type="radio" name="xs_t_type" value="2" onclick="check_type(this)"/></div>
           <span style="width: 50px; float:left;">百分点</span>
         </div>
-        <div class="form_row"><label><font class="red">*</font>提成百分点：
-          </label><input type="text" placeholder="0.0"/>
+        <div class="form_row"><label><font class="red">*</font><span id="xs_t_span">提成金额：</span></label>
+          <input type="text" name="xs_t" id="xs_t"/><span>(最多保留两位小数)</span>
         </div>
         <div class="choiceBox" style="margin: 4px 0;">
           <label>需要施工：</label>
           <div class="checkBox">
-            <input type="checkbox" />
+            <input type="checkbox" value="1" name="is_added" id="is_added" onclick="need_add(this)"/>
           </div>
         </div>
         <div class="form_row"><label><nobr>技师提成方式：</nobr></label>
-          <div class="radioBox check" style="float:left;"><input type="radio" name="js_t_type" value="1"/></div>
+          <div class="radioBox check" style="float:left;"><input type="radio" name="js_t_type" value="1" checked disabled onclick="check_type(this)"/></div>
           <span style="width: 50px; float:left;">金额</span>
-          <div class="radioBox" style="float:left;"><input type="radio" name="js_t_type" value="2"/></div>
+          <div class="radioBox" style="float:left;"><input type="radio" name="js_t_type" value="2" disabled onclick="check_type(this)"/></div>
           <span style="width: 50px; float:left;">百分点</span>
         </div>
-        <div class="form_row"><label><font class="red">*</font>技师提成：</label>
-          <input type="text" placeholder="0.0"/>
+        <div class="form_row"><label><font class="red">*</font><span id="js_t_span">提成金额：</span></label>
+          <input type="text" name="js_t" id="js_t" disabled/><span>(最多保留两位小数)</span>
         </div>
         <div class="choiceBox" style="margin: 4px 0;">
           <label>自动回访：</label>
           <div class="checkBox">
-            <input type="checkbox" />
+            <input type="checkbox" value="1" name="auto_revist" id="auto_revist" onclick="auto_revi(this)"/>
           </div>
         </div>
         <div class="form_row"><label><font class="red">*</font>回访时间：</label>
           <div class="selectBox">
             <span></span>
             <div class="openDownIcon"></div>
-            <select name="types" id="types">
+            <select name="revist_time" id="revist_time" disabled>
               <option value="0">------</option>
               <% @revi_time.each do |t| %>
                 <option value="<%= t %>"><%= "#{t}小时" %></option>
@@ -79,20 +79,27 @@
             </select>
           </div>
         </div>
-        <div class="form_row"><label>回访内容：</label>
-          <textarea style="width: 275px;height: 50px;"></textarea>
+        <div class="form_row"><label><font class="red">*</font>回访内容：</label>
+          <textarea style="width: 275px;height: 50px;" name="revist_cont" id="revist_cont" disabled></textarea>
         </div>
         <div class="form_row"><label>简介：</label>
-          <textarea style="width: 275px;height: 50px;"></textarea>
+          <textarea style="width: 275px;height: 50px;" name="description" id="description"></textarea>
         </div>
         <div class="form_row"><label>描述：</label>
-          <textarea style="width: 275px"></textarea>
+          <textarea style="width: 275px" name="introduction" id="introduction"></textarea>
         </div>
       </div>
     </div>
     <div class="scdBoxAct">
-      <button class="orangeBtn2">创建</button>
-      <button class="greyBtn">取消</button>
+      <button class="orangeBtn2" type="button" onclick="new_prod_valid(this, <%= @store.id %>, 0)">确定</button>
     </div>
   <% end %>
 </div>
+
+<script>
+  var ss = $("#new_p_form").find("option:selected");
+  $.each(ss, function(){
+    var txt = $(this).text();
+    $(this).parents(".selectBox").find("span").first().text(txt);
+  });
+</script>

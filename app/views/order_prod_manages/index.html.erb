@@ -1,0 +1,113 @@
+<%= javascript_include_tag "storages" %>
+<%= javascript_include_tag "in_and_out_records" %>
+<%= javascript_include_tag "order_prod_manages" %>
+<%= javascript_include_tag "prod_losses" %>
+<%= javascript_include_tag "back_records" %>
+<div class="main_tit"><h1>订货记录</h1></div>
+<div class="main_con">
+  <div class="toolbar">
+    <div class="searchBox">
+      <%= form_tag "/stores/#{@store.id}/order_prod_manages", :id => "opm_form", :method => "get" do %>
+        <div class="selectBox">
+          <span></span>
+          <div class="openDownIcon"></div>
+          <select name="m_status">
+            <option value="-1">物流状态</option>
+            <%  ProductOrder::S_M_STATUS.each do |k, v|%>
+              <option value="<%= k %>" <% if @m_status && @m_status.to_i==k.to_i %>selected<% end %>><%= v %></option>
+            <% end %>
+          </select>
+        </div>
+        <div class="selectBox">
+          <span></span>
+          <div class="openDownIcon"></div>
+          <select name="status">
+            <option value="-1">付款状态</option>
+            <%  ProductOrder::S_STATUS.each do |k, v|%>
+              <option value="<%= k %>" <% if @status && @status.to_i==k.to_i %>selected<% end %>><%= v %></option>
+            <% end %>
+          </select>
+        </div>
+        <div class="selectBox">
+          <span></span>
+          <div class="openDownIcon"></div>
+          <select name="supplier">
+            <option value="0">供应商</option>
+            <%  @suppliers.each do |s| %>
+              <option value="<%= s.id %>" <% if @supplier && @supplier.to_i==s.id %>selected<% end %>><%= s.name %></option>
+            <% end %>
+          </select>
+        </div>
+        <input type="text" placeholder="开始时间" readonly class="Wdate" onclick="WdatePicker();" name="s_at" value="<%= @s_at.nil? ? "" : @s_at %>"/>
+        <input type="text" placeholder="结束时间" readonly class="Wdate" onclick="WdatePicker();" name="e_at" value="<%= @e_at.nil? ? "" : @e_at %>"/>
+        <button class="orangeBtn">查询</button>
+      <% end %>
+    </div>
+  </div>
+
+  <div>
+    <table class="table1">
+      <tr>
+        <th>订单号</th>
+        <th>供应商</th>
+        <th>订单金额</th>
+        <th>付款状态</th>
+        <th>物流状态</th>
+        <th>备注</th>
+        <th style="width:130px;">操作</th>
+      </tr>
+      <% @prod_orders.each do |po| %>
+        <tr>
+          <td><%= po.code %></td>
+          <td><%= po.sname %></td>
+          <td><%= po.price %></td>
+          <td><%= ProductOrder::S_STATUS[po.status.to_i] %></td>
+          <td><%= ProductOrder::S_M_STATUS[po.m_status.to_i] %></td>
+          <td><%= truncate(po.remark, :length => 15) %></td>
+          <td>
+            <div class="moreBox">
+              <button class="more" title="详细"></button>
+              <div class="moreList">
+                <ul>
+                  <li onclick="set_prod_order(1, <%= @store.id %>, <%= po.id %>)">备注</li>
+                  <li onclick="set_prod_order(2, <%= @store.id %>, <%= po.id %>)">详细</li>
+                </ul>
+              </div>
+            </div>
+          </td>
+        </tr>
+      <% end %>
+    </table>
+    <% if @prod_orders.any? %>
+      <%= will_paginate @prod_orders, :previous_label => "上一页", :next_label => "下一页", :class => "page" %>
+    <% end %>
+  </div>
+</div>
+<div class="second_box2" id="order_prod_pay_div">
+  <div class="second_content" style="width: 730px;">
+    <span class="close2" title="关闭">×</span>
+    <h1>付款方式</h1>
+    <input type="hidden" id="order_prod_id" value="0"/>
+    <div class="scdBoxAct">
+      <button class="greenBtn" onclick="order_prod_pay(1, <%= @store.id %>)">支付宝</button>
+    </div>
+    <div class="scdBoxAct">
+      <button class="greenBtn" onclick="order_prod_pay(2, <%= @store.id %>)">支票</button>
+    </div>
+    <div class="scdBoxAct">
+      <button class="greenBtn" onclick="order_prod_pay(3, <%= @store.id %>)">现金</button>
+    </div>
+    <div class="scdBoxAct">
+      <button class="greenBtn" onclick="order_prod_pay(4, <%= @store.id %>)">挂账</button>
+    </div>
+  </div>
+</div>
+<div class="second_box" id="product_div">
+</div>
+<script type="text/javascript">
+  $(function(){
+    $("#opm_form").on("click", "button", function(){
+      popup("#waiting");
+    });
+  })
+</script>

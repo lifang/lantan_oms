@@ -33,7 +33,10 @@ $(function(){
         $(this).toggleClass("open");
     });
 	
-	
+    Number.prototype.toFixed = function(s)      //重写toFixed方法
+    {
+        return (parseInt(this * Math.pow( 10, s ) + 0.5)/ Math.pow( 10, s )).toString();
+    }
 });
 
 function tishi(message){
@@ -126,6 +129,62 @@ function get_str_len(str){      //获取名称长度
     }
     return a;
 }
+
+function is_float(str){ //验证是否是浮点数(两位小数)
+    var flag = true;
+    if(str=="" || isNaN(str)){
+        flag = false;
+    }else{
+        var float_tst = /^([0-9]+\.[0-9]{1,2}|[1-9]+[0-9]*)$/;
+        if(float_tst.test(str)==false){
+            flag = false;
+        }else{
+            var float_num = parseFloat(str);
+            if(float_num<=0){
+                flag = false;
+            }
+        }
+    }
+    return flag;
+}
+
+function is_int(str){   //验证是否是正整数
+    var flag = true;
+    var int_tst = /^[1-9]+[0-9]*$/;
+    if(str=="" || isNaN(str)){
+        flag = false;
+    }else if(int_tst.test(str)==false){
+        flag = false;
+    }
+    return flag;
+}
+
+function is_phone(str){    //验证是否是手机号
+    var flag = true;
+    if(str=="" || isNaN(str)){
+        flag = false;
+    }else{       
+        var phoneReg =/^1[3458]\d{9}$/;
+        if(phoneReg.test(str)==false){
+            flag = false;
+        }
+    }
+    return flag;
+}
+
+function is_name(str){     //验证名称等是否还有非法字符以及超出长度等
+    var flag = true;
+    if(str==""){
+        flag = false;
+    }else{
+        var pattern = new RegExp("[`~@#$^&*=:;,\\[\\].<>?~！@#￥……&*（）——|{}。，、？]");
+        if(pattern.test(str)==true){
+            flag = false;
+        }
+    }
+    return flag;
+}
+
 
 function show_order(store_id, order_id){    //点击显示订单详情
     popup("#waiting");

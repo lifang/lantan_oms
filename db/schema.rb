@@ -11,7 +11,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20140520062539) do
+ActiveRecord::Schema.define(:version => 20140529094404) do
 
   create_table "accounts", :force => true do |t|
     t.integer  "types"
@@ -28,15 +28,15 @@ ActiveRecord::Schema.define(:version => 20140520062539) do
   add_index "accounts", ["types"], :name => "index_accounts_on_types"
 
   create_table "back_good_records", :force => true do |t|
-    t.integer  "material_id"
-    t.integer  "material_num"
+    t.integer  "product_id"
+    t.decimal  "product_num", :precision => 20, :scale => 2, :default => 0.0
     t.integer  "supplier_id"
     t.integer  "store_id"
-    t.datetime "created_at",   :null => false
-    t.datetime "updated_at",   :null => false
+    t.datetime "created_at",                                                  :null => false
+    t.datetime "updated_at",                                                  :null => false
   end
 
-  add_index "back_good_records", ["material_id"], :name => "index_back_good_records_on_material_id"
+  add_index "back_good_records", ["product_id"], :name => "index_back_good_records_on_material_id"
 
   create_table "capitals", :force => true do |t|
     t.string   "name"
@@ -964,13 +964,14 @@ ActiveRecord::Schema.define(:version => 20140520062539) do
   add_index "send_messages", ["status"], :name => "index_send_messages_on_status"
   add_index "send_messages", ["updated_at"], :name => "index_send_messages_on_updated_at"
 
-  create_table "shared_materials", :force => true do |t|
+  create_table "shared_products", :force => true do |t|
     t.string   "code"
     t.string   "name"
-    t.integer  "types",      :limit => 1
+    t.string   "standard"
     t.string   "unit"
-    t.datetime "created_at",              :null => false
-    t.datetime "updated_at",              :null => false
+    t.datetime "created_at", :null => false
+    t.datetime "updated_at", :null => false
+    t.integer  "product_id"
   end
 
   create_table "staff_gr_records", :force => true do |t|

@@ -228,7 +228,7 @@ function add_car(obj, store_id){    //添加车辆
     var maint_distance = $("#maint_distance").val();
     var car_num = $("#car_num").val();
     var vin_code = $("#vin_code").val();
-    var ing_flag = new RegExp(/^[0-9]*[1-9][0-9]*$/);
+    var ing_flag = new RegExp(/^[1-9]*[1-9][0-9]*$/);
     var pattern = new RegExp("[`~@#$^&*()=:;,\\[\\].<>?~！@#￥……&*（）——|{}。，、？-]");
     if(buy_year==""){
         tishi("车辆年份不能为空!");
@@ -304,15 +304,18 @@ function new_cus_valid(obj, type){    //新建客户验证
     var cus_group_name = $.trim($("#cus_group_name").val());
     var cus_allow_debts = parseInt($(obj).parents("form").find("input[name='cus_allow_debts']:checked").val());
     var debts_money = $.trim($("#cus_debts_money").val());
-    var ing_flag = new RegExp(/^[0-9]*[1-9][0-9]*$/);
+    var ing_flag = new RegExp(/^[1-9]*[1-9][0-9]*$/);
     var flag = true;
     if(cus_name==""){
         tishi("请输入姓名!");
         flag = false;
+    }else if(is_name(cus_name)==false){
+        tishi("姓名不得包含非法字符!");
+        flag = false;
     }else if(cus_phone==""){
         tishi("请输入手机号码!");
         flag = false;
-    }else if(cus_phone!="" && isNaN(cus_phone)){
+    }else if(cus_phone!="" && is_phone(cus_phone)==false){
         tishi("请输入正确的手机号码!");
         flag = false;
     }else if(cus_property==1 && cus_group_name==""){
@@ -438,7 +441,7 @@ function update_car_valid(obj, car_num_id){     //编辑车辆验证
     var insurance_ended = $("#insurance_ended").val();
     var maint_distance = $("#maint_distance").val();
     var car_num = $("#car_num").val();
-    var ing_flag = new RegExp(/^[0-9]*[1-9][0-9]*$/);
+    var ing_flag = new RegExp(/^[1-9]*[1-9][0-9]*$/);
     var pattern = new RegExp("[`~@#$^&*()=:;,\\[\\].<>?~！@#￥……&*（）——|{}。，、？-]");
     if(buy_year==""){
         tishi("车辆年份不能为空!");

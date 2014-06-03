@@ -1,0 +1,65 @@
+<div class="second_content" style="width: 520px;">
+  <%= form_tag "/stores/#{@store.id}/suppliers", :id => "edit_supp_form", :method => "post", :remote => true do %>
+    <span class="close" title="关闭">×</span>
+    <h1>编辑供应商</h1>
+    <div class="perInfo infoBox cf">
+      <div class="perDtl" style="padding-left: 15px;">
+        <p>
+          <label><font class="red">*</font>名称：</label>
+          <input type="text" name="s_name" id="s_name"/>
+          <label><font class="red">*</font>助记码：</label>
+          <input type="text" name="cap_name" id="cap_name"/>
+        </p>
+        <p>
+          <label>联系人：</label>
+          <input type="text" name="contact" id="contact"/>
+          <label><font class="red">*</font>手机号码：</label>
+          <input type="text" name="phone" id="phone"/>
+        </p>
+        <p>
+          <label style="width: 85px; margin-left: -15px;">其他联系方式：</label>
+          <input type="text" name="email" id="email"/>
+        </p>
+        <p>
+          <label>地址：</label>
+          <input type="text" style="width: 260px;" name="address" id="address"/>
+        </p>
+        <div>
+          <label style="float: left;">结算方式：</label>
+          <div class="selectBox" style="float: left; width: 120px; margin: 3px 18px 3px 3px; border: 1px solid #E2E2E2;">
+            <span style="width: 100px;"></span>
+            <div class="openDownIcon"></div>
+            <select name="check_type" id="check_type">
+              <% Supplier::S_CHECK_TYPE.each do |k, v| %>
+                <option value="<%= k %>"><%= v %></option>
+              <% end %>
+            </select>
+          </div>
+          <label style="float: left;"><font class="red">*</font>结算时间：</label>
+          <input type="text" style="width:50px;" name="check_time" id="check_time"/>
+          <span id="ck_type">月</span>
+        </div>
+      </div>
+    </div>
+    <div class="scdBoxAct">
+      <button class="orangeBtn2" type="button" onclick="supp_valid(this, <%= @store.id %>, 0)">确定</button>
+    </div>
+  <% end %>
+</div>
+
+<script type="text/javascript">
+  var ss = $("#edit_supp_form").find("option:selected");
+  $.each(ss, function(){
+    var txt = $(this).text();
+    $(this).parents(".selectBox").find("span").first().text(txt);
+  });
+
+  $("#edit_supp_form").on("change", "#check_type", function(){
+    var type = $(this).val();
+    if(type==1){
+      $("#ck_type").text("月");
+    }else{
+      $("#ck_type").text("日");
+    }
+  })
+</script>

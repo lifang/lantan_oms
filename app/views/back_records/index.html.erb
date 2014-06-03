@@ -1,0 +1,72 @@
+<%= javascript_include_tag "storages" %>
+<%= javascript_include_tag "in_and_out_records" %>
+<%= javascript_include_tag "order_prod_manages" %>
+<%= javascript_include_tag "prod_losses" %>
+<%= javascript_include_tag "back_records" %>
+<div class="main_tit"><h1>退货记录</h1></div>
+<div class="main_con">
+  <div class="toolbar">
+    <div class="searchBox">
+      <%= form_tag "/stores/#{@store.id}/back_records", :id => "opm_form", :method => "get" do %>
+        <div class="selectBox">
+          <span></span>
+          <div class="openDownIcon"></div>
+          <select name="supplier">
+            <option value="0">供应商</option>
+            <%  @suppliers.each do |s| %>
+              <option value="<%= s.id %>" <% if @supplier && @supplier.to_i==s.id %>selected<% end %>><%= s.name %></option>
+            <% end %>
+          </select>
+        </div>
+        <div class="selectBox">
+          <span></span>
+          <div class="openDownIcon"></div>
+          <select name="p_type">
+            <option value="0">物料类别</option>
+            <%  @mat_type.each do |mt| %>
+              <option value="<%= mt.id %>" <% if @type==mt.id %>selected<% end %>><%= mt.name %></option>
+            <% end %>
+          </select>
+        </div>
+        <input type="text" placeholder="物料名称" name="p_name" value="<%= @name %>"/>
+        <input type="text" placeholder="条形码" name="p_code" value="<%= @code %>"/>
+        <button class="orangeBtn">查询</button>
+      <% end %>
+    </div>
+  </div>
+
+  <div>
+    <table class="table1">
+      <tr>
+        <th>条形码</th>
+        <th>产品名称</th>
+        <th>产品类别</th>
+        <th>供应商</th>
+        <th>退货量</th>
+        <th>退货时间</th>
+      </tr>
+      <% @back_records.each do |br| %>
+        <tr>
+          <td><%= br.pcode %></td>
+          <td><%= br.pname %></td>
+          <td><%= br.cname %></td>
+          <td><%= br.sname %></td>
+          <td><%= br.num %></td>
+          <td><%= br.created_at.strftime("%y-%m-%d %H:%M") %></td>
+        </tr>
+      <% end %>
+    </table>
+    <% if @back_records.any? %>
+      <%= will_paginate @back_records, :previous_label => "上一页", :next_label => "下一页", :class => "page" %>
+    <% end %>
+  </div>
+</div>
+<div class="second_box" id="product_div">
+</div>
+<script type="text/javascript">
+  $(function(){
+    $("#opm_form").on("click", "button", function(){
+      popup("#waiting");
+    });
+  })
+</script>

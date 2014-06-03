@@ -16,7 +16,6 @@ class MessageManagesController < ApplicationController    #短信管理
     order = Order.get_order_customers(@store.id, @st_time, @ed_time, @car_num, @is_vip, @cus_property,
       @return_status, @count, @money)
     @customers = order.group_by{|o|o.cu_id}
-    #@message_temps = MessageTemp.where(["store_id=?", @store.id]).group_by{|mt|mt.type}
   end
 
   #新建短信模板
