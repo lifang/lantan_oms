@@ -3,6 +3,7 @@ class OrderProdRelation < ActiveRecord::Base
   belongs_to :order
   belongs_to :product
 
+  PROD_TYPES = {:SERVICE => 1, :CARD => 2} #产品服务：1，卡类：2
   def self.order_products(orders)
     products = OrderProdRelation.find_by_sql(["select opr.order_id, opr.pro_num, opr.price, opr.return_types,
    p.name,'产品/服务' p_types,0 s_types from order_prod_relations opr inner join products p on p.id = opr.product_id

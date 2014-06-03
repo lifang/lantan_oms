@@ -3,6 +3,7 @@ class SvCard < ActiveRecord::Base
   require 'mini_magick'
   has_many :svcard_prod_relations
   has_many :c_svc_relations
+  has_many :customer_cards
   belongs_to :store
   FAVOR = {:SAVE =>1,:DISCOUNT =>0} #1 储值卡 0 打折卡
   S_FAVOR = {1 => "储值卡", 0 => "打折卡"}
