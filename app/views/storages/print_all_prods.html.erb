@@ -1,0 +1,41 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <title>库存清单列表</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <%= stylesheet_link_tag "application", "style" %>
+    <%= javascript_include_tag "application", "main" %>
+    <%= csrf_meta_tags %>
+  </head>
+  <body>
+    <div class="main">
+      <table class="table1">
+        <tr>
+          <th>条形码</th>
+          <th>产品名称</th>
+          <th>产品类别</th>
+          <th>单位</th>
+          <th>规格</th>
+          <th>成本价</th>
+          <th>零售价</th>
+          <th>库存量</th>
+          <th>是否上架</th>
+        </tr>
+        <% @products.each do |p| %>
+          <tr>
+            <td><%= p.code %></td>
+            <td><%= p.name %></td>
+            <td><%= p.cname %></td>
+            <td><%= p.unit %></td>
+            <td><%= p.standard %></td>
+            <td><%= p.t_price %></td>
+            <td><%= p.base_price %></td>
+            <td><%= p.storage %></td>
+            <td><%= p.is_shelves ? "是" : "否" %></td>
+          </tr>
+        <% end %>
+      </table>
+    </div>
+    <div class="footer"></div>
+  </body>
+</html>

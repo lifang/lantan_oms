@@ -279,6 +279,10 @@ table { border-collapse: collapse;}
     filter: progid:DXImageTransform.Microsoft.gradient(startColorstr="#ffffff",endColorstr="#f0f0f0",GradientType=0);
 }
 .searchBox button { float: left; margin-right: 10px;}
+.searchBox .listInput { float: left; position: relative;}
+.searchBox .listInput ul { border: 1px solid #c2c2c2; border-radius: 3px; position: absolute; top: 24px; background: #fff; z-index: 9;}
+.searchBox .listInput li { width: 100px; padding: 3px; cursor: pointer;}
+.searchBox .listInput li:hover { background: #ccc;}
 
 .funcBox { position: absolute; top: 0; right: 0;}
 .scd_btn[name="newUser"] { display: block; width: 36px; height: 36px; float: left; background: url(/assets/newUser.png) no-repeat; background-size: cover; margin: 0 5px;}
@@ -627,7 +631,7 @@ td .selectBox { margin: 0 3px; border-radius: 3px;}
 
 .moreBox { display: inline-block; position: relative;}
 .moreList { position: absolute; display: none;}
-.moreBox:hover .moreList { display: block;}
+.moreBox:hover .moreList { display: block;z-index: 200;}
 .moreList ul { margin-bottom: 80px; border: 1px solid #ccc;}
 .moreList li { line-height: 20px; width: 86px; text-align: left; text-indent: 10px;background: #fff;cursor: default;}
 .moreList li:hover { background: #FF9E2F; color: #fff;}

@@ -1,0 +1,25 @@
+<div class="second_content" style="width: 450px;">
+  <%= form_tag "/stores/#{@store.id}/order_prod_manages/#{@prod_order.id}", :id => "remark_form", :method => "put", :remote => true do %>
+    <span class="close" title="关闭">×</span>
+    <h1>设置备注</h1>
+    <div class="infoBox cf" style="padding-right: 40px;">
+      <div class="form_1">
+        <div class="form_row"><label>备注：</label>
+          <input type="text" name="remark" value="<%= @prod_order.remark %>" style="width:260px;"/>
+          <input type="hidden" name="types" value="<%= @types %>"/>
+        </div>
+      </div>
+    </div>
+    <div class="scdBoxAct">
+      <button class="orangeBtn2">确定</button>
+    </div>
+  <% end %>
+</div>
+
+<script>
+  $(function(){
+    $("#remark_form").on("click", "button", function(){
+      popup2("#waiting");
+    })
+  })
+</script>

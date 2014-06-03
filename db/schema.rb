@@ -1373,3 +1373,4 @@ ActiveRecord::Schema.define(:version => 20140527082533) do
   add_index "work_records", ["updated_at"], :name => "index_work_records_on_updated_at"
 
 end
+

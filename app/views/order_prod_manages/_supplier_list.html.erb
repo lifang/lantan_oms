@@ -1,0 +1,7 @@
+<% if @supplier.any? %>
+  <% @supplier.each do |s| %>
+    <li title="<%= s.name %>(助记码:<%= s.cap_name %>)" onclick="dinghuo_select_a_supp(this)"><%= s.name %></li>
+  <% end %>
+<% else %>
+  <li>无</li>
+<% end %>

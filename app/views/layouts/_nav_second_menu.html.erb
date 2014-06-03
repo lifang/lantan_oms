@@ -38,14 +38,16 @@
       <a class="scd_menu_a" href="javacript:void(0)"><li <% if is_hover("tongji4") %>class="hover"<% end %>>员工</li></a>
     </ul>
   </div>
-<% elsif is_hover("storages") %>
+<% elsif is_hover("storages", "in_and_out_records","order_prod_manages", "prod_losses", "back_records", "suppliers") %>
   <div class="scdMenuBox">
     <ul class="scdMenu cf">
-      <a class="scd_menu_a" href="/stores/<%= @store.id %>/storages/mat_index"><li <% if is_hover("storages/mat_index") %>class="hover"<% end %>>库存列表</li></a>
-      <a class="scd_menu_a" href="javacript:void(0)"><li <% if is_hover("kucun2") %>class="hover"<% end %>>出入库记录</li></a>
-      <a class="scd_menu_a" href="javacript:void(0)"><li <% if is_hover("kucun3") %>class="hover"<% end %>>订货记录</li></a>
-      <a class="scd_menu_a" href="javacript:void(0)"><li <% if is_hover("kucun4") %>class="hover"<% end %>>报损记录</li></a>
-      <a class="scd_menu_a" href="javacript:void(0)"><li <% if is_hover("kucun5") %>class="hover"<% end %>>退货记录</li></a>
+      <a class="scd_menu_a" href="/stores/<%= @store.id %>/storages"><li <% if is_hover("storages") %>class="hover"<% end %>>库存列表</li></a>
+      <a class="scd_menu_a" href="/stores/<%= @store.id %>/in_and_out_records/out_index"><li <% if is_hover("in_and_out_records/out_index") %>class="hover"<% end %>>出库记录</li></a>
+      <a class="scd_menu_a" href="/stores/<%= @store.id %>/in_and_out_records/in_index"><li <% if is_hover("in_and_out_records/in_index") %>class="hover"<% end %>>入库记录</li></a>
+      <a class="scd_menu_a" href="/stores/<%= @store.id %>/order_prod_manages"><li <% if is_hover("order_prod_manages") %>class="hover"<% end %>>订货记录</li></a>
+      <a class="scd_menu_a" href="/stores/<%= @store.id %>/prod_losses"><li <% if is_hover("prod_losses") %>class="hover"<% end %>>报损记录</li></a>
+      <a class="scd_menu_a" href="/stores/<%= @store.id %>/back_records"><li <% if is_hover("back_records") %>class="hover"<% end %>>退货记录</li></a>
+      <a class="scd_menu_a" href="/stores/<%= @store.id %>/suppliers"><li <% if is_hover("suppliers") %>class="hover"<% end %>>供应商管理</li></a>
     </ul>
   </div>
 <% elsif is_hover("caiwu") %>

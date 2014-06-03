@@ -1,0 +1,55 @@
+<div class="second_content" style="width: 650px;">
+  <span class="close" title="关闭">×</span>
+  <h1>入库</h1>
+  <div style="padding: 10px;">
+    <p style="line-height: 24px; text-align: right;">日期：<%= Time.now.strftime("%y-%m-%d") %></p>
+    <div class="searchBox">
+      <%= form_tag "/stores/#{@store.id}/in_and_out_records/in_search_prods", :id => "search_prod_form", :remote => true do %>
+        <div class="selectBox">
+          <span></span>
+          <div class="openDownIcon"></div>
+          <select name="in_order_prod_id" id="in_order_prod_id">
+            <option value="0">订单号</option>
+            <% @prod_orders.each do |p| %>
+              <option value="<%= p.id %>"><%= p.code %></option>
+            <% end %>
+          </select>
+        </div>
+        <button class="orangeBtn" id="search_prod_button" type="button">查询</button>
+      <% end %>
+    </div>
+  </div>
+  <%= form_tag "/stores/#{@store.id}/in_and_out_records/in_create" do %>
+    <div class="workInfo infoBox">
+      <span class="infoBoxTit">查询结果</span>
+      <table class="table1" id="prod_list">
+        <%= render "in_prod_list" %>
+      </table>
+    </div>
+    <div class="scdBoxAct">
+      <button class="orangeBtn2" style="padding: 4px 15px;" type="button" onclick="make_in_records_valid(<%= @store.id %>, this)">入库</button>
+      <button class="orangeBtn2" style="padding: 4px 15px;" type="button" onclick="print_in_list(<%= @store.id %>, this)">打印入库清单</button>
+      <button class="orangeBtn2" style="padding: 4px 15px;" type="button">打印条形码</button>
+    </div>
+  <% end %>
+</div>
+
+<script>
+  $(function(){
+    $("#search_prod_form").on("click", "#search_prod_button", function(){
+      var types = $("#in_order_prod_id").val();
+      if(types==0){
+        tishi("请选择一个订单!");
+      }else{
+        popup2("#waiting");
+        $("#search_prod_form").submit();
+      }
+    });
+  });
+
+  var ss = $("#product_div").find("option:selected");
+  $.each(ss, function(){
+    var txt = $(this).text();
+    $(this).parents(".selectBox").find("span").first().text(txt);
+  });
+</script>

@@ -1,0 +1,7 @@
+$("#waiting").hide();
+$(".second_bg2").hide();
+<% if @status == 0 %>
+  tishi('<%= @msg %>');
+<% else %>
+  $("#prod_list").html("<%= j(render :partial => "in_prod_list") %>");
+<% end %>

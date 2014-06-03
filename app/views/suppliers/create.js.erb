@@ -1,0 +1,7 @@
+<% if @status == 0 %>
+  $("#waiting").hide();
+  $(".second_bg2").hide();
+  tishi("<% @msg %>");
+<% else %>
+  window.location.href="/stores/<%= @store.id %>/suppliers";
+<% end %>

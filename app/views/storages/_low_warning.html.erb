@@ -1,0 +1,29 @@
+<div class="second_content" style="width: 450px;">
+  <%= form_tag "/stores/#{@store.id}/storages/#{@product.id}", :method => "put", :remote => true do %>
+    <span class="close" title="关闭">×</span>
+    <h1>设置库存预警</h1>
+    <div class="infoBox cf" style="padding-right: 40px;">
+      <div class="form_1">
+        <div class="form_row"><label>预警数量：</label>
+          <input type="text" name="low_warning" id="low_warning" value="<%= @product.low_warning %>" style="width:260px;"/>
+          <input type="hidden" name="set_product_types" value="<%= @set_product_types %>"/>
+        </div>
+      </div>
+    </div>
+    <div class="scdBoxAct">
+      <button class="orangeBtn2" onclick="valid(this)" type="button">确定</button>
+    </div>
+  <% end %>
+</div>
+
+<script>
+  function valid(obj){
+    var num = $.trim($("#low_warning").val());
+    if(num!="" && is_float(num)==false){
+      tishi("请输入合法的预警数目,最多两位小数!");
+    }else{
+      popup2("#waiting");
+      $(obj).parents("form").submit();
+    }
+  }
+</script>

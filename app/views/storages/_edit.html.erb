@@ -1,0 +1,115 @@
+<div class="second_content" style="width: 450px;">
+  <%= form_tag "/stores/#{@store.id}/storages/#{@product.id}", :method => "put", :multipart => true, :id => "new_p_form", :remote => true do %>
+    <span class="close" title="关闭">×</span>
+    <h1>编辑产品</h1>
+    <input type="hidden" name="set_product_types" value="<%= @set_product_types %>"/>
+    <div class="infoBox cf" style="padding-right: 40px;">
+      <div class="form_1">
+        <div class="form_row"><label>条形码：</label><input type="text" name="code" id="code" value="<%= @product.code %>"/></div>
+        <div class="form_row"><label><font class="red">*</font>商品名称：</label><input type="text" name="name" id="name" value="<%= @product.name %>"/></div>
+        <div class="form_row"><label>商品规格：</label><input type="text" name="standard" id="standard" value="<%= @product.standard %>"/></div>
+        <div class="form_row"><label>商品单位：</label><input type="text" name="unit" id="unit" value="<%= @product.unit %>"/></div>
+        <div class="form_row"><label><font class="red">*</font>产品类别：</label>
+          <div class="selectBox">
+            <span>类别</span>
+            <div class="openDownIcon"></div>
+            <select name="types" id="types">
+              <option value="0">------</option>
+              <% @mat_type.each do |mt| %>
+                <option value="<%= mt.id %>" <% if @product.category_id==mt.id %>selected<% end %>><%= mt.name %></option>
+              <% end %>
+            </select>
+          </div>
+        </div>
+        <div class="form_row"><label><font class="red">*</font>成本价：</label><input type="text" name="t_price" id="t_price" value="<%= @product.t_price %>"/><span>(最多保留两位小数)</span></div>
+        <div class="form_row"><label><font class="red">*</font>零售价：</label><input type="text" name="base_price" id="base_price" value="<%= @product.base_price %>"/><span>(最多保留两位小数)</span></div>
+        <div class="form_row"><label><font class="red">*</font>促销价：</label><input type="text" name="sale_price" id="sale_price" value="<%= @product.sale_price %>"/><span>(最多保留两位小数)</span></div>
+        <div class="choiceBox" style="margin: 4px 0;">
+          <label>上架销售：</label>
+          <div class="<%= @product.is_shelves ? "checkBox check" : "checkBox"%>" >
+            <input type="checkbox" name="is_shelves" id="is_shelves" value="1" onclick="has_shelves(this)" <% if @product.is_shelves %>checked<% end %>/>
+          </div>
+        </div>
+      </div>
+      <div class="perPic" style="position: absolute; right: 40px; top: 15px;">
+        <span>照片</span>
+        <img src="<%= @product.img_url %>"/>
+        <button class="upload" type="button" onclick="up_img()">上传</button>
+        <input type="file" name="p_image" id="p_image" style="display:none;"/>
+      </div>
+      <div id="good_detail" style="<%= @product.is_shelves ? "display:block;" : "display:none;" %>">
+        <div class="form_row"><label><font class="red">*</font>积分：</label><input type="text" name="p_point" id="p_point" value="<%= @product.prod_point %>"/></div>
+        <% xs_tc = @product.is_shelves ? (@product.deduct_price.nil? || @product.deduct_price=="" ? 2 : 1) : 0 %>
+        <div class="form_row"><label><nobr>销售提成方式：</nobr></label>
+          <div class="<%= xs_tc==0 || xs_tc==1 ? "radioBox check" : "radioBox" %>" style="float:left;">
+            <input type="radio" name="xs_t_type" value="1" onclick="check_type(this)" <% if xs_tc==0 || xs_tc==1 %>checked<% end %>/></div>
+          <span style="width: 50px; float:left;">金额</span>
+          <div class="<%= xs_tc==2 ? "radioBox check" : "radioBox" %>" style="float:left;">
+            <input type="radio" name="xs_t_type" value="2" onclick="check_type(this)" <% if xs_tc==2 %>checked<% end %>/></div>
+          <span style="width: 50px; float:left;">百分点</span>
+        </div>
+        <div class="form_row"><label><font class="red">*</font><span id="xs_t_span"><%= xs_tc==0 || xs_tc==1 ? "提成金额：" : "提成百分点：" %></span></label>
+          <input type="text" name="xs_t" id="xs_t" value="<%= xs_tc==0 ? "" :  (xs_tc==1 ? @product.deduct_price : ((@product.deduct_percent.to_f/@product.sale_price.to_f)*100).round(2)) %>"/><span>(最多保留两位小数)</span>
+        </div>
+        <div class="choiceBox" style="margin: 4px 0;">
+          <label>需要施工：</label>
+          <div class="<%= @product.is_added ? "checkBox check" : "checkBox" %>">
+            <input type="checkbox" value="1" name="is_added" id="is_added" onclick="need_add(this)" <% if @product.is_added %>checked<% end %>/>
+          </div>
+        </div>
+        <% js_tc = @product.is_added ? (@product.techin_price.nil? || @product.techin_price=="" ? 2 : 1) : 0 %>
+        <div class="form_row"><label><nobr>技师提成方式：</nobr></label>
+          <div class="<%= js_tc==0 || js_tc==1 ? "radioBox check" : "radioBox" %>" style="float:left;">
+            <input type="radio" name="js_t_type" value="1" onclick="check_type(this)" <% if js_tc==0 %>disabled<% end %> <% if js_tc==1 %>checked<% end %>/></div>
+          <span style="width: 50px; float:left;">金额</span>
+          <div class="<%= js_tc==2? "radioBox check" : "radioBox" %>" style="float:left;">
+            <input type="radio" name="js_t_type" value="2" onclick="check_type(this)" <% if js_tc==0 %>disabled<% end %> <% if js_tc==2 %>checked<% end %>/></div>
+          <span style="width: 50px; float:left;">百分点</span>
+        </div>
+        <div class="form_row"><label><font class="red">*</font><span id="js_t_span"><%= js_tc==0 || js_tc==1 ? "提成金额：" : "提成百分点：" %></span></label>
+          <input type="text" name="js_t" id="js_t" <% if js_tc==0 %>disabled<% end %> value="<%= js_tc==0 ? "" : (js_tc==1 ? @product.techin_price : ((@product.techin_percent.to_f/@product.sale_price.to_f)*100).round(2)) %>"/>
+          <span>(最多保留两位小数)</span>
+        </div>
+        
+        <div class="choiceBox" style="margin: 4px 0;">
+          <label>自动回访：</label>
+          <div class="<%= @product.is_auto_revist ? "checkBox check" : "checkBox" %>">
+            <input type="checkbox" value="1" name="auto_revist" id="auto_revist" onclick="auto_revi(this)" <% if @product.is_auto_revist %>checked<% end %>/>
+          </div>
+        </div>
+        <div class="form_row"><label><font class="red">*</font>回访时间：</label>
+          <div class="selectBox">
+            <span></span>
+            <div class="openDownIcon"></div>
+            <select name="revist_time" id="revist_time" <% if @product.is_auto_revist == false %>disabled<% end %>>
+              <option value="0">------</option>
+              <% @revi_time.each do |t| %>
+                <option value="<%= t %>" <% if @product.is_auto_revist && @product.auto_time == t %>selected<% end %>><%= "#{t}小时" %></option>
+              <% end %>
+            </select>
+          </div>
+        </div>
+        <div class="form_row"><label><font class="red">*</font>回访内容：</label>
+          <textarea style="width: 275px;height: 50px;" name="revist_cont" id="revist_cont" <% if @product.is_auto_revist == false %>disabled<% end %>><%= @product.is_auto_revist ? @product.revist_content : "" %></textarea>
+        </div>
+        <div class="form_row"><label>简介：</label>
+          <textarea style="width: 275px;height: 50px;" name="description" id="description"><%= @product.description %></textarea>
+        </div>
+        <div class="form_row"><label>描述：</label>
+          <textarea style="width: 275px" name="introduction" id="introduction"><%= @product.introduction %></textarea>
+        </div>
+      </div>
+    </div>
+    <div class="scdBoxAct">
+      <button class="orangeBtn2" type="button" onclick="new_prod_valid(this, <%= @store.id %>, <%= @product.id %>)">确定</button>
+    </div>
+  <% end %>
+</div>
+
+<script>
+  var ss = $("#new_p_form").find("option:selected");
+  $.each(ss, function(){
+    var txt = $(this).text();
+    $(this).parents(".selectBox").find("span").first().text(txt);
+  });
+</script>

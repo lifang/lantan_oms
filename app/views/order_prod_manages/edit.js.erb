@@ -1,0 +1,8 @@
+$("#waiting").hide();
+$(".second_bg").hide();
+<% if @types == 1 %>
+  $("#product_div").html("<%= j(render :partial => "remark") %>");
+<% elsif @types == 2 %>
+  $("#product_div").html("<%= j(render :partial => "detail") %>");
+<% end %>
+popup("#product_div");

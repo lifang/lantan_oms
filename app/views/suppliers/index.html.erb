@@ -1,0 +1,77 @@
+<%= javascript_include_tag "suppliers" %>
+<div class="main_tit"><h1>供应商管理</h1></div>
+<div class="main_con">
+  <div class="toolbar">
+    <div class="searchBox">
+      <%= form_tag "/stores/#{@store.id}/suppliers", :id => "supps_form", :method => "get" do %>
+        <div class="selectBox">
+          <span></span>
+          <div class="openDownIcon"></div>
+          <select name="check_type">
+            <option value="0">结算方式</option>
+            <% Supplier::S_CHECK_TYPE.each do |k, v| %>
+              <option value="<%= k %>" <% if @type.to_i==k.to_i %>selected<% end %>><%= v %></option>
+            <% end %>
+          </select>
+        </div>
+        <input type="text" placeholder="名称" name="name" value="<%= @name %>"/>
+        <input type="text" placeholder="助记码" name="cap_name" value="<%= @cap_name %>"/>
+        <button class="orangeBtn">查询</button>
+      <% end %>
+      <div class="funcBox">
+        <a href="javascript:void(0)" class="scd_btn" onclick="new_supplier(<%= @store.id %>)"><span>添加供应商</span></a>
+      </div>
+    </div>
+  </div>
+
+  <div style="padding-bottom: 80px;">
+    <table class="table1">
+      <tr>
+        <th>名称</th>
+        <th>助记码</th>
+        <th>联系人</th>
+        <th>手机号码</th>
+        <th>其他联系方式</th>
+        <th>地址</th>
+        <th>结算方式</th>
+        <th>结算时间</th>
+        <th style="width:100px;">操作</th>
+      </tr>
+      <% @suppliers.each do |s| %>
+        <tr>
+          <td><%= s.name %></td>
+          <td><%= s.cap_name %></td>
+          <td><%= s.contact %></td>
+          <td><%= s.phone %></td>
+          <td><%= s.email %></td>
+          <td><%= s.address %></td>
+          <td><%= Supplier::S_CHECK_TYPE[s.check_type] %></td>
+          <td><%= s.check_type==Supplier::CHECK_TYPE[:MONTH] ? "#{s.check_time}月" : "#{s.check_time}天" %></td>
+          <td>
+            <div class="moreBox">
+              <button class="more" title="详细"></button>
+              <div class="moreList">
+                <ul>
+                  <li onclick="edit_supplier(<%= @store.id %>, <%= s.id %>)">编辑</li>
+                </ul>
+              </div>
+            </div>
+            <button class="delete" title="删除" onclick="del_supplier(<%= @store.id %>, <%= s.id %>)"></button>
+          </td>
+        </tr>
+      <% end if @suppliers && @suppliers.any? %>
+    </table>
+    <% if @suppliers && @suppliers.any? %>
+      <%= will_paginate @suppliers, :previous_label => "上一页", :next_label => "下一页", :class => "page" %>
+    <% end %>
+  </div>
+</div>
+<div class="second_box" id="supplier_div">
+</div>
+<script type="text/javascript">
+  $(function(){
+    $("#supps_form").on("click", "button", function(){
+      popup("#waiting");
+    });
+  })
+</script>

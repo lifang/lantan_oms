@@ -1,0 +1,56 @@
+<%= javascript_include_tag "storages" %>
+<%= javascript_include_tag "in_and_out_records" %>
+<%= javascript_include_tag "order_prod_manages" %>
+<%= javascript_include_tag "prod_losses" %>
+<%= javascript_include_tag "back_records" %>
+<div class="main_tit"><h1>入库记录</h1></div>
+<div class="main_con">
+  <div class="toolbar">
+    <div class="searchBox">
+      <%= form_tag "/stores/#{@store.id}/in_and_out_records/in_index", :method => "get" do %>
+        <div class="selectBox">
+          <span></span>
+          <div class="openDownIcon"></div>
+          <select name="p_type">
+            <option value="0">全部</option>
+            <% @mat_type.each do |mt| %>
+              <option value="<%= mt.id %>" <% if @type.to_i==mt.id %>selected<% end %>><%= mt.name %></option>
+            <% end %>
+          </select>
+        </div>
+        <input type="text" placeholder="产品名称" name="p_name" value="<%= @name %>"/>
+        <input type="text" placeholder="条形码" name="p_code" value="<%= @code %>"/>
+        <button class="orangeBtn">查询</button>
+      <% end %>
+    </div>
+  </div>
+  <div style="padding-bottom: 80px;">
+    <table class="table1">
+      <tr>
+        <th>订单号</th>
+        <th>条形码</th>
+        <th>产品名称</th>
+        <th>产品类别</th>
+        <th>入库量</th>
+        <th>操作人</th>
+        <th>入库时间</th>
+      </tr>
+      <% @por.each do |p| %>
+      <tr>
+        <td><%= p.pocode %></td>
+        <td><%= p.pcode %></td>
+        <td><%= p.name %></td>
+        <td><%= p.cname %></td>
+        <td><%= p.nums %></td>
+        <td><%= p.sname %></td>
+        <td><%= p.created_at.strftime("%y-%m-%d %H:%M") %></td>
+      </tr>
+      <% end %>
+    </table>
+    <% if @por && @por.any? %>
+    <%= will_paginate @por, :previous_label => "上一页", :next_label => "下一页", :class => "page" %>
+    <% end %>
+  </div>
+</div>
+<div class="second_box" id="product_div">
+</div>

@@ -39,7 +39,34 @@ LantanOms::Application.routes.draw do
     end
     resources :storages do
       collection do
-        get :mat_index
+        get :prod_valid, :print_all_prods
+      end
+    end
+    resources :in_and_out_records do
+      collection do
+        get :out_index, :out_new, :in_index, :in_new
+        post :search_prods, :in_search_prods, :out_create, :in_create, :print_in_list
+      end
+    end
+    resources :order_prod_manages do
+      collection do
+        get :search_supplier, :search_prod, :confirm_and_back_goods
+        post :order_prod_pay
+      end
+    end
+    resources :prod_losses do
+      collection do
+        post :search_prods
+      end
+    end
+    resources :back_records do
+      collection do
+        get :search_supplier, :search_prod
+      end
+    end
+    resources :suppliers do
+      collection do
+        get :supplier_valid
       end
     end
     resources :arrange_staffs
@@ -69,8 +96,7 @@ LantanOms::Application.routes.draw do
   end
 
 
-
-  namespace :api do
+    namespace :api do
     resources :orders do
       collection do
         get :index_list,:user_and_order,:order_details,:user_and_order,:search_car,:products_list,:login,

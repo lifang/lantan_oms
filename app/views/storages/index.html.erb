@@ -1,0 +1,81 @@
+<%= javascript_include_tag "storages" %>
+<%= javascript_include_tag "in_and_out_records" %>
+<%= javascript_include_tag "order_prod_manages" %>
+<%= javascript_include_tag "prod_losses" %>
+<%= javascript_include_tag "back_records" %>
+<div class="main_tit"><h1>库存列表</h1></div>
+<div class="main_con">
+  <div class="toolbar">
+    <div class="searchBox">
+      <%= form_tag "/stores/#{@store.id}/storages", :method => "get" do %>
+        <div class="selectBox">
+          <span>产品类别</span>
+          <div class="openDownIcon"></div>
+          <select name="p_type">
+            <option value="0">全部</option>
+            <% @mat_type.each do |mt| %>
+              <option value="<%= mt.id %>" <% if @p_type.to_i==mt.id %>selected<% end %>><%= mt.name %></option>
+            <% end %>
+          </select>
+        </div>
+        <input type="text" placeholder="商品名称" name="p_name" value="<%= @p_name %>"/>
+        <input type="text" placeholder="条形码" name="p_code" value="<%= @p_code %>"/>
+        <button class="orangeBtn">查询</button>
+      <% end %>
+    </div>
+  </div>
+
+  <div style="padding-bottom: 80px;">
+    <table class="table1">
+      <tr>
+        <th>条形码</th>
+        <th>产品名称</th>
+        <th>产品类别</th>
+        <th>单位</th>
+        <th>规格</th>
+        <th>成本价</th>
+        <th>零售价</th>
+        <th>库存量</th>
+        <th>盘点核数</th>
+        <th>是否上架</th>
+        <th>备注</th>
+        <th>操作</th>
+      </tr>
+      <% @materials.each do |m| %>
+        <tr>
+          <td><%= m.code %></td>
+          <td><%= m.name %></td>
+          <td><%= m.cname %></td>
+          <td><%= m.unit %></td>
+          <td><%= m.standard %></td>
+          <td><%= m.t_price.nil? ? 0 : m.t_price.round(2) %></td>
+          <td><%= m.sale_price.nil? ? 0 : m.sale_price.round(2) %></td>
+          <td><%= m.storage.nil? ? 0 : m.storage.round(2) %></td>
+          <td><%= m.check_num.nil? ? 0 : m.check_num.round(2) %></td>
+          <td><%= m.is_shelves ? "是" : "否" %></td>
+          <td><%=  truncate(m.remark, :length => 8) %></td>
+          <td>
+            <div class="moreBox">
+              <button class="more" title="详细"></button>
+              <div class="moreList">
+                <ul>
+                  <li onclick="set_product(1, <%= @store.id %>, <%= m.id %>, this)">备注</li>
+                  <li onclick="set_product(2, <%= @store.id %>, <%= m.id %>, this)">编辑</li>
+                  <li onclick="set_product(3, <%= @store.id %>, <%= m.id %>, this)">核实</li>
+                  <li onclick="set_product(4, <%= @store.id %>, <%= m.id %>, this)">设置库存预警</li>
+                  <li onclick="set_product(5, <%= @store.id %>, <%= m.id %>, this)"><%= m.is_ignore==true ? "取消忽略" : "忽略" %></li>
+                </ul>
+              </div>
+            </div>
+            <button class="delete" title="删除" onclick="del_product(<%= @store.id %>, <%= m.id %>)"></button>
+          </td>
+        </tr>
+      <% end if @materials %>
+    </table>
+    <% if @materials.any? %>
+      <%= will_paginate @materials, :previous_label => "上一页", :next_label => "下一页", :class => "page" %>
+    <% end %>
+  </div>
+</div>
+<div class="second_box" id="product_div">
+</div>

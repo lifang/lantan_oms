@@ -1,0 +1,8 @@
+$("#waiting").hide();
+$(".second_bg").hide();
+<% if @status == 0 %>
+  tishi("数据错误!");
+<% else %>
+  $("#supplier_div").html("<%= j(render :partial => "edit") %>");
+  popup("#supplier_div");
+<% end %>

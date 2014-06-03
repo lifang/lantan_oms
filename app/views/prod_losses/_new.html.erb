@@ -1,0 +1,76 @@
+<div class="second_content" style="width: 650px;">
+  <span class="close" title="关闭">×</span>
+  <h1>报损</h1>
+  <div style="padding: 10px;">
+    <p style="line-height: 24px; text-align: right;">日期：<%= Time.now.strftime("%y-%m-%d") %></p>
+    <div class="searchBox">
+      <%= form_tag "/stores/#{@store.id}/prod_losses/search_prods", :id => "search_prod_form", :remote => true do %>
+        <input type="text" placeholder="产品名称" name="search_prod_name"/>
+        <div class="selectBox">
+          <span></span>
+          <div class="openDownIcon"></div>
+          <select name="search_prod_type">
+            <option value="0">产品类别</option>
+            <% @mat_type.each do |mt| %>
+              <option value="<%= mt.id %>"><%= mt.name %></option>
+            <% end %>
+          </select>
+        </div>
+        <button class="orangeBtn" id="search_prod_button">查询</button>
+      <% end %>
+    </div>
+  </div>
+  <div class="workInfo infoBox">
+    <span class="infoBoxTit">查询结果</span>
+    <table class="table1" id="prod_list">
+      <%= render "prod_list" %>
+    </table>
+  </div>
+  <%= form_tag "/stores/#{@store.id}/prod_losses" do %>
+    <div class="workInfo infoBox">
+      <table class="table1" id="added_prod_list">
+        <tr>
+          <th>产品名称</th>
+          <th>产品类别</th>
+          <th>成本价</th>
+          <th>零售价</th>
+          <th>库存量</th>
+          <th>报损数</th>
+          <th></th>
+        </tr>
+      </table>
+      <p style="text-align: right; padding-top: 10px; font-size: 14px;">
+        <span id="total_price_span">报损总计：0.00(元)</span>
+      </p>
+    </div>
+    <div class="scdBoxAct">
+      <div class="searchBox" style="display: inline-block;">
+        <label>申请人</label>
+        <div class="selectBox">
+          <span></span>
+          <div class="openDownIcon"></div>
+          <select name="out_staff" id="out_staff">
+            <% @staffs.each do |s| %>
+              <option value="<%= s.id %>"><%= s.name %></option>
+            <% end %>
+          </select>
+        </div>
+        <button class="orangeBtn2" style="padding: 4px 15px;" type="button" onclick="loss_make_out_records_valid(this)">确定</button>
+      </div>
+    </div>
+  <% end %>
+</div>
+
+<script>
+  $(function(){
+    $("#search_prod_form").on("click", "#search_prod_button", function(){
+      popup2("#waiting");
+    });
+  });
+
+  var ss = $("#product_div").find("option:selected");
+  $.each(ss, function(){
+    var txt = $(this).text();
+    $(this).parents(".selectBox").find("span").first().text(txt);
+  });
+</script>

@@ -1,0 +1,55 @@
+<div class="second_content" style="width: 730px;">
+  <span class="close" title="关闭">×</span>
+  <h1>订货详情</h1>
+  <div class="returnVisitDtl">
+    <div class="personBill" style="margin-left:120px;">
+      <div class="personInfo" style="float:inherit;">
+        <label>订单号：</label>
+        <span style="width:120px;"><%= @prod_order.code %></span>
+        <label>付款状态：</label>
+        <span style="width:120px;"><%= ProductOrder::S_STATUS[@prod_order.status] %></span>
+      </div>
+      <div class="personInfo">
+        <label>物流状态：</label>
+        <span style="width:120px;"><%= ProductOrder::S_M_STATUS[@prod_order.m_status] %></span>
+        <label>物流单号：</label>
+        <span style="width:120px;"><%= @prod_order.logistics_code.nil? ? "------" : @prod_order.logistics_code %></span>
+      </div>
+      <div class="personInfo">
+        <label>到货时间：</label>
+        <span style="width:120px;"><%= @prod_order.arrival_at.nil? ? "------" : @prod_order.arrival_at.strftime("%y-%m-%d") %></span>
+        <label>承运人：</label>
+        <span style="width:120px;"><%= @prod_order.carrier.nil? ? "------" : @prod_order.carrier %></span>
+      </div>
+    </div>
+    <table class="table1">
+      <tr>
+        <th style="width:30%;">名称</th>
+        <th style="width:40%;">单价</th>
+        <th>数量</th>
+      </tr>
+      <% @prod_order_items.each do |poi| %>
+        <tr>
+          <td><%= poi.name %></td>
+          <td><%= poi.price %></td>
+          <td><%= poi.product_num %></td>
+        </tr>
+      <% end %>
+    </table>
+    <div style="line-height: 30px; text-align: right;">
+      <label>金额总计：</label>
+      <span><%= @prod_order.price %></span>
+    </div>
+    <div class="scdBoxAct">
+      <% if @prod_order.status == ProductOrder::STATUS[:no_pay] %>
+        <button class="orangeBtn2" onclick="select_order_prod_pay(<%= @prod_order.id %>)">付款</button>
+        <button class="orangeBtn2" onclick="confirm_and_back_goods(3, <%= @store.id %>, <%= @prod_order.id %>)">取消订单</button>
+      <% end %>
+      <% if @prod_order.m_status == ProductOrder::M_STATUS[:no_send] %>
+        <button class="orangeBtn2" onclick="confirm_and_back_goods(1, <%= @store.id %>, <%= @prod_order.id %>)">退货</button>
+      <% elsif @prod_order.m_status == ProductOrder::M_STATUS[:send] %>
+        <button class="orangeBtn2" onclick="confirm_and_back_goods(2, <%= @store.id %>, <%= @prod_order.id %>)">确认收货</button>
+      <% end %>
+    </div>
+  </div>
+</div>

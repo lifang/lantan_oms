@@ -1,0 +1,18 @@
+<tr>
+  <th>产品名称</th>
+  <th>产品类别</th>
+  <th>成本价</th>
+  <th>零售价</th>
+  <th>库存量</th>
+  <th style="width: 40px;"></th>
+</tr>
+<% @products.each do |p| %>
+  <tr>
+    <td width="20%"><%= p.name %></td>
+    <td width="20%"><%= p.cname %></td>
+    <td width="16%"><%= p.t_price %></td>
+    <td width="16%"><%= p.base_price %></td>
+    <td width="16%"><%= p.storage.nil? ? 0 : p.storage.round(2) %></td>
+    <th width="5%"><button class="add" title="添加" type="button" onclick="dinghuo_add_prod(<%= p.id %>, this)"></button></th>
+  </tr>
+<% end if @products && @products.any? %>

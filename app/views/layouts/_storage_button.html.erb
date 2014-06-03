@@ -1,0 +1,9 @@
+<button onclick="new_product(<%= @store.id %>)">新建产品</button>
+<button onclick="out(<%= @store.id %>)">出库</button>
+<button onclick="in_records(<%= @store.id %>)">入库</button>
+<button onclick="make_prod_order(<%= @store.id %>)">订货</button>
+<button onclick="new_loss(<%= @store.id %>)">报损</button>
+<button onclick="new_back(<%= @store.id %>)">退货</button>
+<a href="/stores/<%= @store.id %>/storages/print_all_prods" target="_blank"><button>打印库存清单</button></a>
+<button>打印条码</button>
+<button>盘点</button>
