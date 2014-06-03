@@ -32,7 +32,7 @@ class Product < ActiveRecord::Base
   PACK_SERVIE  = {0=>"产品套装服务"}
   PACK ={:PACK => 0}
   PER_PAGE = 20
-  #产品列表
+  #搜索产品列表
   def self.products_arr store_id,product_name,types #0 为产品 1 为服务 2 为卡类
     cards = []
     services = []
@@ -91,5 +91,75 @@ class Product < ActiveRecord::Base
       end
     end
     return [cards,services, products]
+  end
+
+  #产品和服务的列表
+  def self.products_and_services store_id,name
+
+    packagecards = []
+    #套餐卡
+    package_cards = PackageCard.find_by_sql("SELECT id,name,img_url,description,price from package_cards
+                  where store_id = #{store_id} and status = #{PackageCard::STAT[:NORMAL]}")
+    package_card_id = package_cards.map(&:id)
+    #      适用项目
+    pccard_product = Product.find_by_sql(["select p.name,ppr.package_card_id from products p
+                INNER JOIN pcard_prod_relations ppr on p.id = ppr.product_id where p.status=#{STATUS[:NORMAL]}
+                and p.is_shelves=#{IS_SHELVES[:YES]} and ppr.package_card_id in (?)",package_card_id]).group_by{|prod| prod.package_card_id}
+
+    svcards = SvCard.find_by_sql("select id,name,img_url,types,description,price,apply_content from sv_cards
+                  where store_id = #{store_id} and status = #{SvCard::STATUS[:NORMAL]}").group_by{|svcard| svcard.types}
+
+    (package_cards || []).each do |package_card|
+      package_card["types"] = 2
+      package_card["products"] = pccard_product[package_card.id].nil? ? [] : pccard_product[package_card.id].map(&:name).join(",")
+      packagecards << package_card
+    end
+    #打折卡
+    discount_cards = []
+    (svcards[0] || []).each do |svcard|
+      svcard_product=[]
+      if svcard.types.to_i == 0
+        product_id = svcard.apply_content.split(",") if svcard.apply_content
+        svcard_product = Product.select("name").where(["id in (?)",product_id]).where("status = #{SvCard::STATUS[:NORMAL]}").map(&:name).join(",")
+      end
+      svcard["products"] = svcard_product
+      discount_cards << svcard
+    end
+    #储值卡
+    stored_cards = []
+    (svcards[1] || []).each do |svcard|
+      svcard_product=[]
+      if svcard.types.to_i == 0
+        product_id = svcard.apply_content.split(",") if svcard.apply_content
+        svcard_product = Product.select("name").where(["id in (?)",product_id]).where("status = #{SvCard::STATUS[:NORMAL]}").map(&:name).join(",")
+      end
+      svcard["products"] = svcard_product
+      stored_cards << svcard
+    end
+    #产品或者服务部分
+    product_list = Product.find_by_sql("select p.id,p.name,p.sale_price,p.category_id,p.storage,c.types from products p
+          INNER JOIN categories c on p.category_id = c.id where p.is_shelves = #{IS_SHELVES[:YES]}
+          and p.status=#{STATUS[:NORMAL]} and c.store_id=#{store_id} and p.name like '#{name}' ")
+    product_types = product_list.group_by{|product| product.types}
+
+    service_ma = Product.find_by_sql(["select min(p.storage/pmr.material_num) cishu,pmr.product_id from products p INNER JOIN prod_mat_relations pmr on p.id=pmr.material_id
+                        where p.status = #{STATUS[:NORMAL]} and p.types=#{TYPES[:MATERIAL]} and p.is_shelves=#{IS_SHELVES[:NO]} and
+                        pmr.product_id in (?) GROUP BY pmr.product_id",product_list.map(&:id)]).group_by{|serverse| serverse.product_id}
+    product_lists = []
+    product_types[1].each do |product|
+      product['several_times'] = service_ma[product.id].nil? ? -1 : service_ma[product.id].first.cishu.to_i
+      product_lists << product
+    end if product_types && product_types[1]
+
+    product_types[0].each do |product|
+      product['several_times'] = product.storage.to_i
+      product_lists << product
+    end if product_types && product_types[0]
+    product_arr = product_lists.group_by{|product| product.category_id}
+    categories = Category.where(["id in (?) ",product_list.map(&:category_id)]).select("id,name")
+    categories.each do |category|
+      category["prod"] = product_arr[category.id]
+    end
+    return categories
   end
 end

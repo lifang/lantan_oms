@@ -11,7 +11,9 @@ class Reservation < ActiveRecord::Base
 
   def self.store_reservations store_id
     #预约信息
-    reservations = Reservation.find_by_sql("select r.id, r.created_at,r.res_time,r.status,c.num,cu.name,cu.is_vip,cu.mobilephone,cu.other_way email,cm.name car_model_name,cnr.customer_id
+    reservations = Reservation.find_by_sql("select r.id,DATE_FORMAT(r.created_at, '%Y-%m-%d %H:%i:%S') as new_created_at ,
+      DATE_FORMAT(r.res_time, '%H:%i') as new_res_time ,r.status,c.num,cu.name,cu.is_vip,cu.mobilephone,
+      cu.other_way email,cm.name car_model_name,cnr.customer_id
      from reservations r inner join car_nums c on c.id=r.car_num_id
       left join customer_num_relations cnr on cnr.car_num_id = c.id
       left join customers cu on cu.id=cnr.customer_id

@@ -4,6 +4,7 @@ class Api::OrdersController < ApplicationController
   def login
     staff = Staff.find_by_username(params[:user_name])
     info = ""
+    status = 0
     if  staff.nil? or !staff.has_password?(params[:user_password])
       info = "用户名或密码错误"
     elsif !Staff::VALID_STATUS.include?(staff.status)
@@ -14,6 +15,7 @@ class Api::OrdersController < ApplicationController
       session_role(cookies[:user_id])
       if has_authority?
         info = ""
+        status
       else
         cookies.delete(:user_id)
         cookies.delete(:user_name)
@@ -22,7 +24,8 @@ class Api::OrdersController < ApplicationController
         info = "抱歉，您没有访问权限"
       end
     end
-    render :json => {:staff => staff, :info => info}.to_json
+    capital_arr = Order.get_car_sort
+    render :json => {:staff => staff, :status => status ,:info => info,:capital_arr => capital_arr}
   end
 
   #登录后返回数据
@@ -68,8 +71,8 @@ class Api::OrdersController < ApplicationController
 
   #现场管理-订单详情
   def order_details
-    order_details,order_pro,staff_store = Order.order_details params[:order_id]
-    render :json => {:order_details=>order_details,:order_pro=>order_pro,:staff_store=>staff_store}
+    order_details = Order.order_details params[:order_id]
+    render :json => {:order_details=>order_details}
   end
 
   #预约列表
@@ -85,6 +88,13 @@ class Api::OrdersController < ApplicationController
     render :json => {:status =>  status,:notice =>notice }
   end
 
+  #进入下单界面或搜索产品
+  def enter_order
+    product_name = params[:name].nil? || params[:name].strip == "" ? "%%" : "%"+ params[:name] +"%"
+    products = Product.products_and_services params[:store_id],product_name
+    render :json => {:products => products}
+  end
+
   #产品（产品列表）搜索
   def products_list
     status = 0
@@ -93,7 +103,7 @@ class Api::OrdersController < ApplicationController
       status = 1
       cards,services, products = Product.products_arr params[:store_id],product_name,params[:types]
     end
-    render :json=>{:status => status,:cards=>cards,:services=>services,:products=>products,:types=>params[:types] }
+    render :json=>{:status => status,:cards=>cards,:services=>services,:products=>products,:types=>params[:types]}
   end
 
   #根据车牌号或者手机号码查询客户
@@ -105,27 +115,55 @@ class Api::OrdersController < ApplicationController
 
   #下单
   def add
-    if params[:types].to_i==0 #查询出来的用户为1，手动输入的用户为0
-      Customer.customer_valid
-      Customer.customer_create params[:store_id],params[:name], params[:car_num],params[:mobilephone],params[:car_model_name],params[:car_brand_name],
-        params[:buy_year],params[:property],params[:sex],params[:vin],params[:maint_distance],params[:group_name]
-    end
+    #查询出来的用户为1，手动输入的用户为0
     #name姓名 car_num车牌号 mobilephone手机号码 car_model_name车品牌 car_brand_name车型 buy_year购买年份 property属性 sex性别 vin maint_distance里程 group_name公司名称
-
-
-
-    user_id = params[:user_id].nil? ? cookies[:user_id] : params[:user_id]
-    order = Order.make_record params[:c_id],params[:store_id],params[:car_num_id],params[:start],
-      params[:end],params[:prods],params[:price],params[:station_id],user_id
-    info = order[1].nil? ? nil : order[1].get_info
-    str = if order[0] == 0 || order[0] == 2
-      "数据出现异常"
-    elsif order[0] == 1
-      "success"
-    elsif order[0] == 3
-      "没可用的工位了"
+    status, msg = Customer.customer_valid params[:car_num],params[:store_id],params[:type],params[:name],params[:mobilephone]  #新建或编辑客户时验证
+    if status == 1
+      begin
+        store_id = params[:store_id]
+        name = params[:name]
+        car_num = params[:car_num]
+        mobilephone = params[:mobilephone]
+        sex = params[:sex]
+        is_vip = params[:cus_is_vip].nil? || params[:cus_is_vip].to_i==0 ? 0 : 1
+        property = params[:cus_property].to_i
+        group_name = property==0 || params[:group_name].nil? || params[:group_name]=="" ? nil : params[:group_name]
+        store_id = params[:store_id]
+        car_model_id = params[:car_model_id]
+        buy_year = params[:buy_year]
+        distance = params[:maint_distance]
+        salt = Digest::MD5.hexdigest(Time.now.strftime("%Y%m%d%H%M%S"))
+        Customer.transaction do
+          customer = Customer.new(:name=>name,:mobilephone => mobilephone,:sex => sex, :status => Customer::STATUS[:NOMAL],:types => Customer::TYPES[:NORMAL],
+            :username => name,:is_vip => is_vip, :group_name => group_name, :property => property, :store_id => store_id, :salt => salt)
+          customer.encrypted_password = Digest::MD5.hexdigest("888888#{salt}")
+          customer.save
+          car_num =  CarNum.create(:num => car_num,:car_model_id=>car_model_id, :buy_year => buy_year,:distance =>distance)
+          CustomerNumRelation.create(:customer_id => customer.id, :car_num_id => car_num.id, :store_id => store_id)
+        end
+      rescue
+        status = 0
+        msg = "创建不成功！"
+      end
+      if status == 1
+        user_id = params[:user_id].nil? ? cookies[:user_id] : params[:user_id]
+        order = Order.make_record params[:c_id],params[:store_id],params[:car_num_id],params[:start],
+          params[:end],params[:prods],params[:price],params[:station_id],user_id
+        info = order[1].nil? ? nil : order[1].get_info
+        str = if order[0] == 0 || order[0] == 2
+          "数据出现异常"
+        elsif order[0] == 1
+          "success"
+        elsif order[0] == 3
+          "没可用的工位了"
+        end
+        render :json => {:status => order[0], :content => str, :order => info}
+      else
+        render :json => {:status=>status,:msg=>msg}
+      end
+    else
+      render :json => {:status=>status,:msg => msg}
     end
-    render :json => {:status => order[0], :content => str, :order => info}
   end
 
 
@@ -133,7 +171,6 @@ class Api::OrdersController < ApplicationController
   def work_order_finished
     #work_order_id
     work_order = WorkOrder.find_by_id(params[:work_order_id])
-
     if work_order
       if work_order.status==WorkOrder::STAT[:WAIT_PAY]
         status = 0
@@ -149,6 +186,24 @@ class Api::OrdersController < ApplicationController
     end
     work_orders = working_orders params[:store_id]
     render :json => {:status => status, :orders => work_orders}
+  end
+
+  #付款
+  def pay
+    #满意度，支付方式，是否寄出，订单码，免单，
+    order = Order.pay(params[:order_id], params[:store_id], params[:please],
+      params[:pay_type], params[:billing], params[:code], params[:is_free])
+    content = ""
+    if order[0] == 0
+      content = ""
+    elsif order[0] == 1
+      content = "success"
+    elsif order[0] == 2
+      content = "订单不存在"
+    elsif order[0] == 3
+      content = "储值卡余额不足，请选择其他支付方式"
+    end
+    render :json => {:status => order[0], :content => content}
   end
 
   #预约排单

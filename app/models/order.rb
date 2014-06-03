@@ -154,17 +154,25 @@ and wo.status not in (#{WorkOrder::STAT[:WAIT_PAY]},#{WorkOrder::STAT[:COMPLETE]
   #订单详情
   def self.order_details order_id
     #顾客信息车型
-    sql="select o.id,o.store_id,o.code,o.price,c.name,cn.num,c.mobilephone,cm.name car_model_name,cb.name car_brand_name,cn.buy_year,c.sex,c.group_name,cn.distance,o.cons_staff_id_1,o.cons_staff_id_2
+    sql="select o.id,o.store_id,o.code,o.price,o.station_id,c.name,cn.num,c.mobilephone,cm.name car_model_name,cb.name car_brand_name,cn.buy_year,c.sex,c.group_name,cn.distance,o.cons_staff_id_1,o.cons_staff_id_2
 from orders o left JOIN car_nums cn on o.car_num_id = cn.id LEFT JOIN car_models cm on cn.car_model_id=cm.id
 LEFT JOIN car_brands cb on cb.id=cm.car_brand_id left JOIN customer_num_relations cnr on  cnr.car_num_id = cn.id
 left JOIN customers c on c.id=cnr.customer_id where o.id=?"
     order_details = Order.find_by_sql([sql,order_id]).first
     #订单详情
     order_pro = OrderProdRelation.find_by_sql("SELECT p.name,opr.price,opr.pro_num,opr.total_price from order_prod_relations opr
-INNER JOIN products p on opr.product_id = p.id where order_id = #{order_id}")
+INNER JOIN products p on opr.item_id = p.id where order_id = #{order_id} and prod_types=#{OrderProdRelation::PROD_TYPES[:SERVICE]}")
     #技师-施工技师
-    staff_store = Staff.find_by_sql("SELECT id,name from staffs where type_of_w=#{Staff::S_COMPANY[:TECHNICIAN]} and store_id=#{order_details.store_id}")
-    return [order_details,order_pro,staff_store]
+    staff_store = Staff.find_by_sql("SELECT id,name,status from staffs where type_of_w=#{Staff::S_COMPANY[:TECHNICIAN]} and store_id=#{order_details.store_id}")
+    #已有工位的技师
+    used_staffs = Staff.find_by_sql("SELECT id,name from staffs  where id in (#{order_details.cons_staff_id_1},#{order_details.cons_staff_id_2}) and store_id=#{order_details.store_id}")
+    order_detail = order_details.attributes
+    order_detail['order_pro'] = order_pro
+    order_detail['staff_store'] = staff_store
+    order_detail['used_staffs'] = used_staffs
+    order_detail.delete('cons_staff_id_1')
+    order_detail.delete('cons_staff_id_2')
+    return order_detail
   end
 
   #根据车牌号码和手机号码查询
@@ -181,15 +189,22 @@ INNER JOIN products p on opr.product_id = p.id where order_id = #{order_id}")
     customer_car_num_id = customers.map(&:car_num_id)
     customer_id = customers[0].customer_id
     #所有订单
-    orders = Order.includes(:order_pay_types).find_by_sql(["select o.id,o.code,o.car_num_id,o.status,o.created_at,o.price,s.name from orders o
+    orders = Order.includes(:order_pay_types).find_by_sql(["select o.id,o.code,o.car_num_id,o.status,date_format(o.created_at,'%Y-%m-%d') as created,o.price,s.name from orders o
           INNER JOIN staffs s on s.id=o.front_staff_id where o.car_num_id in (?) and o.status!=#{STATUS[:DELETED]}
           and o.status != #{STATUS[:INNORMAL]} and o.store_id=#{store_id} order by o.created_at desc",customer_car_num_id])
-    order_prod_relations = OrderProdRelation.includes(:product).where(:order_id => orders.map(&:id)).group_by { |pc| pc.order_id }
+    #    order_prod_relations = OrderProdRelation.includes(:product).where(:order_id => orders.map(&:id)).group_by { |pc| pc.order_id }
+    order_prod_relations = OrderProdRelation.find_by_sql(["select p.name,opr.price,opr.pro_num,opr.total_price,opr.order_id from order_prod_relations opr
+          INNER JOIN products p on opr.item_id = p.id where opr.prod_types=#{OrderProdRelation::PROD_TYPES[:SERVICE]}
+          and opr.order_id in (?) ",orders.map(&:id)]).group_by{|pc| pc.order_id}
+
+    order_prod_cards = OrderProdRelation.find_by_sql(["select cc.types,cc.card_id,opr.price,opr.pro_num,opr.total_price,opr.order_id
+          from order_prod_relations opr INNER JOIN customer_cards cc on opr.item_id = cc.id
+          where opr.prod_types=#{OrderProdRelation::PROD_TYPES[:CARD]} and opr.order_id in (?) ",orders.map(&:id)]).group_by{|pc| pc.order_id}
     orders_car_num = orders.group_by{|order| order.car_num_id }
 
     #套餐卡
     #该用户所购买的套餐卡
-    customercards = CustomerCard.find_by_sql("select cc.id,cc.card_id,cc.types,cc.amt,cc.package_content,cc.ended_at,pc.name from customer_cards cc
+    customercards = CustomerCard.find_by_sql("select cc.id,cc.card_id,cc.types,cc.amt,cc.package_content,date_format(cc.ended_at,'%Y-%m-%d') as ended,pc.name from customer_cards cc
 INNER JOIN package_cards pc on cc.card_id = pc.id and cc.types = 3 and cc.status=1 and cc.ended_at>CURDATE()
 and cc.customer_id=#{customer_id}")
     customercard_ids = customercards.map(&:card_id)
@@ -202,7 +217,7 @@ INNER JOIN products p on p.id = ppr.product_id where pc.id in (?)",customercard_
       customer_card = {}
       customer_card['id'] = customercard.id
       customer_card['name'] = customercard.name
-      customer_card['ended_at'] = customercard.ended_at
+      customer_card['ended_at'] = customercard.ended
       products = []
       packagecards[customercard.card_id].each do |product_package|
         product = {}
@@ -224,17 +239,21 @@ INNER JOIN products p on p.id = ppr.product_id where pc.id in (?)",customercard_
     #储值卡
     #该用户所购买的储值卡
 
-    stored_cards = CustomerCard.find_by_sql("SELECT cc.id,sc.name,sc.totle_price,sc.description,cc.created_at from sv_cards sc
+    stored_cards = CustomerCard.find_by_sql("SELECT cc.id,sc.name,sc.totle_price,sc.description,sc.apply_content from sv_cards sc
 INNER JOIN customer_cards cc on sc.id=cc.card_id where cc.status=1 and cc.types=1 and cc.customer_id=#{customer_id}")
     storedcards_id =  stored_cards.map(&:id)
-    stored_card_records = SvcardUseRecord.find_by_sql(["select sur.customer_card_id,sur.types,sur.use_price,sur.left_price,sur.created_at
-      from svcard_use_records sur where sur.customer_card_id in (?)",storedcards_id]).group_by{|stored_card_record| stored_card_record.customer_card_id}
+    stored_card_records = SvcardUseRecord.find_by_sql(["select sur.customer_card_id,sur.types,sur.use_price,sur.left_price,date_format(sur.created_at,'%Y-%m-%d') as created
+      from svcard_use_records sur where sur.customer_card_id in (?) order by sur.created_at",storedcards_id]).group_by{|stored_card_record| stored_card_record.customer_card_id}
     stored_cards.each do |stored_card|
       stored_card['records'] = stored_card_records[stored_card.id].nil? ? [] : stored_card_records[stored_card.id]
+      stored_card['last_time'] = stored_card_records[stored_card.id].nil? ? "" : stored_card_records[stored_card.id][0].created
+      product_ids = stored_card.apply_content.nil? ? [] : stored_card.apply_content.split(",")
+      products = Product.find_by_sql(["select p.id,p.name,p.sale_price from products p where p.id in (?) ",product_ids])
+      stored_card['products'] = products
     end
     
     #打折卡
-    discountcards = CustomerCard.find_by_sql("SELECT cc.id,sc.name,sc.totle_price,sc.discount,sc.apply_content,sc.description from sv_cards sc
+    discountcards = CustomerCard.find_by_sql("SELECT cc.id,sc.name,sc.totle_price,sc.discount,sc.apply_content,sc.description,sc.date_month,date_format(sc.ended_at,'%Y-%m-%d') as ended from sv_cards sc
 INNER JOIN customer_cards cc on sc.id=cc.card_id where cc.status=1 and cc.types=2 and cc.customer_id=#{customer_id}")
     discount_cards =[]
     discountcards.each do |discount_card|
@@ -250,12 +269,24 @@ INNER JOIN customer_cards cc on sc.id=cc.card_id where cc.status=1 and cc.types=
       customer['working_order']=[]
       customer['old_order']=[]
       orders_car_num[customer.car_num_id].each do |order_single|
+        order_single['staff_name']=Staff.find_by_sql("select s.name from orders o INNER JOIN staffs s on s.id=o.cons_staff_id_1 or s.id=o.cons_staff_id_2 where o.id=#{order_single.id}").map(&:name).join(",")
         order_single['products']=[]
         car_order =[]
+        #订单中的产品和服务
         order_prod_relations[order_single.id].each do |order_pro|
-          product = order_pro.product
-          car_order << {:name => product.name, :price => order_pro.price,:pro_num=>order_pro.pro_num,:total_price => order_pro.total_price} if product
+          #          product = order_pro.product
+          car_order << {:name => order_pro.name, :price => order_pro.price,:pro_num=>order_pro.pro_num,:total_price => order_pro.total_price}
         end if order_prod_relations.present? && order_prod_relations[order_single.id].present?
+        #订单中购买的卡类
+        order_prod_cards[order_single.id].each do |order_card|
+          if order_card.types == CustomerCard::TYPES[:PACKAGE]
+            card_name = PackageCard.find_by_id order_card.card_id
+          else
+            card_name = SvCard.find_by_id order_card.card_id
+          end
+          car_order << {:name => card_name.name,:price => order_card.price,:pro_num=>order_card.pro_num,:total_price => order_card.total_price}
+        end if order_prod_cards.present? && order_prod_cards[order_single.id].present?
+
         order_single['products'] = car_order
         #判断过往订单还是当前订单
         if order_single.status == STATUS[:BEEN_PAYMENT] or order_single.status == STATUS[:FINISHED]
@@ -267,78 +298,33 @@ INNER JOIN customer_cards cc on sc.id=cc.card_id where cc.status=1 and cc.types=
 
       info << customer
     end
+
+
+
     return [info,package_cards,discount_cards,stored_cards]
   end
-  #  def self.search_by_car_num store_id,car_num, car_id
-  #    customer = nil
-  #    working_orders = []
-  #    old_orders = []
-  #    #or c.mobilephone='#{car_num}'
-  #    sql = "select c.id customer_id,c.name,c.mobilephone,c.other_way email,c.birthday birth,c.sex,cn.buy_year year,
-  #      cn.id car_num_id,cn.num,cm.name model_name,cb.name brand_name
-  #      from customer_num_relations cnr
-  #      inner join car_nums cn on cn.id=cnr.car_num_id
-  #      inner join customers c on c.id=cnr.customer_id and c.status=#{Customer::STATUS[:NOMAL]} and cn.num='#{car_num}'
-  #      left join car_models cm on cm.id=cn.car_model_id
-  #      left join car_brands cb on cb.id=cm.car_brand_id #"
-  #    customer = CustomerNumRelation.find_by_sql sql
-  #    p customer
-  #    if customer && customer.size > 0
-  #      customer = customer[0]
-  #      customer.birth = customer.birth.strftime("%Y-%m-%d")  if customer.birth
-  #      orders = Order.includes(:order_pay_types).find_by_sql("select * from orders o where o.car_num_id=#{customer.car_num_id}
-  #       and o.status!=#{STATUS[:DELETED]} and o.status != #{STATUS[:INNORMAL]} and o.store_id=#{store_id} order by o.created_at desc#")
-  #      #订单中购买的套餐卡
-  #      package_cards = CustomerCard.find_by_sql(["select cc.order_id, pc.name, pc.price from customer_cards cc
-  #          inner join package_cards pc
-  #           on pc.id = cc.card_id and cc.types=2 where cc.order_id in (?)#", orders]).group_by { |pc| pc.order_id }
-  #      csvc_relations = CustomerCard.includes(:sv_card).where(:order_id => orders.map(&:id)).where(:types=>3).group_by { |pc| pc.order_id }
-  #      order_prod_relations = OrderProdRelation.includes(:product).where(:order_id => orders.map(&:id)).group_by { |pc| pc.order_id }
-  #      order_pay_types = OrderPayType.where(:order_id => orders.map(&:id)).group_by{|opt| opt.order_id}
-  #      staffs = Order.find_by_sql(["SELECT o.id, s.name FROM orders o inner join staffs s on o.front_staff_id = s.id where o.id in (?) and s.store_id = ?", orders, store_id]).group_by{|o| o.id}
-  #      (orders || []).each do |order|
-  #        order_hash = order
-  #        #每个订单中的产品
-  #        order_hash[:products] = []
-  #        order_prod_relations[order.id].each do |opr|
-  #          product = opr.product
-  #          order_hash[:products] << {:name => product.name, :price => opr.price.to_f * opr.pro_num.to_i} if product
-  #        end if order_prod_relations.present? && order_prod_relations[order.id].present?
-  #
-  #        #每个订单中的储值卡、打折卡
-  #        csvc_relations[order.id].each do |csvc_r|
-  #          sv_card = csvc_r.sv_card
-  #         sv_price =  sv_card.sale_price
-  #         order_hash[:products] << {:name => sv_card.try(:name), :price => sv_price}
-  #        end if csvc_relations.present? && csvc_relations[order.id].present?
-  #
-  #        #每个订单中的套餐卡
-  #        package_cards[order.id].each do |o_pc|
-  #          order_hash[:products] << {:name => o_pc.name, :price => o_pc.price}
-  #        end if package_cards.present? && package_cards[order.id].present?
-  #
-  #        #订单对应的付款方式
-  #        order_hash[:pay_type] = order_pay_types[order.id].collect{|type|
-  #          OrderPayType::PAY_TYPES_NAME[type.pay_type]
-  #        }.join(",") unless order_pay_types[order.id].nil?
-  #
-  #        front_staff = staffs[order.id][0]
-  #        order_hash[:staff] = front_staff.name if front_staff
-  #
-  #        if order.status == STATUS[:BEEN_PAYMENT] or order.status == STATUS[:FINISHED]
-  #          old_orders << order_hash  #过往订单
-  #        else
-  #          if (car_id && car_id.to_i == order.id) || car_id.nil?
-  #            working_orders << order_hash  #进行中的订单
-  #          end
-  #        end
-  #      end
-  ##      working_orders = working_orders.first if working_orders.size > 0
-  #    end
-  #    [customer,working_orders,old_orders]
-  #  end
 
-
+  #获取车品牌列表
+  def self.get_car_sort
+    #车型品牌的选择
+    capitals = Capital.all
+    brands = CarBrand.all.group_by { |cb| cb.capital_id }
+    capital_arr = []
+    car_models = CarModel.all.group_by { |cm| cm.car_brand_id  }
+    (capitals || []).each do |capital|
+      c = capital
+      brand_arr = []
+      c_brands = brands[capital.id] unless brands.empty? and brands[capital.id]
+      (c_brands || []).each do |brand|
+        b = brand
+        b[:models] = car_models[brand.id] unless car_models.empty? and car_models[brand.id] #brand.car_models
+        brand_arr << b
+      end
+      c[:brands] = brand_arr
+      capital_arr << c
+    end
+    return capital_arr
+  end
 
   #获取产品相关的活动，打折卡，套餐卡
   def self.get_prod_sale_card prods
@@ -369,6 +355,7 @@ INNER JOIN customer_cards cc on sc.id=cc.card_id where cc.status=1 and cc.types=
   #生成订单
   def self.make_record c_id,store_id,car_num_id,start,end_at,prods,price,station_id,user_id
     #"prods"=>"0_311_1,0_310_1,3_10_1_310=1-311=1-" # 产品／服务 ：0，活动：1， 打折卡：2， 套餐卡：3
+    # prods"=>"0_311_1,0_310_1,3_10_1_310=1-311=1-
     arr = []
     status = 0
     order = nil
@@ -409,28 +396,38 @@ INNER JOIN customer_cards cc on sc.id=cc.card_id where cc.status=1 and cc.types=
               sv_card = SvCard.find_by_id uc[1]
               if sv_card
                 if sv_card.types== SvCard::FAVOR[:SAVE]  #储值卡
-                  sv_prod_relation = sv_card.svcard_prod_relations[0]
-                  if sv_prod_relation
-                    total_price = sv_prod_relation.base_price.to_f+sv_prod_relation.more_price.to_f
-                    c_sv_relation = CSvcRelation.create!( :customer_id => c_id, :sv_card_id => uc[1], :order_id => order.id, :total_price => total_price,:left_price =>total_price, :status => CSvcRelation::STATUS[:invalid])
-                    SvcardUseRecord.create(:c_svc_relation_id =>c_sv_relation.id,:types=>SvcardUseRecord::TYPES[:IN],:use_price=>total_price,
-                      :left_price=>total_price,:content=>"购买#{sv_card.name}")
-
+                  #                  sv_prod_relation = sv_card.svcard_prod_relations[0]
+                  #                  if sv_prod_relation
+                  customercard = CustomerCard.where("customer_id=#{c_id}").where("types=#{CustomerCard::TYPES[:STORED]}")
+                  .where("card_id=#{sv_card.id}").where("store_id=#{store_id}").first
+                  if customercard
+                    customercard.update_attributes(:amt=>sv_card.totle_price + customercard.amt)
+                    SvcardUseRecord.create(:customer_card_id =>customercard.id,:types=>SvcardUseRecord::TYPES[:IN],:use_price=>sv_card.totle_price,
+                      :left_price=>sv_card.totle_price+customercard.amt,:content=>"充值#{sv_card.name}")
+                  else
+                    customercard = CustomerCard.create(:customer_id => c_id,:card_id=>sv_card.id,:amt=>sv_card.totle_price,:status=>SvCard::STATUS[:DELETED],:types=>CustomerCard::TYPES[:STORED])
+                    SvcardUseRecord.create(:customer_card_id =>customercard.id,:types=>SvcardUseRecord::TYPES[:IN],:use_price=>sv_card.totle_price,
+                      :left_price=>sv_card.totle_price,:content=>"购买#{sv_card.name}")
                   end
+
+                  #                    total_price = sv_prod_relation.base_price.to_f+sv_prod_relation.more_price.to_f
+                  #                    c_sv_relation = CSvcRelation.create!( :customer_id => c_id, :sv_card_id => uc[1], :order_id => order.id, :total_price => total_price,:left_price =>total_price, :status => CSvcRelation::STATUS[:invalid])
+                  #                    SvcardUseRecord.create(:c_svc_relation_id =>c_sv_relation.id,:types=>SvcardUseRecord::TYPES[:IN],:use_price=>total_price,
+                  #                      :left_price=>total_price,:content=>"购买#{sv_card.name}")
                 else   #打折卡
-                  CSvcRelation.create!(:customer_id => c_id, :sv_card_id => uc[1], :order_id => order.id, :total_price => sv_card.price, :status => CSvcRelation::STATUS[:invalid])
+                  CustomerCard.create(:customer_id => c_id,:card_id=>sv_card.id,:status=>SvCard::STATUS[:DELETED],:types=>CustomerCard::TYPES[:DISCOUNT],:discount=>sv_card.discount)
+                  #                  CSvcRelation.create!(:customer_id => c_id, :sv_card_id => uc[1], :order_id => order.id, :total_price => sv_card.price, :status => CSvcRelation::STATUS[:invalid])
                 end
               end
             end
           end
-
         end
         #创建订单的相关产品 OrdeProdRelation
         (arr[0] || []).each do |prod|
-          product = Product.find_by_id_and_store_id_and_status prod[1],store_id,Product::IS_VALIDATE[:YES]
+          product = Product.find_by_id_and_store_id_and_status prod[1],store_id,Product::STATUS[:NORMAL]
           if product
-            order_p_r = OrderProdRelation.create(:order_id => order.id, :product_id => prod[1],
-              :pro_num => prod[2], :price => product.sale_price, :t_price => product.t_price, :total_price => prod[3].to_f)
+            order_p_r = OrderProdRelation.create(:order_id => order.id, :item_id => prod[1],
+              :pro_num => prod[2], :price => product.sale_price, :t_price => product.t_price, :total_price => prod[3].to_f,:prod_types=>OrderProdRelation::PROD_TYPES[:SERVICE])
             order_prod_relations << order_p_r
             if product.is_service
               x += 1
@@ -444,9 +441,8 @@ INNER JOIN customer_cards cc on sc.id=cc.card_id where cc.status=1 and cc.types=
         hash[:types] = x > 0 ? TYPES[:SERVICE] : TYPES[:PRODUCT]
         if order_prod_relations  #如果是产品,则减掉对应库存
           order_prod_h = order_prod_relations.group_by { |o_p| o_p.product_id }
-          materials = Material.find_by_sql(["select m.*, pmr.product_id from materials m inner join prod_mat_relations pmr
-                on pmr.material_id = m.id inner join products p on p.id = pmr.product_id
-                where p.is_service = #{Product::PROD_TYPES[:PRODUCT]} and pmr.product_id in (?)", order_prod_h.keys])
+          materials = Product.find_by_sql(["SELECT p.*,pmr.product_id,pmr.pro_num from products p INNER JOIN prod_mat_relations pmr on pmr.material_id = p.id
+INNER JOIN products p2 on p2.id=pmr.product_id where p2.is_service = #{Product::PROD_TYPES[:PRODUCT]} and pmr.product_id in (?)", order_prod_h.keys])
           materials.each do |m|
             m.update_attributes(:storage => (m.storage - order_prod_h[m.product_id][0].pro_num)) if order_prod_h[m.product_id]
           end unless materials.blank?
@@ -499,10 +495,19 @@ INNER JOIN customer_cards cc on sc.id=cc.card_id where cc.status=1 and cc.types=
                 else
                   ended_at = p_cards_hash[p_card_id][0].ended_at
                 end
-                cpr = CPcardRelation.create(:customer_id => c_id, :package_card_id =>p_card_id,
-                  :status => CPcardRelation::STATUS[:INVALID], :ended_at => ended_at,
-                  :content => CPcardRelation.set_content(p_card_id), :order_id => order.id,
-                  :price => p_cards_hash[p_card_id][0].price)
+                cpr = CustomerCard.where("customer_id=#{c_id}").where("types=#{CustomerCard::TYPES[:PACKAGE]}")
+                .where("card_id=#{p_card_id}").where("store_id=#{store_id}").first
+                if cpr
+                  opr_ncontent = PcardProdRelation.reset_content cpr.content,p_card_id
+                  cpr.update_attributes(:ended_at => ended_at,:content =>opr_ncontent)
+                else
+                  customercard = CustomerCard.create(:customer_id => c_id,:card_id=>p_card_id,:status=>SvCard::STATUS[:DELETED],
+                    :types=>CustomerCard::TYPES[:PACKAGE], :ended_at => ended_at,:content =>PcardProdRelation.set_content(p_card_id))
+                end
+                #                cpr = CPcardRelation.create(:customer_id => c_id, :package_card_id =>p_card_id,
+                #                  :status => CPcardRelation::STATUS[:INVALID], :ended_at => ended_at,
+                #                  :content => CPcardRelation.set_content(p_card_id), :order_id => order.id,
+                #                  :price => p_cards_hash[p_card_id][0].price)
                 if a_pc[3] # 如果使用套餐卡，把使用的次数保存
                   (prod_nums||[]).each do |pn|
                     prod_id = pn.split("=")[0]
@@ -553,8 +558,10 @@ INNER JOIN customer_cards cc on sc.id=cc.card_id where cc.status=1 and cc.types=
         unless used_svcard_id.blank?
           sv_card = SvCard.find_by_id(used_svcard_id)
           if sv_card
-            c_sv_relation = CSvcRelation.find_by_customer_id_and_sv_card_id c_id,used_svcard_id
-            c_sv_relation = CSvcRelation.create(:customer_id => c_id, :sv_card_id => used_svcard_id) if c_sv_relation.nil?
+            discount_card = CustomerCard.find_by_customer_id_and_card_id_and_types c_id,used_svcard_id,CustomerCard::TYPES[:DISCOUNT]
+            discount_card = CustomerCard.create(:customer_id => c_id,:card_id=>used_svcard_id,:types=>CustomerCard::TYPES[:DISCOUNT],:discount=>sv_card.discount,:status=>SvCard::STATUS[:normal]) if discount_card.nil?
+            #            c_sv_relation = CSvcRelation.find_by_customer_id_and_sv_card_id c_id,used_svcard_id
+            #            c_sv_relation = CSvcRelation.create(:customer_id => c_id, :sv_card_id => used_svcard_id) if c_sv_relation.nil?
             order_prod_relations.each do |o_p_r|
               OrderPayType.create(:order_id => order.id, :pay_type => OrderPayType::PAY_TYPES[:DISCOUNT_CARD],
                 :product_id => o_p_r.product_id, :price => (o_p_r.total_price.to_f) *((10 - sv_card.discount).to_f/10))
@@ -571,7 +578,7 @@ INNER JOIN customer_cards cc on sc.id=cc.card_id where cc.status=1 and cc.types=
               OrderPayType.create(:order_id => order.id, :pay_type => OrderPayType::PAY_TYPES[:DISCOUNT_CARD],
                 :price => (cpr.price.to_f) *((10 - sv_card.discount).to_f/10))
             end
-            hash[:c_svc_relation_id] = c_sv_relation.id if c_sv_relation
+            hash[:c_svc_relation_id] = discount_card.id if discount_card
           end
         end
 
@@ -638,5 +645,94 @@ INNER JOIN customer_cards cc on sc.id=cc.card_id where cc.status=1 and cc.types=
     arr[0] = status
     arr[1] = order
     arr
+  end
+
+  #支付订单根据选择的支付方式
+  def self.pay order_id, store_id, please, pay_type, billing, code, is_free
+    order = Order.find_by_id_and_store_id order_id,store_id
+    status = 0
+    if order
+      Order.transaction do
+        begin
+          hash = Hash.new
+          hash[:is_billing] = billing.to_i == 0 ? false : true
+          hash[:is_pleased] = please.to_i
+          if is_free.to_i == 0
+            hash[:status] = STATUS[:BEEN_PAYMENT]
+            hash[:is_free] = false
+          else
+            hash[:status] = STATUS[:FINISHED]
+            hash[:is_free] = true
+            hash[:price] = 0
+          end
+          #如果有套餐卡，则更新状态
+          c_pcard_relations = CPcardRelation.find_all_by_order_id(order.id)
+          c_pcard_relations.each do |cpr|
+            cpr.update_attribute(:status, CPcardRelation::STATUS[:NORMAL])
+          end unless c_pcard_relations.blank?
+          #如果有买储值卡，则更新状态
+          csvc_relations = CSvcRelation.where(:order_id => order.id)
+          csvc_relations.each{|csvc_relation| csvc_relation.update_attributes({:status => CSvcRelation::STATUS[:valid], :is_billing => hash[:is_billing]})}
+          if c_pcard_relations.present? || csvc_relations.present?
+            c_s_r = CustomerStoreRelation.find_by_store_id_and_customer_id(order.store_id, order.customer_id)
+            c_s_r.update_attributes(:is_vip => Customer::IS_VIP[:VIP])
+          end
+          #如果是选择储值卡支付
+          if pay_type.to_i == OrderPayType::PAY_TYPES[:SV_CARD] && code
+            #c_svc_relation = CSvcRelation.find_by_id order.c_svc_relation_id
+            #if c_svc_relation && c_svc_relation.left_price.to_f >= order.price.to_f
+            content = "订单号为：#{order.code},消费：#{order.price}."
+            #sv_use_record = SvcardUseRecord.create(:c_svc_relation_id => c_svc_relation.id,
+            #                                       :types => SvcardUseRecord::TYPES[:OUT],
+            #                                       :use_price => order.price,
+            #                                       :content => content,
+            #                                       :left_price => (c_svc_relation.left_price - order.price)
+            #)
+            #c_svc_relation.update_attribute(:left_price,sv_use_record.left_price) if sv_use_record
+            svc_return_record = SvcReturnRecord.find_all_by_store_id(store_id,:order => "created_at desc", :limit => 1)
+            if svc_return_record.size > 0
+
+              total = svc_return_record[0].total_price - order.price
+              SvcReturnRecord.create(:store_id => store_id, :price => order.price, :types => SvcReturnRecord::TYPES[:OUT],
+                :content => content, :target_id => order.id, :total_price => total)
+            else
+              SvcReturnRecord.create(:store_id => store_id, :price => order.price, :types => SvcReturnRecord::TYPES[:OUT],
+                :content => content, :target_id => order.id, :total_price => -order.price)
+            end
+            order.update_attributes hash
+            OrderPayType.create(:order_id => order_id, :pay_type => pay_type.to_i, :price => order.price)
+            status = 1
+          else
+            order.update_attributes hash
+            OrderPayType.create(:order_id => order_id, :pay_type => pay_type.to_i, :price => order.price)
+            status = 1
+          end
+          wo = WorkOrder.find_by_order_id(order.id)
+          wo.update_attribute(:status, WorkOrder::STAT[:COMPLETE]) if wo and wo.status==WorkOrder::STAT[:WAIT_PAY]
+          #生成积分的记录
+          c_customer = CustomerStoreRelation.find_by_store_id_and_customer_id(order.store_id,order.customer_id)
+          if c_customer && c_customer.is_vip
+            points = Order.joins(:order_prod_relations=>:product).select("products.prod_point*order_prod_relations.pro_num point").
+              where("orders.id=#{order.id}").inject(0){|sum,porder|(porder.point.nil? ? 0 :porder.point)+sum}+
+              PackageCard.find(c_pcard_relations.map(&:package_card_id)).map(&:prod_point).compact.inject(0){|sum,pcard|sum+pcard}
+            Point.create(:customer_id=>c_customer.customer_id,:target_id=>order.id,:target_content=>"购买产品/服务/套餐卡获得积分",:point_num=>points,:types=>Point::TYPES[:INCOME])
+            c_customer.update_attributes(:total_point=>points+(c_customer.total_point.nil? ? 0 : c_customer.total_point))
+          end
+          #生成出库记录
+          order_mat_infos = Order.find_by_sql(["SELECT o.id o_id, o.front_staff_id, p.id p_id, opr.pro_num material_num, m.id m_id, m.price m_price FROM orders o inner join order_prod_relations opr on o.id = opr.order_id inner join products p on
+p.id = opr.product_id inner join prod_mat_relations pmr on pmr.product_id = p.id inner join materials m
+on m.id = pmr.material_id where p.is_service = #{Product::PROD_TYPES[:PRODUCT]} and o.status in (?) and o.id = ?", [STATUS[:BEEN_PAYMENT], STATUS[:FINISHED]], order.id])
+          order_mat_infos.each do |omi|
+            MatOutOrder.create({:material_id => omi.m_id, :staff_id => omi.front_staff_id, :material_num => omi.material_num,
+                :price => omi.m_price, :types => MatOutOrder::TYPES_VALUE[:sale], :store_id => store_id})
+          end
+        rescue
+          status = 2
+        end
+      end
+    else
+      status = 2
+    end
+    [status]
   end
 end
