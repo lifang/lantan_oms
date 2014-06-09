@@ -461,7 +461,7 @@ function update_car_valid(obj, car_num_id){     //编辑车辆验证
     }
 }
 
-function del_car(store_id, car_num_id){
+function del_car(store_id, car_num_id){         //删除车辆
     var flag = confirm("删除该车辆后,该车辆对应的消费、投诉等记录都将清除,请慎重操作。\r是否继续删除该车辆?");
     if(flag){
         popup("#waiting");
@@ -477,4 +477,19 @@ function del_car(store_id, car_num_id){
           }
         })
     }
+}
+
+function return_order(store_id, order_id){      //退单
+    popup("#waiting");
+    $.ajax({
+        type: "get",
+        url: "/stores/"+store_id+"/customers/return_order",
+        dataType: "script",
+        data: {order_id : order_id},
+        error: function(){
+            $("#waiting").hide();
+            $(".second_bg").hide();
+            tishi("数据错误!");
+        }
+    })
 }

@@ -58,10 +58,10 @@ class CustomersController < ApplicationController
         left join car_brands cb on cm.car_brand_id=cb.id
         where cnr.customer_id=?", @customer.id]) if @type.nil?
     if @type.nil? || @type.to_i==1
-      orders = Order.where(["status in (?) and customer_id=? and store_id=?", Order::PRINT_CASH, @customer,
+      orders = Order.where(["status in (?) and customer_id=? and store_id=?", Order::OVER_CASH, @customer,
           @store.id])
       @order_count = orders.length
-      @orders = orders.paginate(:page => params[:page] ||= 1, :per_page => 1)
+      @orders = orders.paginate(:page => params[:page] ||= 1, :per_page => 3)
       @order_pay_type = OrderPayType.order_pay_types(@orders)
       @pay_types = OrderPayType.pay_order_types(@orders.map(&:id))
     end
@@ -194,6 +194,7 @@ class CustomersController < ApplicationController
     end
   end
 
+
   def add_car_get_datas #添加车辆 查找
     @type = params[:type].to_i
     id = params[:id].to_i
@@ -223,20 +224,57 @@ class CustomersController < ApplicationController
   #打印消费记录
   def print_orders
     @orders = Order.find(params[:ids].split(","))
-    @product_hash = OrderProdRelation.order_products(@orders)
+    @product_hash = {}
+    @orders.each do |o|
+      oprs = OrderProdRelation.where(["order_id=?", o.id])
+      arr = []
+      oprs.each do |opr|
+        hash = {}
+        if opr.prod_types==1
+          prod = Product.find_by_id(opr.item_id)
+          hash[:name] = prod.name
+        else
+          cc = CustomerCard.find_by_id(opr.item_id)
+          card = cc.types==CustomerCard::TYPES[:PACKAGE] ? PackageCard.find_by_id(cc.card_id) : SvCard.find_by_id(cc.card_id)
+          hash[:name] = card.name
+        end
+        hash[:num] = opr.pro_num
+        hash[:price] = opr.price
+        arr << hash
+      end
+      @product_hash[o.id] = arr
+    end
     @order_pay_type = OrderPayType.order_pay_types(@orders)
   end
 
   #显示订单详情
   def show_order
-    @order = Order.one_order_info(params[:order_id].to_i)
-    @order_prods = OrderProdRelation.order_products(@order)
-    @sale = Sale.find_by_id(@order[0].sale_id) if @order[0] and @order[0].sale_id
-    @order_pay_types = OrderPayType.find_by_sql(["select sum(opt.price) total_price,
-      ifnull(sum(opt.product_num), 0) total_num, opt.pay_type from order_pay_types opt
-      where opt.order_id = ? group by opt.pay_type",
-        @order[0].id]).group_by { |item| item.pay_type } if @order[0]
-
+    @order = Order.find_by_sql(["select o.*, s1.name front_name, s2.name cons_s_name1,s3.name cons_s_name2,
+      s4.name return_name
+      from orders o left join staffs s1 on s1.id = o.front_staff_id
+      left join staffs s2 on s2.id = o.cons_staff_id_1
+      left join staffs s3 on s2.id = o.cons_staff_id_2
+      left join staffs s4 on s4.id = o.return_staff_id
+      where o.id = ?", params[:order_id].to_i]).first
+    oprs = OrderProdRelation.where(["order_id=?", @order.id])
+    @products = []
+    oprs.each do |opr|
+      hash = {}
+      if opr.prod_types==1
+        prod = Product.find_by_id(opr.item_id)
+        hash[:name] = prod.name
+        hash[:num] = opr.pro_num
+        hash[:price] = opr.price
+        @products << hash
+      else
+        cc = CustomerCard.find_by_id(opr.item_id)
+        card = cc.types==CustomerCard::TYPES[:PACKAGE] ? PackageCard.find_by_id(cc.card_id) : SvCard.find_by_id(cc.card_id)
+        hash[:name] = card.name
+        hash[:num] = opr.pro_num
+        hash[:price] = opr.price
+        @products << hash
+      end
+    end
   end
 
   #编辑车辆
@@ -296,6 +334,74 @@ class CustomersController < ApplicationController
       rescue
         @status = 0
       end
+    end
+  end
+  
+  #退单
+  def return_order
+    @order = Order.find_by_sql(["select o.*, s1.name front_name, s2.name cons_s_name1,s3.name cons_s_name2,
+      s4.name return_name
+      from orders o left join staffs s1 on s1.id = o.front_staff_id
+      left join staffs s2 on s2.id = o.cons_staff_id_1
+      left join staffs s3 on s2.id = o.cons_staff_id_2
+      left join staffs s4 on s4.id = o.return_staff_id
+      where o.id = ?", params[:order_id].to_i]).first
+    oprs = OrderProdRelation.where(["order_id=?", @order.id])
+    @products = []
+    oprs.each do |opr|
+      hash = {}
+      if opr.prod_types==1
+        prod = Product.find_by_id(opr.item_id)
+        hash[:name] = prod.name
+      else
+        cc = CustomerCard.find_by_id(opr.item_id)
+        card = cc.types==CustomerCard::TYPES[:PACKAGE] ? PackageCard.find_by_id(cc.card_id) : SvCard.find_by_id(cc.card_id)
+        hash[:name] = card.name
+      end
+      hash[:num] = opr.pro_num
+      hash[:price] = opr.price
+      hash[:total_price] = opr.total_price
+      @products << hash
+    end
+    order_pay = OrderPayType.where(["order_id=?", @order.id]).map(&:pay_type)
+    @op = []
+    order_pay.each do |pay|
+      @op << OrderPayType::PAY_TYPES_NAME[pay.to_i]
+    end
+  end
+
+  #创建退单
+  def create_return_order
+    @status = 1
+    begin
+      r_type = params[:return_type].to_i
+      r_fee = params[:return_fee].to_f
+      r_redirect = params[:return_redirect].to_i
+      Order.transaction do
+        order = Order.find_by_id(params[:return_order_id].to_i)
+        oprs = OrderProdRelation.where(["order_id=?", order.id])
+        oprs.each do |opr|
+          if opr.prod_types == OrderProdRelation::PROD_TYPES[:CARD]
+            cc = CustomerCard.find_by_id(opr.item_id)
+            cc.update_attribute("status", CustomerCard::STATUS[:cancel])
+          else
+            prod = Product.find_by_id(opr.item_id)
+            if r_redirect == 0    #报损
+              ProductLoss.create(:product_id => prod.id, :loss_num => opr.pro_num.to_f.round(2),
+                :staff_id => cookies[:staff_id], :store_id => @store.id)
+            else  #回库
+              prod.update_attribute("storage", (prod.storage.to_f + opr.pro_num.to_f).round(2))
+            end
+          end
+        end
+        order.update_attributes({:status => Order::STATUS[:RETURN], :return_types => Order::IS_RETURN[:NO],
+            :return_direct => r_redirect, :return_staff_id => cookies[:staff_id]})
+        ReturnOrder.create(:return_types => r_type, :return_direct => r_redirect, :return_fee => r_fee.round(2),
+          :return_staff_id => cookies[:staff_id], :order_id => order.id, :store_id => @store.id)
+        flash[:notice] = "退单成功!"
+      end
+    rescue
+      @status = 0
     end
   end
   

@@ -32,13 +32,14 @@
                   <td>单价</td>
                   <td>数量</td>
                 </tr>
-                <% @product_hash[order.id].each do |p| %>
-                  <tr name="cus_order_tr2">
-                    <td><%= p.name %></td>
-                    <td><%= p.price %></td>
-                    <td><%= p.pro_num %></td>
+                <% arrs = @product_hash[order.id]  %>
+                <% arrs.each do |arr| %>
+                  <tr>
+                    <td><%= arr[:name] %></td>
+                    <td><%= arr[:num] %></td>
+                    <td><%= arr[:price] %></td>
                   </tr>
-                <% end if @product_hash[order.id] %>
+                <% end if arrs %>
               </table>
             </td>
             <td><%= order.price %></td>
@@ -51,15 +52,14 @@
     </table>
     <script type="text/javascript">
       $(function(){
-        var i = $("#print_cus_orders_table").find("tr[name='print_cus_orders_tr']").index($(this));
-        if(i % 2 ==1 && i != 0){
-          $(this).css("background","#f5f5f5");
-        }else if(i % 2 ==0 && i != 0){
-          $(this).removeAttr("style");
-        };
-        var tr2 =  $("#print_cus_orders_table").find("tr[name='cus_order_tr2']");
-        $.each(tr2, function(){
-          $(this).removeAttr("style");
+        var i = $("#print_cus_orders_table").find("tr[name='print_cus_orders_tr']");
+        $.each(i, function(){
+          if($(this).index() % 2 ==1){
+            $(this).css("background","#f5f5f5");
+          }else if($(this).index() % 2 ==0){
+            $(this).find(".s_table tr").removeAttr("style");
+            $(this).removeAttr("style");
+          };
         });
       })
     </script>

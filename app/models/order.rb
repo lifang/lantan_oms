@@ -35,12 +35,6 @@ class Order < ActiveRecord::Base
   IS_RETURN = {:YES=>1,:NO=>0} #0  成功交易  1退货
   RETURN = {0 =>"成功交易" , 1 => "已退单"} 
   
-  def self.one_order_info(order_id)
-    return Order.find_by_sql(["select o.*, c.name front_s_name, c1.name cons_s_name1,c3.name return_name,
-      c2.name cons_s_name2, o.front_staff_id, o.cons_staff_id_1, o.cons_staff_id_2, o.customer_id,o.status
-      from orders o left join staffs c on c.id = o.front_staff_id left join staffs c1 on c1.id = o.cons_staff_id_1
-      left join staffs c2 on c2.id = o.cons_staff_id_2 left join staffs c3 on c3.id = o.return_staff_id where o.id = ?", order_id]).first
-  end
 
   #根据需要回访的订单列出客户
   def self.get_order_customers(store_id, started_at, ended_at, car_num, is_vip, property, return_status, count, money)

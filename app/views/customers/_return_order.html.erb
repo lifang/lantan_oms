@@ -1,0 +1,119 @@
+<div class="second_content" style="width: 730px;">
+  <span class="close" title="关闭">×</span>
+  <h1>退单</h1>
+  <div class="returnVisitDtl">
+    <div class="personBill">
+      <div class="personInfo">
+        <label>下单时间：</label>
+        <span><%= @order.created_at.nil? ? "" : @order.created_at.strftime("%y-%m-%d %H:%M") %></span>
+        <label>接待人员：</label>
+        <span><%= @order.front_name %></span>
+        <label>施工人员：</label>
+        <span><%= [@order.cons_s_name1, @order.cons_s_name2].join("、") %></span>
+      </div>
+    </div>
+    <table class="table1">
+      <tr>
+        <th style="width:30%;">订单号</th>
+        <th style="width:40%;">项目</th>
+        <th>付款方式</th>
+      </tr>
+      <tr>
+        <td  style="width:30%;"><%= @order.code if @order %></td>
+        <td style="width:40%;">
+          <table style="width:100%;">
+            <tr>
+              <td>名称</td>
+              <td>数量</td>
+              <td>单价</td>
+              <td>小计</td>
+            </tr>
+            <% @products.each do |p| %>
+              <tr>
+                <td><%= p[:name] %></td>
+                <td><%= p[:num] %></td>
+                <td><%= p[:price] %></td>
+                <td><%= p[:total_price] %></td>
+              </tr>
+            <% end if @products.any? %>
+          </table>
+        </td>
+        <td><%= @op.join(",") %></td>
+      </tr>
+    </table>
+    <div style="line-height: 30px; text-align: right;">
+      <label>金额总计：</label>
+      <span><%= @order.price %></span>
+    </div>
+    <%= form_tag "/stores/#{@store.id}/customers/create_return_order", :id => "new_return_form", :remote => true do %>
+      <div class="form_1">
+        <div class="form_row">
+          <input type="hidden" name="return_order_id" value="<%= @order.id %>"/>
+          <label>退单原因</label>
+          <div class="selectBox" style="width: 95px;float: left;">
+            <span style="width: 75px;"></span>
+            <div class="openDownIcon"></div>
+            <select name="return_type">
+              <% ReturnOrder::RETURN_REASON.each do |k, v| %>
+                <option value="<%= k %>"><%= v %></option>
+              <% end %>
+            </select>
+          </div>
+          <label><font class="red">*</font>退单折价</label>
+          <input type="text" id="return_fee" name="return_fee"/>
+        </div>
+        <div class="form_row">
+          <label>商品去向</label>
+          <div class="choiceBox" style="margin:0;float:left;">
+            <label style="width:42px;">报损</label>
+            <div class="radioBox check">
+              <input type="radio" name="return_redirect" value="0" checked/>
+            </div>
+            <label style="width:42px;">回库</label>
+            <div class="radioBox">
+              <input type="radio" name="return_redirect" value="1"/>
+            </div>
+          </div>
+        </div>
+        <div class="form_row" style="text-align: right; margin-right: 40px; margin-top: -30px;">
+          <button class="orangeBtn2" type="button" onclick="create_return_valid(this)">确定</button>
+        </div>
+      </div>
+    <% end %>
+  </div>
+</div>
+<script type="text/javascript">
+  $(function(){
+    var ss = $("#new_return_form").find("option:selected");
+    $.each(ss, function(){
+      var txt = $(this).text();
+      $(this).parents(".selectBox").find("span").first().text(txt);
+    });
+    $("#new_return_form").on("change", "select", function(){
+      var txt = $(this).find("option:selected").text();
+      $(this).parent().find("span").first().text(txt);
+    });
+
+    $("#new_return_form").on("click", "input[type='radio']", function(){
+      var divs = $(this).parents(".form_row").find("input[type='radio']");
+      $.each(divs, function(){
+        $(this).parent().attr("class", "radioBox");
+      });
+      if($(this).attr("checked")=="checked"){
+        $(this).parent().attr("class", "radioBox check");
+      }else{
+        $(this).parent().attr("class", "radioBox");
+      }
+    })
+  })
+
+  function create_return_valid(obj){
+      var money = $.trim($("#return_fee").val());
+      if(is_float(money)==false){
+        tishi("请输入正确的退单折价,可以为正整数或两位小数!");
+      }else{
+        popup2("#waiting");
+        $(obj).parents("form").submit();
+      }
+  }
+</script>

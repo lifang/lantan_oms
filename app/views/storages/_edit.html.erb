@@ -38,6 +38,12 @@
         <input type="file" name="p_image" id="p_image" style="display:none;"/>
       </div>
       <div id="good_detail" style="<%= @product.is_shelves ? "display:block;" : "display:none;" %>">
+        <div class="choiceBox" style="margin: 4px 0;">
+          <label>快捷选择：</label>
+          <div class="<%= @product.show_on_ipad ? "checkBox check" : "checkBox"%>" >
+            <input type="checkbox" name="show_on_pad" id="show_on_pad" value="1"<% if @product.show_on_ipad %>checked<% end %>/>
+          </div>
+        </div>
         <div class="form_row"><label><font class="red">*</font>积分：</label><input type="text" name="p_point" id="p_point" value="<%= @product.prod_point %>"/></div>
         <% xs_tc = @product.is_shelves ? (@product.deduct_price.nil? || @product.deduct_price=="" ? 2 : 1) : 0 %>
         <div class="form_row"><label><nobr>销售提成方式：</nobr></label>
@@ -70,7 +76,7 @@
           <input type="text" name="js_t" id="js_t" <% if js_tc==0 %>disabled<% end %> value="<%= js_tc==0 ? "" : (js_tc==1 ? @product.techin_price : ((@product.techin_percent.to_f/@product.sale_price.to_f)*100).round(2)) %>"/>
           <span>(最多保留两位小数)</span>
         </div>
-        
+
         <div class="choiceBox" style="margin: 4px 0;">
           <label>自动回访：</label>
           <div class="<%= @product.is_auto_revist ? "checkBox check" : "checkBox" %>">

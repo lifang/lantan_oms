@@ -1,0 +1,91 @@
+<%= javascript_include_tag "staff_manages" %>
+<div class="main_tit"><h1>员工列表</h1></div>
+<div class="main_con">
+  <div class="topInfo">
+    <p>
+      <span><%= @count %></span>
+    </p>
+    <p>
+      <span>员工总数</span>
+    </p>
+  </div>
+  <div class="toolbar">
+    <%= form_tag "/stores/#{@store.id}/staff_manages", :method => "get" do %>
+      <div class="searchBox">
+        <label>员工姓名</label>
+        <input type="text" name="staff_name" value="<%= @name %>"/>
+        <div class="selectBox">
+          <span></span>
+          <div class="openDownIcon"></div>
+          <select name="tow">
+            <option value="-1">员工类别</option>
+            <% Staff::N_COMPANY.each do |k, v| %>
+              <option value="<%= k %>" <% if @tow && @tow.to_i==k %>selected<% end %>><%= v %></option>
+            <% end %>
+          </select>
+        </div>
+        <div class="selectBox">
+          <span></span>
+          <div class="openDownIcon"></div>
+          <select name="status">
+            <option value="-1">员工状态</option>
+            <% @status_hash.each do |k, v| %>
+              <option value="<%= k %>" <% if @status && @status.to_i==k %>selected<% end %>><%= v %></option>
+            <% end %>
+          </select>
+        </div>
+        <button class="orangeBtn">查询</button>
+      </div>
+      <div class="funcBox">
+        <div class="scd_btn" name="newUser" style="cursor: pointer;" title="新建员工" onclick="new_staff(<%= @store.id %>)"></div>
+        <div class="scd_btn" name="newReward" style="cursor: pointer;" title="新建奖励" onclick="new_reward_violation(<%= @store.id %>, 1)">奖</div>
+        <div class="scd_btn" name="newPunish" style="cursor: pointer;" title="新建处罚" onclick="new_reward_violation(<%= @store.id %>, 0)">罚</div>
+        <a href="javascript:void(0)" title="新建培训" onclick="new_train(<%= @store.id %>)"><span>培训</span></a>
+      </div>
+    <% end %>
+  </div>
+  <div>
+    <table class="table1">
+      <tr>
+        <th>员工姓名</th>
+        <th>部门</th>
+        <th>职务</th>
+        <th>岗位</th>
+        <th>入职时间</th>
+        <th>在职时间</th>
+        <th>状态</th>
+        <th>底薪</th>
+        <th>是否提成</th>
+        <th>社保</th>
+        <th>劳动合同</th>
+        <th>月工作日</th>
+        <th></th>
+      </tr>
+      <% @staffs.each do |s| %>
+      <tr>
+        <td><%= s.name %></td>
+        <td><%= s.dname %></td>
+        <td><%= s.pname %></td>
+        <td><%= Staff::N_COMPANY[s.type_of_w] %></td>
+        <td><%= s.entry_time.nil? ? "------" : s.entry_time.strftime("%y-%m-%d") %></td>
+        <td><%= (Time.now - s.entry_time) < 0 ? "---" : "#{((Time.now-s.entry_time)/86400).to_i + 1}天" %></td>
+        <td><%= Staff::STATUS_NAME[s.status] %></td>
+        <td><%= s.base_salary.to_f.round(2) %></td>
+        <td><%= s.is_deduct ? "是" : "否" %></td>
+        <td><%= s.secure_fee.to_f.round(2) %></td>
+        <td><%= s.labor_contract %></td>
+        <td><%= s.w_days_monthly.to_i %></td>
+        <td>
+          <button class="more" title="详细"></button>
+          <button class="delete" title="删除"></button>
+        </td>
+      </tr>
+      <% end %>
+    </table>
+    <% if @staffs.any? %>
+    <%= will_paginate @staffs, :previous_label => "上一页", :next_label => "下一页", :class => "page" %>
+    <% end %>
+  </div>
+</div>
+<div class="second_box" id="staff_div">
+</div>

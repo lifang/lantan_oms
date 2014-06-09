@@ -1,0 +1,60 @@
+<%= javascript_include_tag "attendances" %>
+<div class="main_tit"><h1>出勤</h1></div>
+<div class="main_con">
+  <div class="toolbar">
+    <div class="searchBox">
+      <%= form_tag "/stores/#{@store.id}/attendances", :method => "get" do  %>
+        <label>员工姓名</label>
+        <input type="text" name="name" value="<%= @name %>"/>
+        <label>统计时间</label>
+        <div class="selectBox">
+          <span></span>
+          <div class="openDownIcon"></div>
+          <select name="current_month">
+            <% get_twelve_months.each do |m| %>
+              <option value="<%= m %>" <% if @current_month == m %>selected<% end %>><%= m %></option>
+            <% end %>
+          </select>
+        </div>
+        <button class="orangeBtn">查询</button>
+      <% end %>
+    </div>
+
+    <div class="funcBox">
+      <a href="#" class="hover"><span class="ruleBtn scd_btn" name="ruleSet">规则设定</span></a>
+      <a href="/stores/<%= @store.id %>/attendances.xls?current_month=<%= @current_month %>&name=<%= @name %>"><span class="exportBtn">导出</span></a>
+    </div>
+  </div>
+
+  <div>
+    <table class="table1">
+      <tr>
+        <th>姓名</th>
+        <th>部门</th>
+        <th>职务</th>
+        <th>出勤</th>
+        <th>迟到</th>
+        <th>早退</th>
+        <th>请假</th>
+        <th>旷工</th>
+        <th>调休</th>
+        <th></th>
+      </tr>
+      <% @result.each do |r| %>
+        <tr>
+          <td><%= r[:sname] %></td>
+          <td><%= r[:dname] %></td>
+          <td><%= r[:pname] %></td>
+          <td><%= r[:attend] %></td>
+          <td><%= r[:late] %></td>
+          <td><%= r[:early] %></td>
+          <td><%= r[:leave] %></td>
+          <td><%= r[:absent] %></td>
+          <td><%= r[:rest] %></td>
+          <td></td>
+        </tr>
+      <% end %>
+    </table>
+  </div>
+
+</div>
