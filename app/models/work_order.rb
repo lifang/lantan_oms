@@ -25,7 +25,7 @@ class WorkOrder < ActiveRecord::Base
         unless self.status ==  WorkOrder::STAT[:CANCELED]
           runtime = sprintf('%.2f',(current_time - self.started_at)/60).to_f
           status = (order.status == Order::STATUS[:BEEN_PAYMENT] || order.status == Order::STATUS[:FINISHED]) ? WorkOrder::STAT[:COMPLETE] : WorkOrder::STAT[:WAIT_PAY]
-          self.update_attributes(:status => status, :runtime => runtime,:water_num => water_num, :gas_num => gas_num)
+          self.update_attributes(:status => status, :runtime => runtime,:water_num => water_num)
           if !self.cost_time.nil?
             if runtime > self.cost_time.to_f
               staffs = [order.try(:cons_staff_id_1), order.try(:cons_staff_id_2)]
@@ -76,7 +76,8 @@ class WorkOrder < ActiveRecord::Base
           where(:stations=>{:id => self.station_id}).
           where("products.is_service = #{Product::PROD_TYPES[:SERVICE]}").map(&:id)
         #qualified_station_arr = Station.return_station_arr(products, self.store_id)[0]
-        another_work_orders = WorkOrder.joins(:order => {:order_prod_relations => :product}).
+        another_work_orders = WorkOrder.joins(:order => :order_prod_relations).
+          joins("inner join products on products.id = order_prod_relations.item_id and order_prod_relations.prod_types=1").
           where("work_orders.status = #{WorkOrder::STAT[:WAIT]}").
           where("work_orders.station_id is null").
           where("work_orders.store_id = #{self.store_id}").
