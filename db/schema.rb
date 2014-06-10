@@ -11,7 +11,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20140527082533) do
+ActiveRecord::Schema.define(:version => 20140609050331) do
 
   create_table "accounts", :force => true do |t|
     t.integer  "types"
@@ -28,15 +28,15 @@ ActiveRecord::Schema.define(:version => 20140527082533) do
   add_index "accounts", ["types"], :name => "index_accounts_on_types"
 
   create_table "back_good_records", :force => true do |t|
-    t.integer  "material_id"
-    t.integer  "material_num"
+    t.integer  "product_id"
+    t.decimal  "product_num", :precision => 20, :scale => 2, :default => 0.0
     t.integer  "supplier_id"
     t.integer  "store_id"
-    t.datetime "created_at",   :null => false
-    t.datetime "updated_at",   :null => false
+    t.datetime "created_at",                                                  :null => false
+    t.datetime "updated_at",                                                  :null => false
   end
 
-  add_index "back_good_records", ["material_id"], :name => "index_back_good_records_on_material_id"
+  add_index "back_good_records", ["product_id"], :name => "index_back_good_records_on_material_id"
 
   create_table "capitals", :force => true do |t|
     t.string   "name"
@@ -81,6 +81,7 @@ ActiveRecord::Schema.define(:version => 20140527082533) do
     t.datetime "last_inspection"
     t.integer  "inspection_type"
     t.integer  "maint_distance",  :default => 0
+    t.string   "vin_code"
   end
 
   add_index "car_nums", ["car_model_id"], :name => "index_car_nums_on_car_model_id"
@@ -227,6 +228,7 @@ ActiveRecord::Schema.define(:version => 20140527082533) do
     t.integer  "check_time"
     t.datetime "created_at",                            :null => false
     t.datetime "updated_at",                            :null => false
+    t.integer  "property",           :default => 0,     :null => false
   end
 
   add_index "customers", ["birthday"], :name => "index_customers_on_birthday"
@@ -445,11 +447,11 @@ ActiveRecord::Schema.define(:version => 20140527082533) do
 
   create_table "o_pcard_relations", :force => true do |t|
     t.integer  "order_id"
-    t.integer  "c_pcard_relation_id"
+    t.integer  "customer_card_id"
     t.integer  "product_id"
     t.integer  "product_num"
-    t.datetime "created_at",          :null => false
-    t.datetime "updated_at",          :null => false
+    t.datetime "created_at",       :null => false
+    t.datetime "updated_at",       :null => false
   end
 
   create_table "order_pay_types", :force => true do |t|
@@ -971,13 +973,14 @@ ActiveRecord::Schema.define(:version => 20140527082533) do
   add_index "send_messages", ["status"], :name => "index_send_messages_on_status"
   add_index "send_messages", ["updated_at"], :name => "index_send_messages_on_updated_at"
 
-  create_table "shared_materials", :force => true do |t|
+  create_table "shared_products", :force => true do |t|
     t.string   "code"
     t.string   "name"
-    t.integer  "types",      :limit => 1
+    t.string   "standard"
     t.string   "unit"
-    t.datetime "created_at",              :null => false
-    t.datetime "updated_at",              :null => false
+    t.integer  "product_id"
+    t.datetime "created_at", :null => false
+    t.datetime "updated_at", :null => false
   end
 
   create_table "staff_gr_records", :force => true do |t|
@@ -1373,4 +1376,3 @@ ActiveRecord::Schema.define(:version => 20140527082533) do
   add_index "work_records", ["updated_at"], :name => "index_work_records_on_updated_at"
 
 end
-

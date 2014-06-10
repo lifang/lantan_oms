@@ -101,7 +101,7 @@ LantanOms::Application.routes.draw do
       collection do
         get :index_list,:user_and_order,:order_details,:user_and_order,:search_car,:products_list,:login,
           :new_index_list,:construction_site,:reservation_list,:complaint,:reservation_isaccept,:add,:enter_order,
-          :work_order_finished,:pay
+          :work_order_finished,:pay,:pay_order,:confirm_reservation
       end
     end
   end

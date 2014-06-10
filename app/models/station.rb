@@ -25,7 +25,15 @@ class Station < ActiveRecord::Base
     w.status in (#{WorkOrder::STAT[:SERVICING]},#{WorkOrder::STAT[:WAIT_PAY]}) and w.store_id=#{store_id}"
   end
 
-
+  def self.station_service store_id
+    stations = Station.where("store_id =? and status not in (?) ",store_id, [Station::STAT[:WRONG], Station::STAT[:DELETED]]).select("id, name")
+    product_sta = Product.find_by_sql(["SELECT p.id product_id,p.name,ssr.station_id from  products p INNER JOIN station_service_relations ssr on p.id = ssr.product_id
+        where p.is_service=#{Product::IS_SERVICE[:YES]} and ssr.station_id in (?) ",stations.map(&:id)]).group_by{|product| product.station_id}
+    stations.each do |station|
+      station['services'] = product_sta[station.id].nil? ? [] : product_sta[station.id]
+    end
+    return stations
+  end
 
 
   def self.arrange_time store_id, prod_ids, order = nil, res_time = nil

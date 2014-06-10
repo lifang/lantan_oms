@@ -52,21 +52,6 @@ class Staff < ActiveRecord::Base
     self.encrypted_password=encrypt(password)
   end
 
-
-  private
-  def encrypt(string)
-    self.salt = make_salt if new_record?
-    secure_hash("#{salt}--#{string}")
-  end
-
-  def make_salt
-    secure_hash("#{Time.new.utc}--#{password}")
-  end
-
-  def secure_hash(string)
-    Digest::SHA2.hexdigest(string)
-  end
-
   def self.staff_and_order staff_id,store_id
     #本月完成订单数量和总金额
     stafforders = Order.find_by_sql("SELECT o.id,o.price from orders o where date_format(o.created_at,'%Y-%m')=date_format(now(),'%Y-%m') 
@@ -89,5 +74,19 @@ class Staff < ActiveRecord::Base
       orders_now << order_attr
     end
     return [order_count,has_pay,orders_now]
+  end
+
+  private
+  def encrypt(string)
+    self.salt = make_salt if new_record?
+    secure_hash("#{salt}--#{string}")
+  end
+
+  def make_salt
+    secure_hash("#{Time.new.utc}--#{password}")
+  end
+
+  def secure_hash(string)
+    Digest::SHA2.hexdigest(string)
   end
 end
