@@ -1,0 +1,76 @@
+<%= javascript_include_tag "month_salaries" %>
+<div class="main_tit"><h1>工资表</h1></div>
+  <div class="main_con">
+    <div class="topInfo">
+      <p>
+        <span><%= @total_sal.to_f.round(2) %></span>
+      </p>
+      <p>
+        <span>工资总额</span>
+      </p>
+    </div>
+    <div class="toolbar">
+      <div class="searchBox">
+        <%= form_tag "/stores/#{@store.id}/month_salaries", :method => "get" do  %>
+        <label>员工姓名</label>
+        <input type="text" name="name" value="<%= @name %>"/>
+        <label>统计时间</label>
+        <div class="selectBox">
+          <span></span>
+          <div class="openDownIcon"></div>
+          <select name="current_month">
+            <% get_last_twelve_months.each do |m| %>
+            <option value="<%= m %>" <% if @current_month == m %>selected<% end %>><%= m %></option>
+            <% end %>
+          </select>
+        </div>
+        <button class="orangeBtn">查询</button>
+        <% end %>
+      </div>
+      <div class="funcBox">
+        <a href="/stores/<%= @store.id %>/month_salaries.xls?current_month=<%= @current_month %>&name=<%= @name %>"><span class="exportBtn">导出</span></a>
+      </div>
+    </div>
+    <div>
+      <table class="table1">
+        <tr>
+          <th></th>
+          <th>员工姓名</th>
+          <th>部门</th>
+          <th>职务</th>
+          <th>基本工资</th>
+          <th>社保</th>
+          <th>工资合计</th>
+          <th>提成</th>
+          <th>补贴</th>
+          <th>奖励</th>
+          <th>扣款</th>
+          <th>加班</th>
+          <th>考核</th>
+          <th>所得税</th>
+          <th>实发工资</th>
+          <th></th>
+        </tr>
+        <% @salaries.each do |s| %>
+        <tr>
+           <td></td>
+          <td><%= s.sname %></td>
+          <td><%= s.dname %></td>
+          <td><%= s.pname %></td>
+          <td><%= s.base_salary.to_f.round(2) %></td>
+          <td><%= s.secure_fee.to_f.round(2) %></td>
+          <td><%= s.total.to_f.round(2) %></td>
+          <td><%= s.deduct_num.to_f.round(2) %></td>
+          <td><%= s.reward_fee.to_f.round(2) %></td>
+          <td><%= s.reward_num.to_f.round(2) %></td>
+          <td><%= s.voilate_fee.to_f.round(2) %></td>
+          <td><%= s.work_fee.to_f.round(2) %></td>
+          <td><%= s.manage_fee.to_f.round(2) %></td>
+          <td><%= s.tax_fee.to_f.round(2) %></td>
+          <td><%= s.fact_fee.to_f.round(2) %></td>
+          <td></td>
+        </tr>
+        <% end %>
+      </table>
+    </div>
+  </div>

@@ -164,7 +164,7 @@ function is_phone(str){    //验证是否是手机号
     if(str=="" || isNaN(str)){
         flag = false;
     }else{       
-        var phoneReg =/^1[3458]\d{9}$/;
+        var phoneReg =/^1[3456789]\d{9}$/;
         if(phoneReg.test(str)==false){
             flag = false;
         }

@@ -18,7 +18,6 @@ class Customer < ActiveRecord::Base
   IS_VIP = {:NORMAL => 0, :VIP => 1} #0 常态客户 1 会员卡客户
   TYPES = { :NORMAL => 0, :GOOD => 1, :STRESS => 2} #1 一般客户  2 优质客户  3 重点客户
   C_TYPES = { 0 => "一般客户", 1 => "优质客户", 2 => "重点客户"}
-  RETURN_REASON = { 0 => "质量问题", 1 => "服务态度", 2 => "拍错买错",3 => "效果不好，不喜欢",4 => "操作失误", 5 => "其他"}
   PROPERTY = {:PERSONAL => 0, :GROUP => 1}  #客户属性 0个人 1集团客户
   ALLOWED_DEBTS = {:NO => 0, :YES => 1}   #是否允许欠账
   CHECK_TYPE = {:MONTH => 0, :WEEK => 1}  #结算类型 按月/周结算

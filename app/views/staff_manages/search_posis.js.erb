@@ -1,0 +1,4 @@
+$("#waiting").hide();
+$(".second_bg2").hide();
+$("#staff_posi").parents(".selectBox").find("span").first().text("------");
+$("#staff_posi").html("<option value='0'>------</option><% @positions.each do |p| %><option value='<%= p.id %>'><%= p.name %></option><% end %>");

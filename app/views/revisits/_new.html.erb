@@ -30,14 +30,14 @@
               <td>单价</td>
               <td>小计</td>
             </tr>
-            <% @order_prods.each do |op| %>
+            <% @products.each do |p| %>
               <tr>
-                <td><%= op.name %></td>
-                <td><%= op.pro_num %></td>
-                <td><%= op.price %></td>
-                <td><%= op.total_price %></td>
+                <td><%= p[:name] %></td>
+                <td><%= p[:num] %></td>
+                <td><%= p[:price] %></td>
+                <td><%= p[:total_price] %></td>
               </tr>
-            <% end if @order_prods %>
+            <% end if @products.any? %>
           </table>
         </td>
         <td><%= @op.join(",") %></td>
@@ -57,7 +57,7 @@
           <div>
             <label>回访类型</label>
             <div class="selectBox" style="width: 95px;">
-              <span style="width: 75px;">回访类别</span>
+              <span style="width: 75px;"></span>
               <div class="openDownIcon"></div>
               <select name="revi_type">
                 <% Revisit::TYPES_NAME.each do |k, v| %>

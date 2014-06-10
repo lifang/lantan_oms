@@ -61,12 +61,12 @@
       <a class="scd_menu_a" href="javacript:void(0)"><li <% if is_hover("caiwu6") %>class="hover"<% end %>>报表</li></a>
     </ul>
   </div>
-<% elsif is_hover("yuangong") %>
+<% elsif is_hover("staff_manages", "month_salaries", "attendances") %>
   <div class="scdMenuBox">
     <ul class="scdMenu cf">
-      <a class="scd_menu_a" href="javacript:void(0)"><li <% if is_hover("yuangong1") %>class="hover"<% end %>>员工列表</li></a>
-      <a class="scd_menu_a" href="javacript:void(0)"><li <% if is_hover("yuangong2") %>class="hover"<% end %>>工资表</li></a>
-      <a class="scd_menu_a" href="javacript:void(0)"><li <% if is_hover("yuangong3") %>class="hover"<% end %>>出勤</li></a>
+      <a class="scd_menu_a" href="/stores/<%= @store.id %>/staff_manages"><li <% if is_hover("staff_manages") %>class="hover"<% end %>>员工列表</li></a>
+      <a class="scd_menu_a" href="/stores/<%= @store.id %>/month_salaries"><li <% if is_hover("month_salaries") %>class="hover"<% end %>>工资表</li></a>
+      <a class="scd_menu_a" href="/stores/<%= @store.id %>/attendances"><li <% if is_hover("attendances") %>class="hover"<% end %>>出勤</li></a>
     </ul>
   </div>
 <% elsif is_hover("station_datas", "set_stores", "set_functions", "roles", "set_staffs") %>

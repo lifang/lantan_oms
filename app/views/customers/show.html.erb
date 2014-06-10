@@ -1,4 +1,5 @@
 <%= javascript_include_tag "customers" %>
+<%= javascript_include_tag "revisits" %>
 <div class="main_tit"><h1>客户详情</h1></div>
 <div class="cusCars">
   <% if @cus_nums.blank? %>
@@ -70,4 +71,6 @@
 <div class="second_box" id="order_detail">   <!--订单详情层-->
 </div>
 <div class="second_box" id="edit_car_div">   <!--编辑汽车层-->
+</div>
+<div class="second_box" id="revisit_div">  <!--回访弹出层-->
 </div>

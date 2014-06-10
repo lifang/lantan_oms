@@ -9,12 +9,11 @@
         <label>消费时间：</label>
         <span><%= @order.created_at.nil? ? "" : @order.created_at.strftime("%Y-%m-%d %H:%M:%S") %></span>
         <label>接待人员：</label>
-        <span><%= @order.front_s_name %></span>
+        <span><%= @order.front_name %></span>
         <label>施工人员：</label>
         <span>
           <% if @order.cons_s_name1 or @order.cons_s_name2 %>
-            <%= (@order.cons_s_name1 +  "、") if @order.cons_s_name1 %>
-            <%= @order.cons_s_name2 if @order.cons_s_name2 %>
+            <%= [@order.cons_s_name1, @order.cons_s_name2].join("、") %>
           <% else %>--
           <% end %>
         </span>
@@ -22,22 +21,21 @@
       <div class="personBillDtl">
         <table class="table1">
           <tr>
-            <th class="first_icon">服务项目</th>
+            <th class="first_icon">项目名称</th>
             <th>数量</th>
             <th>单价(元)</th>
           </tr>
-          <% @order_prods[@order.id].each do |v| %>
+          <% @products.each do |p| %>
             <tr>
-              <td><%= v.name %></td>
-              <td><%= v.pro_num %></td>
-              <td><%= v.price %></td>
+              <td><%= p[:name] %></td>
+              <td><%= p[:num] %></td>
+              <td><%= p[:price] %></td>
             </tr>
-          <% end if @order_prods[@order.id] %>
+          <% end if @products.any? %>
         </table>
         <div class="personBillTot">
           <label>总计：</label>
           <span><%= format("%.2f", @order.price) %>&nbsp;&nbsp;<% if @order.is_free %>(本次免单)<% end %></span>
-          <!--<button class="orangeBtn2 scd_btn" name="payment">结账</button>-->
         </div>
       </div>
     </div>

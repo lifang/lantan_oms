@@ -1,0 +1,8 @@
+<% if @types == 1 %>
+$("#staff_div").html("<%= j(render :partial => "new_reward") %>");
+<% elsif @types == 0 %>
+$("#staff_div").html("<%= j(render :partial => "new_vio") %>");
+<% end %>
+$("#waiting").hide();
+$(".second_bg").hide();
+popup("#staff_div");

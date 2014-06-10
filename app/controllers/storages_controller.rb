@@ -42,21 +42,22 @@ class StoragesController < ApplicationController #库存管理中的库存列表
     is_added = params[:is_added].nil? ? false : true
     hash = {
       :name => params[:name], :code => params[:code].nil? || params[:code]=="" ? "123456" : params[:code],
-      :base_price => params[:base_price], :sale_price => params[:sale_price], :t_price => params[:t_price], 
+      :base_price => params[:base_price], :sale_price => params[:sale_price], :t_price => params[:t_price],
       :description => params[:description], :introduction => params[:introduction], :types => Product::TYPES[:MATERIAL],
       :service_code => Product.make_service_code(4,"product", "service_code"), :status => Product::STATUS[:NORMAL],
-      :is_shelves => is_shelves, :is_service => Product::IS_SERVICE[:NO], :store_id => @store.id, 
-      :standard => params[:standard], :unit => params[:unit], :is_auto_revist => auto_revi, 
+      :is_shelves => is_shelves, :is_service => Product::IS_SERVICE[:NO], :store_id => @store.id,
+      :standard => params[:standard], :unit => params[:unit], :is_auto_revist => auto_revi,
       :auto_time => auto_revi ? params[:revist_time].to_i : nil, :revist_content => auto_revi ? params[:revist_cont] : nil,
       :prod_point => is_shelves ? params[:p_point].to_i : nil, :category_id => params[:types].to_i,
       :is_added => is_added,
       :deduct_percent => is_shelves ? (params[:xs_t_type].to_i==2 ? params[:xs_t].to_f*params[:sale_price].to_f/100 : nil) : nil,
       :deduct_price => is_shelves ? (params[:xs_t_type].to_i==1 ? params[:xs_t].to_f : nil) : nil,
       :techin_percent => is_shelves && is_added ? (params[:js_t_type].to_i==2 ? params[:js_t].to_f*params[:sale_price].to_f/100 : nil) : nil,
-      :techin_price => is_shelves && is_added ? (params[:js_t_type].to_i==1 ? params[:js_t].to_f : nil) : nil
+      :techin_price => is_shelves && is_added ? (params[:js_t_type].to_i==1 ? params[:js_t].to_f : nil) : nil,
+      :show_on_ipad => params[:show_on_pad].nil? || params[:show_on_pad].to_i==0 ? false : true
     }
     if img && img.size > Product::MAX_SIZE
-      flash[:notice] = "产品图片尺寸最大不得超过5MB!"
+      flash[:notice] = "新建失败,产品图片尺寸最大不得超过5MB!"
     else
       Product.transaction do
         begin
@@ -123,7 +124,8 @@ class StoragesController < ApplicationController #库存管理中的库存列表
             :deduct_percent => is_shelves ? (params[:xs_t_type].to_i==2 ? params[:xs_t].to_f*params[:sale_price].to_f/100 : nil) : nil,
             :deduct_price => is_shelves ? (params[:xs_t_type].to_i==1 ? params[:xs_t].to_f : nil) : nil,
             :techin_percent => is_shelves && is_added ? (params[:js_t_type].to_i==2 ? params[:js_t].to_f*params[:sale_price].to_f/100 : nil) : nil,
-            :techin_price => is_shelves && is_added ? (params[:js_t_type].to_i==1 ? params[:js_t].to_f : nil) : nil
+            :techin_price => is_shelves && is_added ? (params[:js_t_type].to_i==1 ? params[:js_t].to_f : nil) : nil,
+            :show_on_ipad => params[:show_on_pad].nil? || params[:show_on_pad].to_i==0 ? false : true
           }
           if img && img.size > Product::MAX_SIZE
             flash[:notice] = "编辑失败,产品图片尺寸最大不得超过5MB!"

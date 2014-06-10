@@ -534,6 +534,7 @@ td .selectBox { margin: 0 3px; border-radius: 3px;}
 .form_row label { width: 80px; text-align: right; float: left; margin-right: 6px;}
 .form_row input[type="text"] { padding: 4px; width: 120px; border: 1px solid #e2e2e2; margin-right: 10px; color: #A9A8A8; float: left;}
 .form_row textarea { float: left; width: 400px; border: 1px solid #E2E2E2; height: 120px; resize: none;color: #A9A8A8; padding: 4px;}
+.form_row .selectBox { padding: 4px; width: 120px; border: 1px solid #e2e2e2; margin-right: 10px; color: #A9A8A8; float: left;}
 
 .res { width: 400px; float: left; margin: 10px;}
 .res h2 { color: #31343D; font-size: 18px; font-weight: normal; text-align: center;}

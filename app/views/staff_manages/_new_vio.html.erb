@@ -1,0 +1,83 @@
+<div class="second_content" style="width: 550px;">
+  <span class="close" title="关闭">×</span>
+  <h1>新建处罚</h1>
+  <div class="infoBox cf">
+    <%= form_tag "/stores/#{@store.id}/staff_manages/create_reward_violation", :id => "new_reward_form", :remote => true do %>
+      <input type="hidden" value="<%= @types %>" name="types"/>
+      <div class="form_1">
+        <div class="form_row">
+          <label><font class="red">*</font>处罚对象</label>
+          <div style="border: 1px solid #e2e2e2; overflow: auto; padding: 5px; height: 120px;" id="staffs_list">
+            <% @staffs.each do |s| %>
+              <div class="checkBox" style=" float: left;"><input type="checkbox" name="staffs[]" value="<%= s.id %>"/></div>
+              <label style="text-align:left;"><%= s.name %></label>
+            <% end if @staffs.any? %>
+          </div>
+        </div>
+        <div class="form_row">
+          <label>处罚类别</label>
+          <div class="selectBox">
+            <span style="width: 100px;"></span>
+            <div class="openDownIcon"></div>
+            <select name="belong_types">
+              <% ViolationReward::VIOLATE_TYPES.each do |k, v| %>
+                <option value="<%= k %>"><%= v %></option>
+              <% end %>
+            </select>
+          </div>
+          <span>(服务、现场、运营、人事、绩效)</span>
+        </div>
+        <div class="form_row">
+          <label><font class="red">*</font>处罚原因</label>
+          <textarea name="situation" id="situation"></textarea>
+        </div>
+        <div class="form_row">
+          <label>处罚方法</label>
+          <div class="selectBox">
+            <span style="width: 100px;"></span>
+            <div class="openDownIcon"></div>
+            <select name="process_types">
+              <% ViolationReward::N_VIOLATE.each do |k, v| %>
+                <option value="<%= k %>"><%= v %></option>
+              <% end %>
+            </select>
+          </div>
+          <span>(扣考核分、扣款、降级、辞退)</span>
+        </div>
+        <div class="form_row">
+          <label>按分值处罚</label>
+          <input type="text" name="score_num" id="score_num"/>
+        </div>
+        <div class="form_row">
+          <label>按金额处罚</label>
+          <input type="text" name="salary_num" id="salary_num"/>
+        </div>
+        <div class="form_row">
+          <label><font class="red">*</font>备注说明</label>
+          <textarea name="mark" id="mark"></textarea>
+        </div>
+      </div>
+      <div class="scdBoxAct">
+        <button class="orangeBtn2" type="button" onclick="r_v_valid(this)">确定</button>
+      </div>
+    <% end %>
+  </div>
+</div>
+
+<script type="text/javascript">
+  $(function(){
+    var ss = $("#new_reward_form").find("option:selected");
+    $.each(ss, function(){
+      var txt = $(this).text();
+      $(this).parents(".selectBox").find("span").first().text(txt);
+    });
+
+    $("#new_reward_form").on("click", "input[type='checkbox']", function(){
+      if($(this).attr("checked")=="checked"){
+        $(this).parent().attr("class", "checkBox check");
+      }else{
+        $(this).parent().attr("class", "checkBox");
+      }
+    })
+  })
+</script>

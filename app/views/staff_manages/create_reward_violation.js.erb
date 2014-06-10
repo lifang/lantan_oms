@@ -1,0 +1,7 @@
+<% if @status == 1 %>
+window.location.reload();
+<% else %>
+$("#waiting").hide();
+$(".second_bg2").hide();
+tishi("<%= @types==1 ? '奖励创建失败!' : '处罚创建失败!' %>");
+<% end %>

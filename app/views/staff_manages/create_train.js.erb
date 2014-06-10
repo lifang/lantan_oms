@@ -1,0 +1,7 @@
+<% if @status == 1 %>
+window.location.reload();
+<% else %>
+$("#waiting").hide();
+$(".second_bg2").hide();
+tishi("培训创建失败!");
+<% end %>

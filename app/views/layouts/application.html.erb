@@ -44,8 +44,8 @@
           <a class="fst_menu_a" href="javacript:void(0)">
             <li class="tmItem tmItem7 <%= is_hover("caiwu") ? "hover" : "" %>">财务管理</li>
           </a>
-          <a class="fst_menu_a" href="javacript:void(0)">
-            <li class="tmItem tmItem8 <%= is_hover("yuangong") ? "hover" : "" %>">员工管理</li>
+          <a class="fst_menu_a" href="/stores/<%= @store.id %>/staff_manages">
+            <li class="tmItem tmItem8 <%= is_hover("staff_manages", "month_salaries", "attendances") ? "hover" : "" %>">员工管理</li>
           </a>
           <a class="fst_menu_a" href="/stores/<%= @store.id %>/station_datas">
             <li class="tmItem tmItem9 <%= is_hover("station_datas", "set_stores", "set_functions", "roles", "set_staffs") ? "hover" : "" %>">系统设置</li>

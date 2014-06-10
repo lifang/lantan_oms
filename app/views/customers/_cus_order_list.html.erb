@@ -25,9 +25,9 @@
       <td><%= Order::IS_PLEASED_NAME[order.is_pleased] %></td>
       <td><%= order.is_billing ? "是" : "否" %></td>
       <td>
-        <a href="javascript:void(0)">回访</a>
+        <a href="javascript:void(0)" onclick="new_revisit(<%= @store.id %>, <%= order.id %>)">回访</a>
         <% if (order.status == Order::STATUS[:BEEN_PAYMENT] || order.status == Order::STATUS[:FINISHED]) && order.return_types == Order::IS_RETURN[:NO] %>
-          <a href="javascript:void(0)">退单</a>
+          <a href="javascript:void(0)" onclick="return_order(<%= @store.id %>, <%= order.id %>)">退单</a>
         <% end %>
       </td>
     </tr>

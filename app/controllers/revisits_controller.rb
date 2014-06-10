@@ -24,10 +24,23 @@ class RevisitsController < ApplicationController    #客户回访
   def new
     order_id = params[:order_id]
     @order = Order.find_by_id(order_id)
-    @order_prods = OrderProdRelation.find_by_sql(["select opr.pro_num, opr.price, opr.total_price, p.name
-        from order_prod_relations opr
-        inner join products p on opr.product_id=p.id
-        where opr.order_id=?", @order.id])
+    oprs = OrderProdRelation.where(["order_id=?", @order.id])
+    @products = []
+    oprs.each do |opr|
+      hash = {}
+      if opr.prod_types==1
+        prod = Product.find_by_id(opr.item_id)
+        hash[:name] = prod.name
+      else
+        cc = CustomerCard.find_by_id(opr.item_id)
+        card = cc.types==CustomerCard::TYPES[:PACKAGE] ? PackageCard.find_by_id(cc.card_id) : SvCard.find_by_id(cc.card_id)
+        hash[:name] = card.name
+      end
+      hash[:num] = opr.pro_num
+      hash[:price] = opr.price
+      hash[:total_price] = opr.total_price
+      @products << hash
+    end
     order_pay = OrderPayType.where(["order_id=?", @order.id]).map(&:pay_type)
     @op = []
     order_pay.each do |pay|

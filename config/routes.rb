@@ -26,8 +26,8 @@ LantanOms::Application.routes.draw do
     resources :stations
     resources :customers do
       collection do
-        get :add_car_get_datas, :print_orders, :show_order, :edit_car, :del_car
-        post :add_car_item, :update_car
+        get :add_car_get_datas, :print_orders, :show_order, :edit_car, :del_car, :return_order
+        post :add_car_item, :update_car, :create_return_order
       end
     end
     resources :revisits
@@ -93,6 +93,14 @@ LantanOms::Application.routes.draw do
       end
     end
     resources :set_staffs
+    resources :staff_manages do
+      collection do
+        get :search_posis, :staff_valid, :new_reward_violation, :new_train
+        post :create_reward_violation, :create_train
+      end
+    end
+    resources :month_salaries
+    resources :attendances
   end
 
 
