@@ -56,6 +56,7 @@ class Product < ActiveRecord::Base
       (package_cards || []).each do |package_card|
         package_card["types"] = 2
         package_card['isseleted'] = 0
+        package_card['isnew'] = 1
         package_card["products"] = pccard_product[package_card.id].nil? ? [] : pccard_product[package_card.id].map(&:name).join(",")
         cards << package_card
       end
@@ -66,6 +67,7 @@ class Product < ActiveRecord::Base
           svcard_product = Product.select("name").where(["id in (?)",product_id]).where("status = #{SvCard::STATUS[:NORMAL]}").map(&:name).join(",")
         end
         svcard['isseleted'] = 0
+        svcard['isnew'] = 1
         svcard["products"] = svcard_product
         cards << svcard
       end
@@ -151,11 +153,13 @@ class Product < ActiveRecord::Base
     product_lists = []
     product_types[1].each do |product|
       product['several_times'] = service_ma[product.id].nil? ? -1 : service_ma[product.id].first.cishu.to_i
+      product['isseleted'] = 0
       product_lists << product
     end if product_types && product_types[1]
 
     product_types[0].each do |product|
       product['several_times'] = product.storage.to_i
+      product['isseleted'] = 0
       product_lists << product
     end if product_types && product_types[0]
     product_arr = product_lists.group_by{|product| product.category_id}

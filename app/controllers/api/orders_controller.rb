@@ -107,13 +107,36 @@ class Api::OrdersController < ApplicationController
     render :json=>{:status => status,:cards=>cards,:services=>services,:products=>products,:types=>params[:types]}
   end
 
-  #根据车牌号或者手机号码查询客户
+  #根据车牌号或者手机号码查询客户你昨天说的那个优酷上的视频叫什么名字？
   def search_car
     order,customer_cards,discount_cards,stored_cards = Order.search_by_car_num params[:store_id],params[:car_num],params[:types]
     result = {:status => 1,:customer => order,:customer_cards => customer_cards,:discount_cards=>discount_cards,:stored_cards => stored_cards}
     render :json => result
   end
 
+
+  #点击完成按钮，确定选择的产品和服务
+  def finish
+    prod_id = params[:prod_ids] #"10_3,311_0,226_2,"
+    prod_id = prod_id[0...(prod_id.size-1)] if prod_id
+    pre_arr = Order.pre_order params[:store_id],params[:carNum],params[:brand],params[:year],params[:userName],params[:phone],
+      params[:email],params[:birth],prod_id,params[:res_time],params[:sex], params[:from_pcard].to_i
+    content = ""
+    if pre_arr[5] == 0
+      content = "数据出现异常"
+    elsif pre_arr[5] == 1
+      content = "success"
+    elsif pre_arr[5] == 2
+      content = "选择的产品和服务无法匹配工位"
+    elsif pre_arr[5] == 3
+      content = "所购买的服务需要多个工位，请分别下单！"
+    elsif pre_arr[5] == 4
+      content = "工位上暂无技师"
+    end
+    result = {:status => pre_arr[5], :info => pre_arr[0], :products => pre_arr[1], :sales => pre_arr[2],
+      :svcards => pre_arr[3], :pcards => pre_arr[4], :total => pre_arr[6], :content  => content}
+    render :json => result.to_json
+  end
   #下单
   def add
     #查询出来的用户为1，手动输入的用户为0
