@@ -24,7 +24,7 @@ class Api::OrdersController < ApplicationController
         info = "抱歉，您没有访问权限"
       end
     end
-    capital_arr = Order.get_car_sort
+    capital_arr = Capital.get_car_sort
     render :json => {:staff => staff, :status => status ,:info => info,:capital_arr => capital_arr}
   end
 
@@ -67,7 +67,8 @@ class Api::OrdersController < ApplicationController
     station_ids = Station.station_service params[:store_id]
     #    station_ids = Station.where("store_id =? and status not in (?) ",params[:store_id], [Station::STAT[:WRONG], Station::STAT[:DELETED]]).select("id, name")
     services = Product.is_service.is_normal.where(:store_id => params[:store_id]).where(:show_on_ipad => Product::SHOW_ON_IPAD[:YES]).select("id, name, sale_price as price")
-    render :json =>{:work_orders=>work_orders,:station_ids=>station_ids,:services=>services}
+    status = 0
+    render :json =>{:status=>status,:work_orders=>work_orders,:station_ids=>station_ids,:services=>services}
   end
 
   #现场管理-订单详情
@@ -137,6 +138,28 @@ class Api::OrdersController < ApplicationController
       :svcards => pre_arr[3], :pcards => pre_arr[4], :total => pre_arr[6], :content  => content}
     render :json => result.to_json
   end
+
+
+  #下单部分
+  #Parameters: {"is_car_num"=>"1", "num"=>"鑻廞12345", "service_id"=>"12", "store_id"=>"1", "user_id"
+  #=>"3"}
+  # //type:0-产品  1-服务  2－打折卡  3－套餐卡  4-储值卡
+  #//0_id_count_price   //1_id_count_price  //2_id_isNew_price //3_id_isNew_price(新的) //4_id_isNew_price_password//3_id_isNew_price_proId=num(老的)
+  def make_order
+    prods = params[:prods] #"10_3,311_0,226_2,"
+    prods = prods[0...(prods.size-1)] if prods
+    car_model_id = params[:car_model_id]
+    salt = Digest::MD5.hexdigest(Time.now.strftime("%Y%m%d%H%M%S"))
+    order_arr = Order.pre_order params[:store_id],params[:carNum],params[:mobilephone],params[:buy_year],params[:name],params[:sex],
+      params[:property],params[:group_name],params[:distance],params[:car_model_id],prods,params[:user_id],params[:price]
+    render :json => {:status=>order_arr[0],:customer_car=>order_arr[1],:prod_goods=>order_arr[2],:prod_services=>order_arr[3],
+      :discount_cards=>order_arr[4],:package_cards=>order_arr[5],:store_cards=>order_arr[6]}
+  end
+
+
+
+
+
   #下单
   def add
     #查询出来的用户为1，手动输入的用户为0
@@ -146,6 +169,8 @@ class Api::OrdersController < ApplicationController
       status, msg = Customer.customer_valid params[:car_num],params[:store_id],params[:type],params[:name],params[:mobilephone]  #新建或编辑客户时验证
       if status == 1
         begin
+          # "birth": "2014-05-07T11:23:15+08:00","brand_name": "ooxx2","car_num_id": "1","customer_id": "1","distance": "0","email": "329487152@qq.com",
+          #"mobilephone": "18306219610","model_name": "156","name": "多很多","num": "苏EA001","sex": "1","year": "1990", "property":"0","company":"ooxx2","vin":"ooxx",
           store_id = params[:store_id]
           name = params[:name]
           car_num = params[:car_num]
@@ -196,20 +221,20 @@ class Api::OrdersController < ApplicationController
     order = Order.find_by_id params[:order_id]
     info = order.nil? ? nil : order.get_info
     status = 0
-#    if params[:opt_type].to_i == 1
-      if order && (order.status == Order::STATUS[:NORMAL] or order.status == Order::STATUS[:SERVICING] or order.status == Order::STATUS[:WAIT_PAYMENT])
-        #退回使用的套餐卡次数
-        order.return_order_pacard_num
-        #如果是产品,则减掉要加回来
-        order.return_order_materials
-        #如果存在work_order,取消订单后设置work_order以及wk_or_times里面的部分数值
-        order.rearrange_station
-        order.update_attribute(:status, Order::STATUS[:DELETED])
-        status = 1
-      else
-        status = 2
-      end
-      #    else
+    #    if params[:opt_type].to_i == 1
+    if order && (order.status == Order::STATUS[:NORMAL] or order.status == Order::STATUS[:SERVICING] or order.status == Order::STATUS[:WAIT_PAYMENT])
+      #退回使用的套餐卡次数
+      order.return_order_pacard_num
+      #如果是产品,则减掉要加回来
+      order.return_order_materials
+      #如果存在work_order,取消订单后设置work_order以及wk_or_times里面的部分数值
+      order.rearrange_station
+      order.update_attribute(:status, Order::STATUS[:DELETED])
+      status = 1
+    else
+      status = 2
+    end
+    #    else
     #      status = 1
     #    end
     orders = working_orders params[:store_id]
@@ -286,6 +311,8 @@ class Api::OrdersController < ApplicationController
     complaint = Complaint.mk_record params[:store_id],params[:order_id],params[:reason],params[:request],params[:types]
     render :json => {:status => (complaint.nil? ? 0 : 1)}
   end
+
+
 
   #返回订单
   def working_orders(store_id)

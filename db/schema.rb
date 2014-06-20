@@ -11,7 +11,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20140609050331) do
+ActiveRecord::Schema.define(:version => 20140618031233) do
 
   create_table "accounts", :force => true do |t|
     t.integer  "types"
@@ -175,6 +175,7 @@ ActiveRecord::Schema.define(:version => 20140609050331) do
     t.datetime "created_at",                                                      :null => false
     t.datetime "updated_at",                                                      :null => false
     t.integer  "order_id"
+    t.string   "password"
   end
 
   add_index "customer_cards", ["card_id"], :name => "index_customer_cards_on_card_id"
@@ -193,6 +194,18 @@ ActiveRecord::Schema.define(:version => 20140609050331) do
   add_index "customer_num_relations", ["customer_id"], :name => "index_customer_num_relations_on_customer_id"
   add_index "customer_num_relations", ["updated_at"], :name => "index_customer_num_relations_on_updated_at"
 
+  create_table "customer_store_relations", :force => true do |t|
+    t.integer  "customer_id"
+    t.integer  "store_id"
+    t.integer  "total_point"
+    t.boolean  "is_vip",      :default => false
+    t.datetime "created_at",                     :null => false
+    t.datetime "updated_at",                     :null => false
+  end
+
+  add_index "customer_store_relations", ["customer_id"], :name => "index_customer_store_relations_on_customer_id"
+  add_index "customer_store_relations", ["store_id"], :name => "index_customer_store_relations_on_store_id"
+
   create_table "customers", :force => true do |t|
     t.string   "name"
     t.string   "mobilephone"
@@ -208,8 +221,7 @@ ActiveRecord::Schema.define(:version => 20140609050331) do
     t.string   "username"
     t.string   "salt"
     t.integer  "total_point"
-    t.integer  "store_id"
-    t.integer  "property",           :default => 0
+    t.integer  "integer",            :default => 0
     t.string   "group_name"
     t.integer  "allowed_debts",      :default => 0
     t.float    "debts_money"
@@ -217,6 +229,7 @@ ActiveRecord::Schema.define(:version => 20140609050331) do
     t.integer  "check_time"
     t.datetime "created_at",                            :null => false
     t.datetime "updated_at",                            :null => false
+    t.integer  "property",           :default => 0,     :null => false
   end
 
   add_index "customers", ["birthday"], :name => "index_customers_on_birthday"

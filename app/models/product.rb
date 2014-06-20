@@ -101,46 +101,46 @@ class Product < ActiveRecord::Base
 
   #产品和服务的列表
   def self.products_and_services store_id,name
-#    packagecards = []
-#    #套餐卡
-#    package_cards = PackageCard.find_by_sql("SELECT id,name,img_url,description,price from package_cards
-#                  where store_id = #{store_id} and status = #{PackageCard::STAT[:NORMAL]}#")
-#    package_card_id = package_cards.map(&:id)
-#    #      适用项目
-#    pccard_product = Product.find_by_sql(["select p.name,ppr.package_card_id from products p
-#                INNER JOIN pcard_prod_relations ppr on p.id = ppr.product_id where p.status=#{STATUS[:NORMAL]}
-#                and p.is_shelves=#{IS_SHELVES[:YES]} and ppr.package_card_id in (?)#",package_card_id]).group_by{|prod| prod.package_card_id}
-#
-#    svcards = SvCard.find_by_sql("select id,name,img_url,types,description,price,apply_content from sv_cards
-#                  where store_id = #{store_id} and status = #{SvCard::STATUS[:NORMAL]}#").group_by{|svcard| svcard.types}
-#
-#    (package_cards || []).each do |package_card|
-#      package_card["types"] = 2
-#      package_card["products"] = pccard_product[package_card.id].nil? ? [] : pccard_product[package_card.id].map(&:name).join(",")
-#      packagecards << package_card
-#    end
+    #    packagecards = []
+    #    #套餐卡
+    #    package_cards = PackageCard.find_by_sql("SELECT id,name,img_url,description,price from package_cards
+    #                  where store_id = #{store_id} and status = #{PackageCard::STAT[:NORMAL]}#")
+    #    package_card_id = package_cards.map(&:id)
+    #    #      适用项目
+    #    pccard_product = Product.find_by_sql(["select p.name,ppr.package_card_id from products p
+    #                INNER JOIN pcard_prod_relations ppr on p.id = ppr.product_id where p.status=#{STATUS[:NORMAL]}
+    #                and p.is_shelves=#{IS_SHELVES[:YES]} and ppr.package_card_id in (?)#",package_card_id]).group_by{|prod| prod.package_card_id}
+    #
+    #    svcards = SvCard.find_by_sql("select id,name,img_url,types,description,price,apply_content from sv_cards
+    #                  where store_id = #{store_id} and status = #{SvCard::STATUS[:NORMAL]}#").group_by{|svcard| svcard.types}
+    #
+    #    (package_cards || []).each do |package_card|
+    #      package_card["types"] = 2
+    #      package_card["products"] = pccard_product[package_card.id].nil? ? [] : pccard_product[package_card.id].map(&:name).join(",")
+    #      packagecards << package_card
+    #    end
     #打折卡
-#    discount_cards = []
-#    (svcards[0] || []).each do |svcard|
-#      svcard_product=[]
-#      if svcard.types.to_i == 0
-#        product_id = svcard.apply_content.split(",") if svcard.apply_content
-#        svcard_product = Product.select("name").where(["id in (?)",product_id]).where("status = #{SvCard::STATUS[:NORMAL]}").map(&:name).join(",")
-#      end
-#      svcard["products"] = svcard_product
-#      discount_cards << svcard
-#    end
+    #    discount_cards = []
+    #    (svcards[0] || []).each do |svcard|
+    #      svcard_product=[]
+    #      if svcard.types.to_i == 0
+    #        product_id = svcard.apply_content.split(",") if svcard.apply_content
+    #        svcard_product = Product.select("name").where(["id in (?)",product_id]).where("status = #{SvCard::STATUS[:NORMAL]}").map(&:name).join(",")
+    #      end
+    #      svcard["products"] = svcard_product
+    #      discount_cards << svcard
+    #    end
     #储值卡
-#    stored_cards = []
-#    (svcards[1] || []).each do |svcard|
-#      svcard_product=[]
-#      if svcard.types.to_i == 0
-#        product_id = svcard.apply_content.split(",") if svcard.apply_content
-#        svcard_product = Product.select("name").where(["id in (?)",product_id]).where("status = #{SvCard::STATUS[:NORMAL]}").map(&:name).join(",")
-#      end
-#      svcard["products"] = svcard_product
-#      stored_cards << svcard
-#    end
+    #    stored_cards = []
+    #    (svcards[1] || []).each do |svcard|
+    #      svcard_product=[]
+    #      if svcard.types.to_i == 0
+    #        product_id = svcard.apply_content.split(",") if svcard.apply_content
+    #        svcard_product = Product.select("name").where(["id in (?)",product_id]).where("status = #{SvCard::STATUS[:NORMAL]}").map(&:name).join(",")
+    #      end
+    #      svcard["products"] = svcard_product
+    #      stored_cards << svcard
+    #    end
     #产品或者服务部分
     product_list = Product.find_by_sql("select p.id,p.name,p.sale_price,p.category_id,p.storage,c.types from products p
           INNER JOIN categories c on p.category_id = c.id where p.is_shelves = #{IS_SHELVES[:YES]}
@@ -206,5 +206,36 @@ class Product < ActiveRecord::Base
       msg = "图片上传失败!"
     end
     return [path, msg]
+  end
+  #拆分产品和卡类数据
+  # //type:0-产品  1-服务  2－打折卡  3－套餐卡  4-储值卡 //0_id_count_price //1_id_count_price //2_id_isNew_price //3_id_isNew_price(新的)
+  # => //4_id_isNew_price_password //3_id_isNew_price_proId=num(老的)
+  # prods="0_1_2_100,1_2_1,2_1_1_30,3_1_1_100,3_1_0_100_1=2,4_1_1_100_123"
+  def self.order_products prods
+    arr = prods.split(",")
+    prod_arr = []
+    service_arr = []
+    svcard_arr = []
+    pcard_arr = []
+    stored_arr = []
+    arr.each do |p|
+      if p.split("_")[0].to_i == 0
+        #p  0_id_count
+        prod_arr << p.split("_")
+      elsif p.split("_")[0].to_i == 1
+        #p 1_id_prod1=price1_prod2=price2_totalprice_realy_price
+        service_arr << p.split("_")
+      elsif p.split("_")[0].to_i == 2
+        #p 2_id
+        svcard_arr << p.split("_")
+      elsif p.split("_")[0].to_i == 3
+        #p 3_id_has_p_card_prodId=prodId
+        pcard_arr << p.split("_")
+      elsif p.split("_")[0].to_i == 4
+        stored_arr <<  p.split("_")
+      end
+    end
+    p prod_arr,service_arr,svcard_arr,pcard_arr,stored_arr
+    [prod_arr,service_arr,svcard_arr,pcard_arr,stored_arr]
   end
 end
