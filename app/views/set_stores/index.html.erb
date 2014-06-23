@@ -22,7 +22,7 @@
           <div class="inputBox">
             <p><font class="red">*</font>所在地区</p>
             <div class="selectBox selectBox3">         
-              <span style="line-height:30px;"><%= @store_province.name if @store_province %></span>
+              <span style="line-height:30px;"></span>
               <div class="openDownIcon"></div>
               <select name="store_prov_id">
                 <% @province.each do |p| %>
@@ -31,7 +31,7 @@
               </select>
             </div>
             <div class="selectBox selectBox3">
-              <span style="line-height:30px;"><%= @store_city.name if @store_city %></span>
+              <span style="line-height:30px;"></span>
               <div class="openDownIcon"></div>
               <select name="store_city_id" id="store_city_id">
                 <option value="0">------</option>
@@ -43,8 +43,8 @@
           </div>
           <div class="inputBox">
             <p><font class="red">*</font>门店坐标</p>
-            <input type="text" placeHolder="X:" name="store_x_position" id="store_x_position" value="<%= @store.position.split(",")[0] %>"/>
-            <input type="text" placeHolder="Y:" name="store_y_position" id="store_y_position" value="<%= @store.position.split(",")[1] %>"/>
+            <input type="text" placeHolder="X:" name="store_x_position" id="store_x_position" value="<%= @store.position.split(",")[0] if @store.position %>"/>
+            <input type="text" placeHolder="Y:" name="store_y_position" id="store_y_position" value="<%= @store.position.split(",")[1] if @store.position %>"/>
             <a href="http://api.map.baidu.com/lbsapi/getpoint/index.html" target="_blank" style="position: absolute;right: 18px;top: 61px;">
               <img src="/assets/mapIcon.png" alt="点击获取地图坐标" title="点击获取地图坐标"/>
             </a>
@@ -68,7 +68,7 @@
           <div class="inputBox">
             <p>门店状态</p>
             <div class="selectBox selectBox3" style="width: 256px;">
-              <span style="width: 230px;"><%= Store::S_STATUS[@store.status] %></span>
+              <span style="width: 230px;"></span>
               <div class="openDownIcon"></div>
               <select name="store_status" id="store_status">
                 <% Store::S_STATUS.each do |k, v| %>

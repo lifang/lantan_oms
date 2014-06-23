@@ -9,7 +9,7 @@ class Revisit < ActiveRecord::Base
 
   #客户的回访记录
   def self.customer_revists(store_id, customer_id, pre_page, page)
-    return Revisit.paginate_by_sql(["select r.id r_id, r.created_at, r.types, r.content, r.answer, o.code, o.id o_id
+    return Revisit.paginate_by_sql(["select r.id r_id, r.created_at, r.types, r.content, r.answer, r.title, o.code, o.id o_id
           from revisits r left join revisit_order_relations ror
           on ror.revisit_id = r.id left join orders o on o.id = ror.order_id where o.store_id=? and r.customer_id=?
           order by r.created_at desc",

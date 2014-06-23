@@ -1,10 +1,6 @@
 <%= javascript_include_tag "roles" %>
 <div class="main_tit"><h1>权限设置</h1></div>
 <div class="main_con" style="overflow: hidden;">
-  <div class="topInfo">
-    <p><span><%= @manager %></span><span><%= @normal_user %></span></p>
-    <p><span>管理员</span><span>用户</span></p>
-  </div>
   <div class="toolbar">
     <div class="funcBox">
       <a href="/stores/<%= @store.id %>/roles" class="hover"><span>权限配置</span></a>

@@ -15,7 +15,7 @@ class StationDatasController < ApplicationController  #系统设置-工位
     @stations = stations.paginate(:page => params[:page] ||= 1, :per_page => 2) if stations.any?
     @s_service = StationServiceRelation.find_by_sql(["select ssr.station_id, p.name from station_service_relations
         ssr inner join products p on ssr.product_id=p.id where ssr.station_id in (?) and p.status=?",
-        @stations.map(&:id), Product::STATUS[:NORMAL]]).group_by{|ss|ss.station_id} if @stations.any?
+        @stations.map(&:id), Product::STATUS[:NORMAL]]).group_by{|ss|ss.station_id} if @stations && @stations.any?
         
   end
 

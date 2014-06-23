@@ -263,7 +263,7 @@ function new_prod_valid(obj, store_id, m_id){       //新建和编辑产品验�
     }
 }
 
-function set_product(types, store_id, m_id, obj){    //设置1备注、2编辑、3核实、4预警、5忽略
+function set_product(types, store_id, m_id, obj){    //设置1备注、2编辑、3快速入库、4预警、5忽略
     if(types==5){
         var txt = $(obj).text();
         var con = "";

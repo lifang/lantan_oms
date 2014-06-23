@@ -27,8 +27,11 @@ class SuppliersController < ApplicationController #库存管理中的供应商�
   end
 
   def create
+    cap_name = params[:s_name].split(" ").join("").split("").compact.map{|n|
+      n.pinyin[0][0] if n.pinyin[0]
+    }
     hash = {
-      :name => params[:s_name], :cap_name => params[:cap_name], :contact => params[:contact],
+      :name => params[:s_name], :cap_name => cap_name.compact.join(""), :contact => params[:contact],
       :phone => params[:phone], :email => params[:email], :address => params[:address],
       :check_type => params[:check_type].to_i, :check_time => params[:check_time].to_i,
       :store_id => @store.id, :status => Supplier::STATUS[:NORMAL]

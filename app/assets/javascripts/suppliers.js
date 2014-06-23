@@ -64,7 +64,7 @@ function supp_valid(obj, store_id, supp_id){      //编辑或者新建供应商�
     var check_time = $.trim($("#check_time").val());
     if(name==""){
         tishi("名称不能为空!");
-    }else if(cap_name==""){
+    }else if(supp_id!=0 && cap_name==""){
         tishi("助记码不能为空!");
     }else if(phone==""){
         tishi("手机号码不能为空!");

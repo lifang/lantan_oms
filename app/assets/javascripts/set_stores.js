@@ -1,9 +1,14 @@
 $(function(){
+    var ss = $(document).find("option:selected");
+    $.each(ss, function(){
+        var txt = $(this).text();
+        $(this).parents(".selectBox").find("span").first().text(txt);
+    });
     $("#edit_store_form").on("change", ".selectBox select", function(){
         var e = $(this);
-        var txt = e.find("option:selected").text();
+        var txt = e.find("option:selected").first().text();
         var name = e.attr("name");
-        e.parents(".selectBox").find("span").text(txt);
+        e.parents(".selectBox").find("span").first().text(txt);
         if(name=="store_prov_id"){
             var p_id = e.val();
             var store_id = $("#store_id").val();
@@ -34,6 +39,7 @@ $(function(){
             }
         }
     })
+    
 })
 
 function upload_store_img(obj){

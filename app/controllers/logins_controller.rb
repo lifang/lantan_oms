@@ -2,7 +2,7 @@
 class LoginsController < ApplicationController  #登陆
   layout :false
   def index
-
+   
   end
 
   def validate

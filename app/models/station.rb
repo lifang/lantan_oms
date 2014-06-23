@@ -15,7 +15,6 @@ class Station < ActiveRecord::Base
   IS_CONTROLLER = {:YES=>1,:NO=>0} #定义是否拥有工控机
   PerPage = 10
   validates :name, :presence => true
-  validate :unique_code
 
 
 

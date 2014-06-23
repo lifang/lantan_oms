@@ -4,15 +4,6 @@ class RolesController < ApplicationController #系统设置-权限
   def index
     @roles = Role.where(["store_id=?", @store.id])
     @role_auth_hash = get_roles_auth_proportion(@roles.map(&:id))
-    @normal_user = 0
-    @manager = 0
-    @roles.each do |r|
-      if r.role_type == Role::ROLE_TYPE[:NORMAL]
-        @normal_user += 1
-      elsif r.role_type == Role::ROLE_TYPE[:STORE_MANAGER]
-        @manager += 1
-      end
-    end if @roles.any?
   end
 
   def update

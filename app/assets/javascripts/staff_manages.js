@@ -37,8 +37,8 @@ function staff_valid(obj, store_id){    //新建员工验证
     var work_st = $("#staff_work_st");
     var secure_fee = $.trim($("#staff_secure_fee").val());
     var reward_fee = $.trim($("#staff_reward_fee").val());
-    if(is_name(name)==false){
-        tishi("请输入员工名字，不得包含非法字符!");
+    if(is_name(name)==false || get_str_len(name)>10){
+        tishi("请输入员工名字，不得包含非法字符,且名字长度不得超过10个字符!");
         flag = false;
     }else if(is_phone(phone)==false){
         tishi("请输入正确的手机号码!");

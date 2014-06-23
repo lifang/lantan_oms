@@ -53,6 +53,7 @@
         <th>订单金额</th>
         <th>付款状态</th>
         <th>物流状态</th>
+        <th>订货时间</th>
         <th>备注</th>
         <th style="width:130px;">操作</th>
       </tr>
@@ -63,6 +64,7 @@
           <td><%= po.price %></td>
           <td><%= ProductOrder::S_STATUS[po.status.to_i] %></td>
           <td><%= ProductOrder::S_M_STATUS[po.m_status.to_i] %></td>
+          <td><%= po.created_at.strftime("%Y-%m-%d %H:%M") %></td>
           <td><%= truncate(po.remark, :length => 15) %></td>
           <td>
             <div class="moreBox">
