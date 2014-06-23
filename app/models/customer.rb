@@ -94,4 +94,25 @@ class Customer < ActiveRecord::Base
         store_id])
     return [complaints, cus_birthday_notices]
   end
+
+  #验证用户和车的关系
+  def Customer.create_single_cus(customer,carnum,mobilephone,car_num,name,buy_year,car_model_id,sex,store_id,distance)
+    Customer.transaction do
+      if customer.nil?
+        customer = Customer.create(:name => name, :mobilephone => mobilephone,:status => Customer::STATUS[:NOMAL],
+          :types => Customer::TYPES[:NORMAL], :username => name,:password => mobilephone, :sex => sex,:store_id=>store_id)
+        customer.encrypt_password
+        customer.save        
+      end
+      if carnum
+        carnum.update_attributes(:buy_year => buy_year, :car_model_id => car_model_id,:distance=>distance)
+      else
+        carnum = CarNum.create(:num => car_num, :buy_year => buy_year,
+          :car_model_id => car_model_id,:distance=>distance)
+      end
+      CustomerNumRelation.delete_all(["car_num_id = ?", carnum.id])
+      CustomerNumRelation.create(:car_num_id => carnum.id, :customer_id => customer.id)
+    end 
+    return [customer, carnum]
+  end
 end

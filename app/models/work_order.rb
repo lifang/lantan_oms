@@ -53,7 +53,7 @@ class WorkOrder < ActiveRecord::Base
         where("current_day = #{self.current_day}").first
       if next_work_order
         #同一个人的下单，直接紧接着排单
-        ended_at = current_time + next_work_order.cost_time*60
+        ended_at = current_time + next_work_order.cost_time.to_i*60
         next_work_order.update_attributes(:status => WorkOrder::STAT[:SERVICING],
           :started_at => current_time, :ended_at => ended_at )
         wo_time = WkOrTime.find_by_station_id_and_current_day next_work_order.station_id, ended_at
@@ -74,7 +74,7 @@ class WorkOrder < ActiveRecord::Base
 
         products = Product.includes(:station_service_relations => :station).
           where(:stations=>{:id => self.station_id}).
-          where("products.is_service = #{Product::PROD_TYPES[:SERVICE]}").map(&:id)
+          where("products.is_service = #{Product::IS_SERVICE[:YES]}").map(&:id)
         #qualified_station_arr = Station.return_station_arr(products, self.store_id)[0]
         another_work_orders = WorkOrder.joins(:order => :order_prod_relations).
           joins("inner join products on products.id = order_prod_relations.item_id and order_prod_relations.prod_types=1").
