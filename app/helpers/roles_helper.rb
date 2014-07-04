@@ -231,7 +231,6 @@ module RolesHelper
     end if roles
     #    session[:model_role] = model_role
     cookies[:model_role] = {:value => model_role.to_a.join(","), :secure  => true}
-    #    session[:user_roles] = user_roles
     cookies[:user_roles] = {:value => user_roles.join(","), :secure  => true}
   end
 

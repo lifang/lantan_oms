@@ -22,5 +22,4 @@ class Capital < ActiveRecord::Base
     end
     return capital_arr
   end
-  
 end

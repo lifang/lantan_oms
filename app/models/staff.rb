@@ -53,27 +53,44 @@ class Staff < ActiveRecord::Base
   end
 
   def self.staff_and_order staff_id,store_id
-    #本月完成订单数量和总金额
-    stafforders = Order.find_by_sql("SELECT o.id,o.price from orders o where date_format(o.created_at,'%Y-%m')=date_format(now(),'%Y-%m') 
+    status = 1
+    msg = ""
+    order_count,has_pay,orders_now = 0,0,[]
+    begin
+      #本月完成订单数量和总金额
+      stafforders = Order.find_by_sql("select o.id,o.price from orders o where date_format(o.created_at,'%Y-%m')=date_format(now(),'%Y-%m')
         and o.status in (#{Order::STATUS[:BEEN_PAYMENT]},#{Order::STATUS[:FINISHED]}) and o.front_staff_id = #{staff_id} and o.store_id=#{store_id}")
-    order_count = stafforders.length
-    has_pay = stafforders.map(&:price).inject(0) { |sum,e| sum + e }
+      order_count = stafforders.length
+      has_pay = stafforders.map(&:price).inject(0) { |sum,e| sum + e }
 
-    #当前正在进行中的订单
-    order_now = Order.find_by_sql("SELECT o.id,o.code,cn.num,o.price sum_price from orders o INNER JOIN  car_nums cn on cn.id=o.car_num_id
-        where date_format(o.created_at,'%Y-%m')=date_format(now(),'%Y-%m')
-        and o.status in (#{Order::STATUS[:NORMAL]},#{Order::STATUS[:SERVICING]},#{Order::STATUS[:WAIT_PAYMENT]}) and o.front_staff_id = #{staff_id} and o.store_id=#{store_id}")
-    order_detail = OrderProdRelation.joins("opr inner join products p on p.id=opr.product_id").
-      select("p.name,opr.order_id,opr.price,opr.pro_num,opr.total_price,opr.t_price").
-      where(["order_id in (?)", order_now.map(&:id)]).group_by{|order_pro| order_pro.order_id}
-    
-    orders_now = []
-    order_now.each do |order|
-      order_attr = order.attributes
-      order_attr['detail'] = order_detail.present? && order_detail[order.id].present? ? order_detail[order.id] : []
-      orders_now << order_attr
+      #当前正在进行中的订单
+      orders = Order.find_by_sql(["select o.id,o.code,o.price sum_price,cn.num from orders o inner join car_nums cn
+      on o.car_num_id=cn.id where date_format(o.created_at,'%Y-%m')=? and o.status in (?) and o.front_staff_id=? and o.store_id=?", Time.now.strftime("%Y-%m"),
+        [Order::STATUS[:NORMAL],Order::STATUS[:SERVICING],Order::STATUS[:WAIT_PAYMENT]], staff_id, store_id])
+      orders.each do |o|
+        hash = {:id => o.id, :code => o.code, :num => o.num, :sum_price => o.sum_price.to_f.round(2)}
+        prod_detail = []
+        oprs = OrderProdRelation.where(["order_id=?", o.id])
+        oprs.each do |opr|
+          hash2 = {}
+          prod = opr.prod_types == OrderProdRelation::PROD_TYPES[:SERVICE] ? Product.find_by_id(opr.item_id)
+            : opr.prod_types == OrderProdRelation::PROD_TYPES[:P_CARD] ? PackageCard.find_by_id(opr.item_id) : SvCard.find_by_id(opr.item_id)
+          hash2[:name] = prod.name
+          hash2[:order_od] = o.id
+          hash2[:price] = opr.price.to_f.round(2)
+          hash2[:pro_num] = opr.pro_num.to_f.round(2)
+          hash2[:t_price] = opr.t_price.to_f.round(2)
+          hash2[:total_price] = opr.total_price.to_f.round(2)
+          prod_detail << hash2
+        end if oprs.any?
+        hash[:detail] = prod_detail
+        orders_now << hash
+      end
+    rescue
+      status = 0
+      msg = "数据错误!"
     end
-    return [order_count,has_pay,orders_now]
+    return [status, msg, order_count, has_pay, orders_now]
   end
 
   private

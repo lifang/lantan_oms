@@ -11,7 +11,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20140618031233) do
+ActiveRecord::Schema.define(:version => 20140704012838) do
 
   create_table "accounts", :force => true do |t|
     t.integer  "types"
@@ -40,17 +40,18 @@ ActiveRecord::Schema.define(:version => 20140618031233) do
 
   create_table "capitals", :force => true do |t|
     t.string   "name"
-    t.datetime "created_at", :null => false
-    t.datetime "updated_at", :null => false
+    t.datetime "created_at"
+    t.datetime "updated_at"
   end
 
   add_index "capitals", ["created_at"], :name => "index_capitals_on_created_at"
+  add_index "capitals", ["updated_at"], :name => "index_capitals_on_updated_at"
 
   create_table "car_brands", :force => true do |t|
     t.string   "name"
     t.integer  "capital_id"
-    t.datetime "created_at", :null => false
-    t.datetime "updated_at", :null => false
+    t.datetime "created_at"
+    t.datetime "updated_at"
   end
 
   add_index "car_brands", ["capital_id"], :name => "index_car_brands_on_capital_id"
@@ -61,8 +62,8 @@ ActiveRecord::Schema.define(:version => 20140618031233) do
   create_table "car_models", :force => true do |t|
     t.string   "name"
     t.integer  "car_brand_id"
-    t.datetime "created_at",   :null => false
-    t.datetime "updated_at",   :null => false
+    t.datetime "created_at"
+    t.datetime "updated_at"
   end
 
   add_index "car_models", ["car_brand_id"], :name => "index_car_models_on_car_brand_id"
@@ -74,13 +75,13 @@ ActiveRecord::Schema.define(:version => 20140618031233) do
     t.string   "num"
     t.integer  "car_model_id"
     t.integer  "buy_year"
+    t.datetime "created_at"
+    t.datetime "updated_at"
     t.integer  "distance",        :default => 0
-    t.datetime "created_at",                     :null => false
-    t.datetime "updated_at",                     :null => false
     t.datetime "insurance_ended"
     t.datetime "last_inspection"
     t.integer  "inspection_type"
-    t.integer  "maint_distance",  :default => 0
+    t.integer  "maint_distance"
     t.string   "vin_code"
   end
 
@@ -127,8 +128,8 @@ ActiveRecord::Schema.define(:version => 20140618031233) do
     t.integer  "order_index"
     t.string   "name"
     t.integer  "parent_id"
-    t.datetime "created_at",  :null => false
-    t.datetime "updated_at",  :null => false
+    t.datetime "created_at"
+    t.datetime "updated_at"
   end
 
   add_index "cities", ["created_at"], :name => "index_cities_on_created_at"
@@ -194,18 +195,6 @@ ActiveRecord::Schema.define(:version => 20140618031233) do
   add_index "customer_num_relations", ["customer_id"], :name => "index_customer_num_relations_on_customer_id"
   add_index "customer_num_relations", ["updated_at"], :name => "index_customer_num_relations_on_updated_at"
 
-  create_table "customer_store_relations", :force => true do |t|
-    t.integer  "customer_id"
-    t.integer  "store_id"
-    t.integer  "total_point"
-    t.boolean  "is_vip",      :default => false
-    t.datetime "created_at",                     :null => false
-    t.datetime "updated_at",                     :null => false
-  end
-
-  add_index "customer_store_relations", ["customer_id"], :name => "index_customer_store_relations_on_customer_id"
-  add_index "customer_store_relations", ["store_id"], :name => "index_customer_store_relations_on_store_id"
-
   create_table "customers", :force => true do |t|
     t.string   "name"
     t.string   "mobilephone"
@@ -221,7 +210,7 @@ ActiveRecord::Schema.define(:version => 20140618031233) do
     t.string   "username"
     t.string   "salt"
     t.integer  "total_point"
-    t.integer  "integer",            :default => 0
+    t.integer  "property",           :default => 0
     t.string   "group_name"
     t.integer  "allowed_debts",      :default => 0
     t.float    "debts_money"
@@ -229,7 +218,7 @@ ActiveRecord::Schema.define(:version => 20140618031233) do
     t.integer  "check_time"
     t.datetime "created_at",                            :null => false
     t.datetime "updated_at",                            :null => false
-    t.integer  "property",           :default => 0,     :null => false
+    t.integer  "store_id"
   end
 
   add_index "customers", ["birthday"], :name => "index_customers_on_birthday"
@@ -385,7 +374,7 @@ ActiveRecord::Schema.define(:version => 20140618031233) do
 
   create_table "message_temps", :force => true do |t|
     t.integer  "types"
-    t.string   "content"
+    t.string   "content",    :null => false
     t.integer  "store_id"
     t.datetime "created_at", :null => false
     t.datetime "updated_at", :null => false
@@ -729,7 +718,6 @@ ActiveRecord::Schema.define(:version => 20140618031233) do
     t.string   "code"
     t.decimal  "base_price",     :precision => 20, :scale => 2, :default => 0.0
     t.decimal  "sale_price",     :precision => 20, :scale => 2, :default => 0.0
-    t.decimal  "t_price",        :precision => 20, :scale => 2, :default => 0.0
     t.string   "description"
     t.text     "introduction"
     t.string   "remark"
@@ -749,6 +737,7 @@ ActiveRecord::Schema.define(:version => 20140618031233) do
     t.decimal  "check_num",      :precision => 20, :scale => 2, :default => 0.0
     t.decimal  "low_warning",    :precision => 20, :scale => 2, :default => 0.0
     t.boolean  "is_ignore",                                     :default => false
+    t.decimal  "t_price",        :precision => 20, :scale => 2, :default => 0.0
     t.boolean  "is_auto_revist"
     t.integer  "auto_time"
     t.text     "revist_content"
@@ -854,11 +843,11 @@ ActiveRecord::Schema.define(:version => 20140618031233) do
 
   create_table "role_model_relations", :force => true do |t|
     t.integer  "role_id"
+    t.integer  "num",        :limit => 8
     t.integer  "menu_id"
-    t.integer  "num",        :limit => 8, :default => 0
     t.integer  "store_id"
-    t.datetime "created_at",                             :null => false
-    t.datetime "updated_at",                             :null => false
+    t.datetime "created_at",              :null => false
+    t.datetime "updated_at",              :null => false
   end
 
   add_index "role_model_relations", ["created_at"], :name => "index_role_model_relations_on_created_at"
@@ -979,9 +968,9 @@ ActiveRecord::Schema.define(:version => 20140618031233) do
     t.string   "name"
     t.string   "standard"
     t.string   "unit"
-    t.integer  "product_id"
     t.datetime "created_at", :null => false
     t.datetime "updated_at", :null => false
+    t.integer  "product_id"
   end
 
   create_table "staff_gr_records", :force => true do |t|
@@ -1346,6 +1335,7 @@ ActiveRecord::Schema.define(:version => 20140618031233) do
     t.integer  "cost_time"
     t.datetime "created_at",       :null => false
     t.datetime "updated_at",       :null => false
+    t.integer  "service_id"
   end
 
   add_index "work_orders", ["current_day"], :name => "index_work_orders_on_current_day"

@@ -34,200 +34,49 @@ class Station < ActiveRecord::Base
     return stations
   end
 
-
-
-  def self.arrange_time store_id, prod_ids, order = nil, res_time = nil
-    #查询所有满足条件的工位
-    stations = Station.includes(:wk_or_times).where(:store_id => store_id, :status => Station::STAT[:NORMAL])
-    station_arr = []
-    station_prod_ids = []
-    prod_ids = prod_ids.collect{|p| p.to_i }
-    (stations || []).each do |station|
-      if station.station_service_relations
-        prods = station.station_service_relations.collect{|r| r.product_id }
-        station_prod_ids << prods
-        station_arr << station if (prods & prod_ids).sort == prod_ids.sort
-      end
-    end
-    #    prod_ids = prod_ids.collect{|p| p.to_i }
-    #    stations = Station.includes(:station_service_relations).where(:store_id => store_id, :status => Station::STAT[:NORMAL])
-    #    (stations || []).each do |station|
-    #      if station.station_service_relations
-    #        prods = station.station_service_relations.collect{|r| r.product_id }
-    #        station_prod_ids << prods
-    #        station_arr << station if (prods & prod_ids).sort == prod_ids.sort
-    #      end
-    #    end
-    if station_arr.present?
-      station_flag = 1 #有对应工位对应
-      station_staffs = StationStaffRelation.where(:station_id => station_arr)
-      if station_staffs.blank?
-        station_flag = 3
-      end
-    else
-      if((station_prod_ids.flatten & prod_ids).sort == prod_ids.sort) && (!station_prod_ids.include?(prod_ids))
-        station_flag = 2 #一个订单要使用多个工位
-      else
-        station_flag = 0 #没工位
-      end
-    end
-
-
-
-    station_id = 0
-    has_start_end_time = false
-    #如果用户连续多次下单并且购买的服务可以在原工位上施工，则排在原来工位上。
-    if order
-      work_order = WorkOrder.joins(:order).where(:orders => {:car_num_id => order.car_num_id},
-        :work_orders => {:status => WorkOrder::STAT[:SERVICING], :store_id => store_id,
-          :current_day => Time.now.strftime("%Y%m%d").to_i}).order("ended_at desc").first
-      if work_order #5
-        if station_arr.map(&:id).include?(work_order.station_id) #[1,3] 5  # 看看同一辆车之前在的工位能不能施工现在下单的服务
-          station_id = work_order.station_id
+  #给某个门店下的工位安排工单
+  def self.arrange_work_orders store_id
+    stations = Station.where(["status=? and store_id=?", STAT[:NORMAL], store_id])
+    stations.each do |s|
+      #首先查看该工位当前在不在施工
+      his_serving_wo = WorkOrder.where(["station_id=? and status=? and current_day=?", s.id, WorkOrder::STAT[:SERVICING],
+        Time.now.strftime("%Y%m%d").to_i]).first
+      if his_serving_wo.nil?  #如果该工位当前不在施工
+        his_services = s.station_service_relations.map(&:product_id).collect{|p|p.to_i} #获取该工位可进行的服务
+        #获取已排到该工位的正在等待的工单
+        his_wait_wos = WorkOrder.where(["station_id=? and status=? and current_day=? and service_id in (?)", s.id,
+            WorkOrder::STAT[:WAIT], Time.now.strftime("%Y%m%d").to_i, his_services]).order("created_at asc")
+        if his_wait_wos.any?   #首先安排已排上该工位的工单施工(按时间先后顺序)
+          his_wait_wos.each do |hww|
+            #查看这个工单对应的订单当前在不在其他工位上施工
+            other_serving_wos = WorkOrder.where(["station_id!=? and status=? and current_day=? and order_id=?",
+              s.id, WorkOrder::STAT[:SERVICING], Time.now.strftime("%Y%m%d").to_i, hww.order_id])
+            if other_serving_wos.blank? #如果这个工单对应的车辆正在其他工位施工，则跳过。否则安排该工单
+              hww.update_attributes(:status => WorkOrder::STAT[:SERVICING], :started_at => Time.now,
+                :ended_at => Time.now + hww.cost_time.to_i*60)
+              current_order = hww.order
+              current_order.update_attribute("status", Order::STATUS[:SERVICING]) unless current_order.status==Order::STATUS[:SERVICING]
+              break
+            end
+          end
+        else   #如果没有排上该工位的工单 则查出最早的station_id为空的工单
+          no_sid_wos = WorkOrder.where(["station_id is null and status=? and current_day=? and service_id in (?)", s.id,
+            WorkOrder::STAT[:WAIT], Time.now.strftime("%Y%m%d").to_i, his_services]).order("created_at asc")
+          no_sid_wos.each do |nsw|
+            #查看这个工单对应的订单当前在不在其他工位上施工
+            other_serving_wos = WorkOrder.where(["station_id!=? and status=? and current_day=? and order_id=?",
+              s.id, WorkOrder::STAT[:SERVICING], Time.now.strftime("%Y%m%d").to_i, nsw.order_id])
+             if other_serving_wos.blank? #如果这个工单对应的车辆正在其他工位施工，则跳过。否则安排该工单
+               nsw.update_attributes(:station_id => s.id, :status => WorkOrder::STAT[:SERVICING], :started_at => Time.now,
+                :ended_at => Time.now + nsw.cost_time.to_i*60)
+              current_order = nsw.order
+              current_order.update_attribute("status", Order::STATUS[:SERVICING]) unless current_order.status==Order::STATUS[:SERVICING]
+              break
+             end
+          end
         end
       end
     end
-    if station_id == 0
-      #按照工位的忙闲获取预计时间
-      # wkor_times = WkOrTime.where(:station_id => station_arr, :current_day => Time.now.strftime("%Y%m%d"))
-      busy_stations = WorkOrder.where(:station_id => station_arr, :current_day => Time.now.strftime("%Y%m%d"),
-        :store_id =>store_id, :status => [WorkOrder::STAT[:WAIT], WorkOrder::STAT[:SERVICING]]).map(&:station_id)
-
-      availbale_stations = station_arr.map(&:id) - busy_stations
-
-      if availbale_stations.present?
-        if order && work_order #如果是同一辆车，需要排在不同的工位上的话，不置station_id和开始结束时间
-          station_id = nil
-        else
-          #如果不是同一辆车，则排在不同的工位上，置station_id和开始结束时间
-          station_id = availbale_stations[0] || 0
-          has_start_end_time = true
-        end
-      else
-        station_id = nil
-      end
-      # if busy_stations.blank?
-      # if order && work_order #如果是同一辆车，需要排在不同的工位上的话，不置station_id和开始结束时间
-      # station_id = nil
-      # else
-      # #如果不是同一辆车，则排在不同的工位上，置station_id和开始结束时间
-      # station_id = station_arr[0].try(:id) || 0
-      # has_start_end_time = true
-      # end
-      #
-      # else
-      # stations = Station.where(:id => busy_stations.map(&:station_id))
-      # no_order_stations = station_arr - stations #获得工位上没订单的工位
-      # if no_order_stations.present?
-      # if order && work_order #如果是同一辆车，需要排在不同的工位上的话，不置station_id和开始结束时间
-      # station_id = nil
-      # else
-      # #如果不是同一辆车，则排在不同的工位上，置station_id和开始结束时间
-      # station_id = no_order_stations[0].id
-      # has_start_end_time = true
-      # end
-      # else
-      # #如果没有空闲工位的话， 则不置station_id和开始结束时间
-      # station_id = nil
-      # end
-      # end
-    end
-    [station_id, station_flag, has_start_end_time]
   end
 
-
-  #根据，订单，工位，门店id排空工位
-  def self.create_work_order(station_id, store_id,order, hash, work_order_status, cost_time)
-    started_at = Time.now
-    ended_at = started_at + cost_time.minutes
-    wo_time = WkOrTime.find_by_station_id_and_current_day station_id, Time.now.strftime("%Y%m%d").to_i if station_id
-    if wo_time
-      wo_time.update_attributes( :wait_num => wo_time.wait_num.to_i + 1)
-    else
-      WkOrTime.create(:current_times => ended_at.strftime("%Y%m%d%H%M"), :current_day => Time.now.strftime("%Y%m%d").to_i,
-        :station_id => station_id, :worked_num => 1) if station_id and ended_at.present?
-    end
-    work_order = WorkOrder.create({
-        :order_id => order.id,
-        :current_day => Time.now.strftime("%Y%m%d"),
-        :station_id => station_id || nil,
-        :store_id => store_id,
-        :status => (work_order_status ? WorkOrder::STAT[:SERVICING] : WorkOrder::STAT[:WAIT]),
-        :started_at => work_order_status ? started_at : nil,
-        :ended_at => work_order_status ? ended_at : nil,
-        :cost_time => cost_time
-      })
-
-    hash ||= {}
-    hash[:status] = (work_order.status == WorkOrder::STAT[:SERVICING]) ? Order::STATUS[:SERVICING] : Order::STATUS[:NORMAL]
-    hash[:station_id] = station_id if station_id  #这个可能暂时没有值，一个完成后要更新
-    station_staffs = StationStaffRelation.find_all_by_station_id_and_current_day station_id, Time.now.strftime("%Y%m%d").to_i if station_id
-    if station_staffs
-      hash[:cons_staff_id_1] = station_staffs[0].staff_id if station_staffs.size > 0
-      hash[:cons_staff_id_2] = station_staffs[1].staff_id if station_staffs.size > 1
-    end
-    hash[:started_at] = work_order_status ? started_at : nil
-    hash[:ended_at] = work_order_status ? ended_at : nil
-
-    return hash
-  end
-
-  #  def self.arrange_time store_id, prod_ids, order = nil, res_time = nil
-  #    #查询所有满足条件的工位
-  #    stations = Station.includes(:wk_or_times).where(:store_id => store_id, :status => Station::STAT[:NORMAL])
-  #    station_arr = []
-  #    station_prod_ids = []
-  #    prod_ids = prod_ids.collect{|p| p.to_i }
-  #    (stations || []).each do |station|
-  #      if station.station_service_relations
-  #        prods = station.station_service_relations.collect{|r| r.product_id }
-  #        station_prod_ids << prods
-  #        station_arr << station if (prods & prod_ids).sort == prod_ids.sort
-  #      end
-  #    end
-  #    p station_arr
-  #    p station_prod_ids
-  #    times_arr = []
-  #    time_now = Time.now.strftime("%Y%m%d%H%M")
-  #    times_arr << time_now
-  #    station_id = 0
-  #
-  #    #如果用户连续多次下单并且购买的服务可以在原工位上施工，则排在原来工位上。
-  #    if order
-  #      work_order = WorkOrder.joins(:order => :car_num).where(:car_nums => {:id => order.car_num_id},
-  #        :work_orders => {:status => [WorkOrder::STAT[:WAIT], WorkOrder::STAT[:SERVICING]], :current_day => Time.now.strftime("%Y%m%d").to_i}).order("ended_at desc").first
-  #      if work_order #5
-  #        ended_at = work_order.ended_at
-  #        last_order_ended_at = ended_at.strftime("%Y%m%d%H%M")
-  #        times_arr << last_order_ended_at
-  #        if station_arr.map(&:id).include?(work_order.station_id) #[1,3] 5
-  #          station_id = work_order.station_id
-  #        end
-  #      end
-  #    end
-  #    if station_id == 0
-  #      #按照工位的忙闲获取预计时间
-  #      wkor_times = WkOrTime.where(:station_id => station_arr, :current_day => Time.now.strftime("%Y%m%d"))
-  #      if wkor_times.blank?
-  #        station_id = station_arr[0].try(:id) || 0
-  #      else
-  #        stations = Station.where(:id => wkor_times.map(&:station_id))
-  #        no_order_stations = station_arr - stations #获得工位上没订单的工位
-  #        if no_order_stations.present?
-  #          station_id = no_order_stations[0].id
-  #        else
-  #          min_wkor_times = wkor_times.min{|a,b| a.current_times <=> b.current_times}
-  #          min_ended_at = min_wkor_times.current_times
-  #          times_arr << min_ended_at
-  #          station_id = min_wkor_times.station_id
-  #        end
-  #      end
-  #    end
-  #    temp_time = times_arr.each{|t| Time.zone.parse(t)}.max
-  #    time = (res_time && (temp_time < Time.zone.parse(res_time))) ? Time.zone.parse(res_time) : Time.zone.parse(temp_time)
-  #    time_arr = [(time + Constant::W_MIN.minutes).strftime("%Y-%m-%d %H:%M"),
-  #      (time + (Constant::W_MIN + Constant::STATION_MIN).minutes).strftime("%Y-%m-%d %H:%M"),station_id]
-  #    #puts time_arr,"-----------------"
-  #    time_arr
-  #  end
 end

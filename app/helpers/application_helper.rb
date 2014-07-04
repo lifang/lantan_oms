@@ -5,7 +5,6 @@ module ApplicationHelper
   require 'openssl'
   include RolesHelper
   include MessageManagesHelper
-  
   MODEL_STATUS={:NORMAL=>0,:DELETED=>1,:INVALID=>2}
   def has_sign?
     store_id = params[:store_id]

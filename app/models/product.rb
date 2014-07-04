@@ -37,137 +37,110 @@ class Product < ActiveRecord::Base
   PROD_PICSIZE = [100]
   MAX_SIZE = 5242880  #图片尺寸最大不得超过5MB
   #产品列表
-  def self.products_arr store_id,product_name,types #0 为产品 1 为服务 2 为卡类
-    cards = []
-    services = []
-    products = []
-    if types.to_i==2
-      package_cards = PackageCard.find_by_sql("SELECT id,name,img_url,description,price from package_cards
-                  where store_id = #{store_id} and name like '#{product_name}' and status = #{PackageCard::STAT[:NORMAL]}")
-      package_card_id = package_cards.map(&:id)
-      #      适用项目
-      pccard_product = Product.find_by_sql(["select p.name,ppr.package_card_id from products p
-                INNER JOIN pcard_prod_relations ppr on p.id = ppr.product_id where p.status=#{STATUS[:NORMAL]}
-                and p.is_shelves=#{IS_SHELVES[:YES]} and ppr.package_card_id in (?)",package_card_id]).group_by{|prod| prod.package_card_id}
-
-      svcards = SvCard.find_by_sql("select id,name,img_url,types,description,price,apply_content from sv_cards
-                  where store_id = #{store_id} and name like '#{product_name}' and status = #{SvCard::STATUS[:NORMAL]}")
-
-      (package_cards || []).each do |package_card|
-        package_card["types"] = 2
-        package_card['isseleted'] = 0
-        package_card['isnew'] = 1
-        package_card["products"] = pccard_product[package_card.id].nil? ? [] : pccard_product[package_card.id].map(&:name).join(",")
-        cards << package_card
-      end
-      (svcards || []).each do |svcard|
-        svcard_product=[]
-        if svcard.types.to_i == 0
-          product_id = svcard.apply_content.split(",") if svcard.apply_content
-          svcard_product = Product.select("name").where(["id in (?)",product_id]).where("status = #{SvCard::STATUS[:NORMAL]}").map(&:name).join(",")
+  def self.products_arr store_id,product_name,types
+    cards,services,products = [],[],[]
+    status = 1
+    msg = ""
+    begin
+      case types
+      when 0  #0为产品
+        sql = ["store_id=? and status=? and types=? and is_shelves=?", store_id, STATUS[:NORMAL], TYPES[:MATERIAL], 1]
+        unless product_name.nil? || product_name.strip==""
+          sql[0] += " and name like ?"
+          sql << "%#{product_name.gsub(/[%_]/){|n|'\\'+n}}%"
         end
-        svcard['isseleted'] = 0
-        svcard['isnew'] = 1
-        svcard["products"] = svcard_product
-        cards << svcard
-      end
-    else
-      product_list = Product.find_by_sql("SELECT id,name,types,description,introduction,img_url,status,sale_price,storage
-            FROM products where store_id=#{store_id} and name like '#{product_name}'
-            and is_service = #{types} and status = #{STATUS[:NORMAL]} and is_shelves =#{IS_SHELVES[:YES]} order by status")
-      product_lists =[]
+        prods = Product.where(sql)
+        prods.each do |p|
+          hash = {:description => p.description, :id => p.id, :img_url => p.img_url, :introduction => p.introduction,
+            :name => p.name, :types => p.types.to_i, :sale_price => p.sale_price.to_f.round(2), :isSelected => 0,
+            :storage => p.storage.to_f.round(2)
+          }
+          products << hash if hash[:storage] > 0
+        end if prods
+      when 1  #1为服务
+        sql = ["store_id=? and status=? and types=?", store_id, STATUS[:NORMAL], TYPES[:SERVICE]]
+        unless product_name.nil? || product_name.strip==""
+          sql[0] += " and name like ?"
+          sql << "%#{product_name.gsub(/[%_]/){|n|'\\'+n}}%"
+        end
+        servs = Product.where(sql)
+        servs.each do |p|
+          hash = {:description => p.description, :id => p.id, :img_url => p.img_url, :introduction => p.introduction,
+            :name => p.name, :types => p.types.to_i, :sale_price => p.sale_price.to_f.round(2), :isSelected => 0,
+          }
+          s_prods = ProdMatRelation.find_by_sql(["select min(p.storage/pmr.material_num) l_stor from products p
+            inner join prod_mat_relations pmr on p.id=pmr.material_id where pmr.product_id=?", p.id]).first
+          hash[:storage] = s_prods.nil? || s_prods.l_stor.nil? ? -1 : s_prods.l_stor.to_i
+          services << hash if hash[:storage]!=0
+        end if servs
+      when 2  #2为卡类
+        p_sql = ["store_id=? and status=?", store_id, PackageCard::STAT[:NORMAL]]
+        sv_sql = ["store_id=? and status=?", store_id, SvCard::STATUS[:NORMAL]]
+        unless product_name.nil? || product_name.strip==""
+          p_sql[0] += " and name like ?"
+          p_sql << "%#{product_name.gsub(/[%_]/){|n|'\\'+n}}%"
+          sv_sql[0] += " and name like ?"
+          sv_sql << "%#{product_name.gsub(/[%_]/){|n|'\\'+n}}%"
+        end
+        pcards = PackageCard.where(p_sql)
+        svcards = SvCard.where(sv_sql)
+        pcards.each do |p|
+          hash = {:description => p.description, :id => p.id, :img_url => p.img_url, :name => p.name, :types => 2,
+            :price => p.price.to_f.round(2), :is_selected => 0, :is_new => 1}
+          prods = PcardProdRelation.find_by_sql(["select p.name from pcard_prod_relations ppr inner join products p
+            on ppr.product_id=p.id where ppr.package_card_id=?", p.id]).map(&:name).uniq.join(",")
+          hash[:products] = prods
+          cards << hash
+        end if pcards.any?
 
-      if types.to_i==1
-        service_ma = Product.find_by_sql(["select min(p.storage/pmr.material_num) cishu,pmr.product_id from products p INNER JOIN prod_mat_relations pmr on p.id=pmr.material_id
-                        where p.status = #{STATUS[:NORMAL]} and p.types=#{TYPES[:MATERIAL]} and p.is_shelves=#{IS_SHELVES[:NO]} and
-                        pmr.product_id in (?) GROUP BY pmr.product_id",product_list.map(&:id)]).group_by{|serverse| serverse.product_id}
-        product_list.each do |product|
-          product['isseleted'] = 0
-          product['several_times'] = service_ma[product.id].nil? ? -1 : service_ma[product.id].first.cishu.to_i
-          product_lists << product
-        end
-        services = product_list
-      else
-        product_list.each do |product|
-          product['isseleted'] = 0
-          product['several_times'] = product.storage.to_i
-          product_lists << product
-        end
-        products = product_list
+        svcards.each do |p|
+          hash = {:description => p.description, :id => p.id, :img_url => p.img_url, :name => p.name, :types => p.types.to_i,
+            :price => p.price.to_f.round(2), :is_selected => 0, :is_new => 1}
+          prods = p.apply_content.nil? || p.apply_content=="" ? "" : Product.where(["id in (?) and status=?",
+              p.apply_content.split(",").collect{|i|i.to_i}, STATUS[:NORMAL]]).map(&:name).uniq.join(",")
+          hash[:products] = prods
+          cards << hash
+        end if svcards.any?
+
       end
+    rescue
+      status = 0
+      msg = "数据错误!"
     end
-    return [cards,services, products]
+    return [status, msg, cards, services, products]
   end
 
   #产品和服务的列表
-  def self.products_and_services store_id,name
-    #    packagecards = []
-    #    #套餐卡
-    #    package_cards = PackageCard.find_by_sql("SELECT id,name,img_url,description,price from package_cards
-    #                  where store_id = #{store_id} and status = #{PackageCard::STAT[:NORMAL]}#")
-    #    package_card_id = package_cards.map(&:id)
-    #    #      适用项目
-    #    pccard_product = Product.find_by_sql(["select p.name,ppr.package_card_id from products p
-    #                INNER JOIN pcard_prod_relations ppr on p.id = ppr.product_id where p.status=#{STATUS[:NORMAL]}
-    #                and p.is_shelves=#{IS_SHELVES[:YES]} and ppr.package_card_id in (?)#",package_card_id]).group_by{|prod| prod.package_card_id}
-    #
-    #    svcards = SvCard.find_by_sql("select id,name,img_url,types,description,price,apply_content from sv_cards
-    #                  where store_id = #{store_id} and status = #{SvCard::STATUS[:NORMAL]}#").group_by{|svcard| svcard.types}
-    #
-    #    (package_cards || []).each do |package_card|
-    #      package_card["types"] = 2
-    #      package_card["products"] = pccard_product[package_card.id].nil? ? [] : pccard_product[package_card.id].map(&:name).join(",")
-    #      packagecards << package_card
-    #    end
-    #打折卡
-    #    discount_cards = []
-    #    (svcards[0] || []).each do |svcard|
-    #      svcard_product=[]
-    #      if svcard.types.to_i == 0
-    #        product_id = svcard.apply_content.split(",") if svcard.apply_content
-    #        svcard_product = Product.select("name").where(["id in (?)",product_id]).where("status = #{SvCard::STATUS[:NORMAL]}").map(&:name).join(",")
-    #      end
-    #      svcard["products"] = svcard_product
-    #      discount_cards << svcard
-    #    end
-    #储值卡
-    #    stored_cards = []
-    #    (svcards[1] || []).each do |svcard|
-    #      svcard_product=[]
-    #      if svcard.types.to_i == 0
-    #        product_id = svcard.apply_content.split(",") if svcard.apply_content
-    #        svcard_product = Product.select("name").where(["id in (?)",product_id]).where("status = #{SvCard::STATUS[:NORMAL]}").map(&:name).join(",")
-    #      end
-    #      svcard["products"] = svcard_product
-    #      stored_cards << svcard
-    #    end
-    #产品或者服务部分
-    product_list = Product.find_by_sql("select p.id,p.name,p.sale_price,p.category_id,p.storage,c.types from products p
-          INNER JOIN categories c on p.category_id = c.id where p.is_shelves = #{IS_SHELVES[:YES]}
-          and p.status=#{STATUS[:NORMAL]} and c.store_id=#{store_id} and p.show_on_ipad=#{SHOW_ON_IPAD[:YES]} and p.name like '#{name}' ")
-    product_types = product_list.group_by{|product| product.types}
-
-    service_ma = Product.find_by_sql(["select min(p.storage/pmr.material_num) cishu,pmr.product_id from products p INNER JOIN prod_mat_relations pmr on p.id=pmr.material_id
-                        where p.status = #{STATUS[:NORMAL]} and p.types=#{TYPES[:MATERIAL]} and p.is_shelves=#{IS_SHELVES[:NO]} and
-                        pmr.product_id in (?) GROUP BY pmr.product_id",product_list.map(&:id)]).group_by{|serverse| serverse.product_id}
-    product_lists = []
-    product_types[1].each do |product|
-      product['several_times'] = service_ma[product.id].nil? ? -1 : service_ma[product.id].first.cishu.to_i
-      product['isseleted'] = 0
-      product_lists << product
-    end if product_types && product_types[1]
-
-    product_types[0].each do |product|
-      product['several_times'] = product.storage.to_i
-      product['isseleted'] = 0
-      product_lists << product
-    end if product_types && product_types[0]
-    product_arr = product_lists.group_by{|product| product.category_id}
-    categories = Category.where(["id in (?) ",product_list.map(&:category_id)]).select("id,name")
-    categories.each do |category|
-      category["prod"] = product_arr[category.id]
+  def self.products_and_services store_id
+    status = 1
+    msg = ""
+    array = []
+    begin
+      fast_prods = Product.where(["store_id=? and status=? and is_shelves=?", store_id,
+          STATUS[:NORMAL], 1]).group_by{|fp|fp.category_id}
+      fast_prods.each do |k, v|
+        hash = {:id => k.to_i, :name => k.to_i==0 ? "套装服务" : Category.find_by_id( k.to_i).name}
+        arr = []
+        v.each do |prod|
+          hash2 = {:id => prod.id, :name => prod.name, :sale_price => prod.sale_price.to_f.round(2),
+            :is_selected => 0, :types => prod.types}
+          if prod.types == TYPES[:MATERIAL]
+            hash2[:storage] = prod.storage.to_f.round(2)
+          else
+            s_prods = ProdMatRelation.find_by_sql(["select min(p.storage/pmr.material_num) l_stor from products p
+            inner join prod_mat_relations pmr on p.id=pmr.material_id where pmr.product_id=?", prod.id]).first
+            hash2[:storage] = s_prods.nil? || s_prods.l_stor.nil? ? -1 : s_prods.l_stor.to_i
+          end
+          arr << hash2 if hash2[:storage]>0 || hash2[:storage] < 0
+        end
+        hash[:prod] = arr
+        array << hash if arr.any?
+      end if fast_prods.any?
+    rescue
+      status = 0
+      msg = "数据错误!"
     end
-    return categories
+    return [status, msg, array]
   end
 
   
@@ -207,6 +180,7 @@ class Product < ActiveRecord::Base
     end
     return [path, msg]
   end
+
   #拆分产品和卡类数据
   # //type:0-产品  1-服务  2－打折卡  3－套餐卡  4-储值卡 //0_id_count_price //1_id_count_price //2_id_isNew_price //3_id_isNew_price(新的)
   # => //4_id_isNew_price_password //3_id_isNew_price_proId=num(老的)
@@ -235,7 +209,20 @@ class Product < ActiveRecord::Base
         stored_arr <<  p.split("_")
       end
     end
-    p prod_arr,service_arr,svcard_arr,pcard_arr,stored_arr
     [prod_arr,service_arr,svcard_arr,pcard_arr,stored_arr]
+  end
+
+  def self.get_prod_type_and_storage  product_id    #获取某个产品或者服务的types和库存
+    prod = Product.find_by_id(product_id)
+    types = prod.types
+    storage = 0
+    if types = TYPES[:MATERIAL]
+      storage = prod.storage.to_f.round(2)
+    else
+      s_prods = ProdMatRelation.find_by_sql(["select min(p.storage/pmr.material_num) l_stor from products p
+            inner join prod_mat_relations pmr on p.id=pmr.material_id where pmr.product_id=?", prod.id]).first
+      storage = s_prods.nil? || s_prods.l_stor.nil? ? -1 : s_prods.l_stor.to_i
+    end
+    return [types, storage]
   end
 end
