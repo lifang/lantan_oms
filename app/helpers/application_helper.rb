@@ -39,7 +39,7 @@ module ApplicationHelper
             and opr.prod_types=#{OrderProdRelation::PROD_TYPES[:SERVICE]}").map(&:p_name).compact.uniq
       order[:wo_started_at] = (work_order && work_order.started_at && work_order.started_at.strftime("%Y-%m-%d %H:%M:%S")) || ""
       order[:wo_ended_at] = (work_order && work_order.ended_at && work_order.ended_at.strftime("%Y-%m-%d %H:%M:%S")) || ""
-#      order[:car_num] = order.car_num.try(:num)
+      #      order[:car_num] = order.car_num.try(:num)
       order[:service_name] = service_name.join(",")
       order[:cost_time] = work_order.try(:cost_time)
       order[:station_id] = work_order.try(:station_id)
@@ -76,4 +76,12 @@ module ApplicationHelper
     back_res =http.request(request)
     return JSON back_res.body
   end
+
+  def proof_code(len)
+    chars = ('A'..'Z').to_a + ('a'..'z').to_a + (0..9).to_a
+    code_array = []
+    1.upto(len) {code_array << chars[rand(chars.length)]}
+    return code_array.join("")
+  end
+
 end

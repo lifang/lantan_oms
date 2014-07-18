@@ -15,9 +15,9 @@ class Order < ActiveRecord::Base
 
   IS_VISITED = {:YES => 1, :NO => 0} #1 已访问  0 未访问
   STATUS = {:NORMAL => 0, :SERVICING => 1, :WAIT_PAYMENT => 2, :BEEN_PAYMENT => 3, :FINISHED => 4, :DELETED => 5, :INNORMAL => 6,
-    :RETURN => 7, :COMMIT => 8, :PCARD_PAY => 9}
+    :RETURN => 7, :COMMIT => 8, :PCARD_PAY => 9, :UNCONFIRMED => 10}
   STATUS_NAME = {0 => "等待中", 1 => "服务中", 2 => "等待付款", 3 => "已经付款", 4 => "免单", 5 => "已删除" , 6 => "未分配工位",
-    7 =>"退单", 8 => "已确认，未付款(后台付款)", 9 => "套餐卡下单,等待付款"}
+    7 =>"退单", 8 => "已确认，未付款(后台付款)", 9 => "套餐卡下单,等待付款", 10 => "未确认"}
   #0 正常未进行  1 服务中  2 等待付款  3 已经付款  4 已结束  5已删除  6未分配工位 7 退单
   CASH =[STATUS[:NORMAL],STATUS[:SERVICING],STATUS[:WAIT_PAYMENT],STATUS[:COMMIT]]
   OVER_CASH = [STATUS[:BEEN_PAYMENT],STATUS[:FINISHED],STATUS[:RETURN]]
@@ -111,13 +111,14 @@ class Order < ActiveRecord::Base
 
   #正在进行中的订单
   def self.working_orders store_id
-    return Order.find_by_sql(["select o.id order_id,c.num car_nums,c.id car_id, o.status, wo.id wo_id, wo.status wo_status
-      from orders o inner join car_nums c on c.id=o.car_num_id
+    return Order.find_by_sql(["select o.*, cn.id cnid, cn.num cnum, cn.buy_year buy_year, cn.vin_code, cn.distance, cu.id cuid, cu.name cname,
+      cu.mobilephone cphone, cu.sex csex, cu.property  property, cu.group_name, cm.name model_name, cb.name brand_name
+      from orders o inner join car_nums cn on cn.id=o.car_num_id
       inner join customers cu on cu.id=o.customer_id
-      left join work_orders wo on wo.order_id = o.id
-      and wo.status not in (#{WorkOrder::STAT[:WAIT_PAY]},#{WorkOrder::STAT[:COMPLETE]},#{WorkOrder::STAT[:CANCELED]}, #{WorkOrder::STAT[:END]})
-      where o.status in (#{STATUS[:NORMAL]}, #{STATUS[:SERVICING]}, #{STATUS[:WAIT_PAYMENT]})
-      and DATE_FORMAT(o.created_at, '%Y%m%d')=DATE_FORMAT(NOW(), '%Y%m%d') and cu.status=? and o.store_id = ? order by o.status", Customer::STATUS[:NOMAL], store_id])
+      left join car_models cm on cn.car_model_id=cm.id
+      left join car_brands cb on cm.car_brand_id=cb.id
+      where o.status in (#{STATUS[:NORMAL]}, #{STATUS[:SERVICING]}, #{STATUS[:WAIT_PAYMENT]}, #{STATUS[:BEEN_PAYMENT]})
+      and DATE_FORMAT(o.created_at, '%Y%m%d')=DATE_FORMAT(NOW(), '%Y%m%d') and cu.status=? and o.store_id =?", Customer::STATUS[:NOMAL], store_id])
   end
 
 
@@ -159,8 +160,8 @@ class Order < ActiveRecord::Base
           cm.name model_name, cb.name brand_name, c.id cus_id, c.other_way email, c.birthday, c.mobilephone, c.name cus_name,
           c.sex, c.property, c.group_name from car_nums cn inner join customer_num_relations cnr on cn.id=cnr.car_num_id
           inner join customers c on cnr.customer_id=c.id
-          inner join car_models cm on cn.car_model_id=cm.id
-          inner join car_brands cb on cm.car_brand_id=cb.id
+          left join car_models cm on cn.car_model_id=cm.id
+          left join car_brands cb on cm.car_brand_id=cb.id
           where cn.num=? and c.store_id=? and c.status=?", car_num, store_id, Customer::STATUS[:NOMAL]]).first
         if car_and_cus
           cus_hash = {:brand_name => car_and_cus.brand_name, :car_num_id => car_and_cus.cnid,
@@ -185,17 +186,18 @@ class Order < ActiveRecord::Base
         end
       elsif is_car_num == 1  #根据手机号查询
         car_and_cuses = CarNum.find_by_sql(["select cn.id cnid, cn.num cnum, cn.buy_year, cn.distance, cn.vin_code,
-          cm.name model_name, cb.name brand_name, c.id cus_id, c.other_way email, c.birthday, c.mobilephone, c.name cus_name,
+          cm.name model_name, cm.id model_id, cb.name brand_name, cb.id brand_id, c.id cus_id, c.other_way email, c.birthday, c.mobilephone, c.name cus_name,
           c.sex, c.property, c.group_name from car_nums cn inner join customer_num_relations cnr on cn.id=cnr.car_num_id
           inner join customers c on cnr.customer_id=c.id
           inner join car_models cm on cn.car_model_id=cm.id
           inner join car_brands cb on cm.car_brand_id=cb.id
           where c.mobilephone=? and c.store_id=? and c.status=?", car_num, store_id, Customer::STATUS[:NOMAL]])
         car_and_cuses.each do |car_and_cus|
-          cus_hash = {:brand_name => car_and_cus.brand_name, :car_num_id => car_and_cus.cnid,
-            :customer_id => car_and_cus.cus_id,
+          cus_hash = {:brand_name => car_and_cus.brand_name, :brand_id => car_and_cus.brand_id,
+            :car_num_id => car_and_cus.cnid, :customer_id => car_and_cus.cus_id,
             :distance => car_and_cus.distance, :email => car_and_cus.email, :mobilephone => car_and_cus.mobilephone,
-            :model_name => car_and_cus.model_name, :name => car_and_cus.cus_name, :num => car_and_cus.cnum,
+            :model_name => car_and_cus.model_name, :model_id => car_and_cus.model_id,
+            :name => car_and_cus.cus_name, :num => car_and_cus.cnum,
             :sex => car_and_cus.sex ? 0 : 1, :year => car_and_cus.buy_year, :property => car_and_cus.property,
             :group_name => car_and_cus.group_name, :vin => car_and_cus.vin_code}
           if search_type == 0
@@ -232,5 +234,18 @@ class Order < ActiveRecord::Base
       cpr.update_attribute(:content,pns.map{|pn| pn.join("-")}.join(",")) if cpr
     end unless oprs.blank?
   end
-  
+
+  #生成order的code
+  def self.make_code store_id
+    store = store_id.to_s
+    if store_id.to_i < 10
+      store = "00" + store_id.to_s
+    elsif store_id.to_i >= 10 && store_id.to_i < 100
+      store = "0" + store_id.to_s
+    else
+      store = store_id.to_s
+    end
+    code = store + Time.now.strftime("%Y%m%d%H%M%S")
+    return code
+  end
 end

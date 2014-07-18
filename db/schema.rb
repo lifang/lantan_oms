@@ -11,7 +11,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20140704012838) do
+ActiveRecord::Schema.define(:version => 20140717073443) do
 
   create_table "accounts", :force => true do |t|
     t.integer  "types"
@@ -171,12 +171,13 @@ ActiveRecord::Schema.define(:version => 20140704012838) do
     t.integer  "card_id"
     t.decimal  "amt",             :precision => 16, :scale => 2, :default => 0.0
     t.string   "package_content"
-    t.decimal  "discount",        :precision => 2,  :scale => 2, :default => 0.0
+    t.decimal  "discount",        :precision => 16, :scale => 2, :default => 0.0
     t.datetime "ended_at"
     t.datetime "created_at",                                                      :null => false
     t.datetime "updated_at",                                                      :null => false
     t.integer  "order_id"
     t.string   "password"
+    t.string   "verify_code"
   end
 
   add_index "customer_cards", ["card_id"], :name => "index_customer_cards_on_card_id"
@@ -466,13 +467,14 @@ ActiveRecord::Schema.define(:version => 20140704012838) do
     t.integer  "order_id"
     t.integer  "item_id"
     t.integer  "pro_num"
-    t.decimal  "price",        :precision => 20, :scale => 2, :default => 0.0
-    t.decimal  "total_price",  :precision => 20, :scale => 2, :default => 0.0
-    t.decimal  "t_price",      :precision => 20, :scale => 2, :default => 0.0
-    t.integer  "return_types",                                :default => 0
-    t.datetime "created_at",                                                   :null => false
-    t.datetime "updated_at",                                                   :null => false
+    t.decimal  "price",             :precision => 20, :scale => 2, :default => 0.0
+    t.decimal  "total_price",       :precision => 20, :scale => 2, :default => 0.0
+    t.decimal  "t_price",           :precision => 20, :scale => 2, :default => 0.0
+    t.integer  "return_types",                                     :default => 0
+    t.datetime "created_at",                                                        :null => false
+    t.datetime "updated_at",                                                        :null => false
     t.integer  "prod_types"
+    t.integer  "customer_pcard_id"
   end
 
   add_index "order_prod_relations", ["created_at"], :name => "index_order_prod_relations_on_created_at"

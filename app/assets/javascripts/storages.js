@@ -74,9 +74,11 @@ function need_add(obj){     //选择是否需要施工
     if($(obj).attr("checked")=="checked"){
         $("#new_p_form").find("input[name='js_t_type']").removeAttr("disabled");
         $("#js_t").removeAttr("disabled");
+        $("#cost_time").removeAttr("disabled");
     }else{
         $("#new_p_form").find("input[name='js_t_type']").attr("disabled", "disabled");
         $("#js_t").attr("disabled", "disabled");
+        $("#cost_time").attr("disabled", "disabled");
     }
 }
 
@@ -178,6 +180,7 @@ function new_prod_valid(obj, store_id, m_id){       //新建和编辑产品验�
                 if(need_added.attr("checked")=="checked"){
                     var js_t_type = $("#new_p_form").find("input[name='js_t_type']:checked").first().val();
                     var js_t = $.trim($("#js_t").val());
+                    var cost_time = $.trim($("#cost_time").val());
                     if(js_t==""){
                         if(js_t_type==1){
                             tishi("请输入技师提成金额!");
@@ -191,6 +194,9 @@ function new_prod_valid(obj, store_id, m_id){       //新建和编辑产品验�
                         }else{
                             tishi("请输入正确的技师提成百分比!");
                         }
+                        flag = false;
+                    }else if(cost_time=="" || is_int(cost_time)==false){
+                        tishi("请输入正确的施工时间!");
                         flag = false;
                     }
                 };

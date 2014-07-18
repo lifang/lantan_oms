@@ -54,7 +54,8 @@ class StoragesController < ApplicationController #库存管理中的库存列表
       :deduct_price => is_shelves ? (params[:xs_t_type].to_i==1 ? params[:xs_t].to_f : nil) : nil,
       :techin_percent => is_shelves && is_added ? (params[:js_t_type].to_i==2 ? params[:js_t].to_f*params[:sale_price].to_f/100 : nil) : nil,
       :techin_price => is_shelves && is_added ? (params[:js_t_type].to_i==1 ? params[:js_t].to_f : nil) : nil,
-      :show_on_ipad => params[:show_on_pad].nil? || params[:show_on_pad].to_i==0 ? false : true
+      :show_on_ipad => params[:show_on_pad].nil? || params[:show_on_pad].to_i==0 ? false : true,
+      :cost_time => params[:cost_time].nil? ? nil : params[:cost_time].to_i
     }
     if img && img.size > Product::MAX_SIZE
       flash[:notice] = "新建失败,产品图片尺寸最大不得超过5MB!"
@@ -125,7 +126,8 @@ class StoragesController < ApplicationController #库存管理中的库存列表
             :deduct_price => is_shelves ? (params[:xs_t_type].to_i==1 ? params[:xs_t].to_f : nil) : nil,
             :techin_percent => is_shelves && is_added ? (params[:js_t_type].to_i==2 ? params[:js_t].to_f*params[:sale_price].to_f/100 : nil) : nil,
             :techin_price => is_shelves && is_added ? (params[:js_t_type].to_i==1 ? params[:js_t].to_f : nil) : nil,
-            :show_on_ipad => params[:show_on_pad].nil? || params[:show_on_pad].to_i==0 ? false : true
+            :show_on_ipad => params[:show_on_pad].nil? || params[:show_on_pad].to_i==0 ? false : true,
+            :cost_time => params[:cost_time].nil? ? nil : params[:cost_time].to_i
           }
           if img && img.size > Product::MAX_SIZE
             flash[:notice] = "编辑失败,产品图片尺寸最大不得超过5MB!"

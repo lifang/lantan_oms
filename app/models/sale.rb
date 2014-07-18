@@ -18,4 +18,32 @@ class Sale < ActiveRecord::Base
   SUBSIDY = { :NO=>0,:YES=>1} # 0 不补贴 1 补贴
   TOTAL_DISC = [DISC_TIME[:DAY],DISC_TIME[:MONTH],DISC_TIME[:YEAR],DISC_TIME[:WEEK]]
   scope :valid, where("((ended_at > '#{Time.now}' and disc_time_types = #{DISC_TIME[:TIME]}) or disc_time_types!= #{DISC_TIME[:TIME]}) and is_subsidy = true and status=#{STATUS[:RELEASE]}")
+  
+  #下单时根据客户所选的产品返回所支持的活动(返回的活动只要支持该订单中某一个产品或者服务就加入进去)
+  def self.get_customer_sales_by_products store_id, product_ids
+    sales = Sale.where(["((ended_at>=? and disc_time_types=?) or disc_time_types!=?) and status=? and store_id=?", Time.now,
+        DISC_TIME[:TIME], DISC_TIME[:TIME], STATUS[:RELEASE], store_id])
+    result = sales.inject([]){|arr,sale|
+      supported_prods = SaleProdRelation.where(["sale_id=?", sale.id])
+      s_prods_ids = supported_prods.map(&:product_id)
+      if s_prods_ids.any? && (s_prods_ids&product_ids).any? #如果该活动支持某个产品或服务
+        hash = {:disc_types => sale.disc_types, :discount => sale.disc_types == DISC_TYPES[:FEE] ? nil : sale.discount,
+          :price => sale.disc_types == DISC_TYPES[:FEE] ? sale.discount : nil, :sale_id => sale.id,
+          :sale_name => sale.name, :selected => 0, :show_price => 0}
+        prod_arr = []
+        sale_products = SaleProdRelation.find_by_sql(["select spr.product_id, spr.prod_num, p.name
+                    from sale_prod_relations spr inner join products p
+                    on p.id = spr.product_id where spr.sale_id = ?", sale.id])
+        sale_products.each do |sp|
+          prod_hash = {:product_id => sp.product_id, :prod_num => sp.prod_num, :name => sp.name}
+          prod_arr << prod_hash
+        end
+        hash[:products] = prod_arr
+        arr << hash
+      end;
+      arr
+    }
+    return result
+  end
+
 end

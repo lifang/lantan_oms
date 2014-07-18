@@ -36,7 +36,7 @@ class Station < ActiveRecord::Base
 
   #给某个门店下的工位安排工单
   def self.arrange_work_orders store_id
-    stations = Station.where(["status=? and store_id=?", STAT[:NORMAL], store_id])
+    stations = Station.where(["status=? and store_id=?", STAT[:NORMAL], store_id]).order("created_at asc")
     stations.each do |s|
       #首先查看该工位当前在不在施工
       his_serving_wo = WorkOrder.where(["station_id=? and status=? and current_day=?", s.id, WorkOrder::STAT[:SERVICING],
@@ -55,12 +55,12 @@ class Station < ActiveRecord::Base
               hww.update_attributes(:status => WorkOrder::STAT[:SERVICING], :started_at => Time.now,
                 :ended_at => Time.now + hww.cost_time.to_i*60)
               current_order = hww.order
-              current_order.update_attribute("status", Order::STATUS[:SERVICING]) unless current_order.status==Order::STATUS[:SERVICING]
+              current_order.update_attribute("status", Order::STATUS[:SERVICING]) if current_order.status==Order::STATUS[:NORMAL]
               break
             end
           end
         else   #如果没有排上该工位的工单 则查出最早的station_id为空的工单
-          no_sid_wos = WorkOrder.where(["station_id is null and status=? and current_day=? and service_id in (?)", s.id,
+          no_sid_wos = WorkOrder.where(["station_id is null and status=? and current_day=? and service_id in (?)",
             WorkOrder::STAT[:WAIT], Time.now.strftime("%Y%m%d").to_i, his_services]).order("created_at asc")
           no_sid_wos.each do |nsw|
             #查看这个工单对应的订单当前在不在其他工位上施工
@@ -70,13 +70,13 @@ class Station < ActiveRecord::Base
                nsw.update_attributes(:station_id => s.id, :status => WorkOrder::STAT[:SERVICING], :started_at => Time.now,
                 :ended_at => Time.now + nsw.cost_time.to_i*60)
               current_order = nsw.order
-              current_order.update_attribute("status", Order::STATUS[:SERVICING]) unless current_order.status==Order::STATUS[:SERVICING]
+              current_order.update_attribute("status", Order::STATUS[:SERVICING]) if current_order.status==Order::STATUS[:NORMAL]
               break
              end
-          end
+          end if no_sid_wos.any?
         end
       end
-    end
+    end if stations.any?
   end
 
 end
