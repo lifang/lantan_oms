@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<component name="dataSourceStorage">
+  <data-source source="LOCAL" name="Rails lantan_oms: development" uuid="484cc832-c8c4-409f-b60a-00202c035a83">
+    <database-info product="" version="" jdbc-version="" driver-name="" driver-version=""/>
+  </data-source>
+  <data-source source="LOCAL" name="Rails lantan_oms: test" uuid="996aa491-bb6c-4794-b3d1-00f63d6f61a8">
+    <database-info product="" version="" jdbc-version="" driver-name="" driver-version=""/>
+  </data-source>
+  <data-source source="LOCAL" name="Rails lantan_oms: production" uuid="6ccc7a9e-1e89-47fd-b227-9c6b69dd1cca">
+    <database-info product="" version="" jdbc-version="" driver-name="" driver-version=""/>
+  </data-source>
+</component>

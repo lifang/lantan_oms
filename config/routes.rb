@@ -16,7 +16,7 @@ LantanOms::Application.routes.draw do
 
   resources :logins do
     collection do
-      get :logout, :logout
+      get :logout
       post :validate
     end
   end
@@ -107,9 +107,12 @@ LantanOms::Application.routes.draw do
     namespace :api do
     resources :orders do
       collection do
-        get :index_list,:user_and_order,:order_details,:user_and_order,:search_car,:products_list,:login,
-          :new_index_list,:construction_site,:reservation_list,:complaint,:reservation_isaccept,:add,:enter_order,
-          :work_order_finished,:pay
+        get :index_list,:user_and_order,:order_details,:user_and_order,:search_car,:products_list,
+          :new_index_list,:construction_site,:reservation_list,:reservation_isaccept,:add,:enter_order,
+          :work_order_finished,:confirm_reservation, :search_customers_datas,
+          :cancel_order, :finish_order, :back_order
+        post :login,:complaint_order,:make_order, :make_order2, :pay_order, :pay_order_no_auth,
+          :set_svcard_pwd_send_code, :set_svcard_pwd_commit, :pad_sync
       end
     end
   end

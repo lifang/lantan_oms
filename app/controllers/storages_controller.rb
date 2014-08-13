@@ -54,13 +54,14 @@ class StoragesController < ApplicationController #库存管理中的库存列表
       :deduct_price => is_shelves ? (params[:xs_t_type].to_i==1 ? params[:xs_t].to_f : nil) : nil,
       :techin_percent => is_shelves && is_added ? (params[:js_t_type].to_i==2 ? params[:js_t].to_f*params[:sale_price].to_f/100 : nil) : nil,
       :techin_price => is_shelves && is_added ? (params[:js_t_type].to_i==1 ? params[:js_t].to_f : nil) : nil,
-      :show_on_ipad => params[:show_on_pad].nil? || params[:show_on_pad].to_i==0 ? false : true
+      :show_on_ipad => params[:show_on_pad].nil? || params[:show_on_pad].to_i==0 ? false : true,
+      :cost_time => params[:cost_time].nil? ? nil : params[:cost_time].to_i
     }
     if img && img.size > Product::MAX_SIZE
       flash[:notice] = "新建失败,产品图片尺寸最大不得超过5MB!"
     else
-      Product.transaction do
-        begin
+      begin
+        Product.transaction do
           product = Product.new(hash)
           product.save
           sp = SharedProduct.create(:code => product.code, :name => product.name, :standard => product.standard,
@@ -78,15 +79,15 @@ class StoragesController < ApplicationController #库存管理中的库存列表
           else
             flash[:notice] = "新建成功!"
           end
-        rescue
-          flash[:notice] = "新建失败!"
         end
+      rescue
+        flash[:notice] = "新建失败!"
       end
     end
     redirect_to "/stores/#{@store.id}/storages"
   end
 
-  def edit    #1备注、2编辑、3核实、4预警、5忽略
+  def edit    #1备注、2编辑、3快速入库、4预警、5忽略
     @set_product_types = params[:set_product_types].to_i
     id = params[:id].to_i
     @product = Product.find_by_id(id)
@@ -96,7 +97,7 @@ class StoragesController < ApplicationController #库存管理中的库存列表
     end
   end
 
-  def update  #1备注、2编辑、3核实、4预警、5忽略
+  def update  #1备注、2编辑、3快速入库、4预警、5忽略
     set_product_types = params[:set_product_types].to_i
     Product.transaction do
       product = Product.find_by_id(params[:id].to_i)
@@ -125,7 +126,8 @@ class StoragesController < ApplicationController #库存管理中的库存列表
             :deduct_price => is_shelves ? (params[:xs_t_type].to_i==1 ? params[:xs_t].to_f : nil) : nil,
             :techin_percent => is_shelves && is_added ? (params[:js_t_type].to_i==2 ? params[:js_t].to_f*params[:sale_price].to_f/100 : nil) : nil,
             :techin_price => is_shelves && is_added ? (params[:js_t_type].to_i==1 ? params[:js_t].to_f : nil) : nil,
-            :show_on_ipad => params[:show_on_pad].nil? || params[:show_on_pad].to_i==0 ? false : true
+            :show_on_ipad => params[:show_on_pad].nil? || params[:show_on_pad].to_i==0 ? false : true,
+            :cost_time => params[:cost_time].nil? ? nil : params[:cost_time].to_i
           }
           if img && img.size > Product::MAX_SIZE
             flash[:notice] = "编辑失败,产品图片尺寸最大不得超过5MB!"
@@ -148,8 +150,8 @@ class StoragesController < ApplicationController #库存管理中的库存列表
             end
           end
         elsif set_product_types == 3
-          checknum = params[:checknum].nil? || params[:checknum]=="" ? 0 : params[:checknum].to_f
-          product.update_attribute("check_num", checknum)
+          fast_num = params[:fast_num].to_f
+          product.update_attribute("storage", fast_num)
           flash[:notice] = "设置成功!"
         elsif set_product_types == 4
           low_warning = params[:low_warning].nil? || params[:low_warning]=="" ? 0 : params[:low_warning].to_f
@@ -226,11 +228,11 @@ class StoragesController < ApplicationController #库存管理中的库存列表
     render :json => {:status => status, :msg => msg}
   end
 
- #打印库存清单
+  #打印库存清单
   def print_all_prods
     @products = Product.find_by_sql(["select p.*, c.name cname from products p inner join categories c
         on p.category_id=c.id where p.store_id=? and p.status=? and p.types=?",@store.id, Product::STATUS[:NORMAL],
-      Product::TYPES[:MATERIAL]])
+        Product::TYPES[:MATERIAL]])
   end
 
   def get_title

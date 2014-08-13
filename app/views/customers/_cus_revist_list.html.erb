@@ -3,6 +3,7 @@
     <tr>
       <td>回访时间</td>
       <td>类别</td>
+      <td>回访标题</td>
       <td>回访内容</td>
       <td>客户回答</td>
       <td>相关订单</td>
@@ -14,6 +15,7 @@
       <tr name="cus_revist_tr">
         <td width="18%"><%= revisit.created_at.strftime("%Y-%m-%d %H:%M:%S") if revisit.created_at %></td>
         <td width="7%"><%= Revisit::TYPES_NAME[revisit.types] %></td>
+        <td width="23%"><%= truncate(revisit.title, :length => 15) %></td>
         <td width="23%"><%= truncate(revisit.content, :length => 15) %></td>
         <td width="23%"><%= truncate(revisit.answer, :length => 15) %></td>
         <td width="20%">

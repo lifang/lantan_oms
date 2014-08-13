@@ -6,8 +6,8 @@ class StaffManagesController < ApplicationController #员工管理-员工列表
     @name = params[:staff_name]
     @tow = params[:tow]
     @status = params[:status]
-    sql = ["select s.*, d1.name pname, d2.name dname from staffs s inner join departments d1 on s.department_id=d1.id
-      inner join departments d2 on s.position=d2.id where s.status in (?) and s.store_id=?", Staff::VALID_STATUS, @store.id]
+    sql = ["select s.*, d1.name pname, d2.name dname from staffs s left join departments d1 on s.department_id=d1.id
+      left join departments d2 on s.position=d2.id where s.status in (?) and s.store_id=?", Staff::VALID_STATUS, @store.id]
     unless @name.nil? || @name.strip==""
       sql[0] += " and s.name like ?"
       sql << "%#{@name.gsub(/[%_]/){|n|'\\'+n}}%"
@@ -44,7 +44,7 @@ class StaffManagesController < ApplicationController #员工管理-员工列表
         :sex => params[:staff_sex].to_i==1 ? true : false, :level => params[:staff_level].to_i, :birthday => params[:staff_birthday], :id_card => params[:staff_idn],
         :hometown => params[:staff_hometown], :education => params[:staff_education].to_i, :nation => params[:staff_nation], :political => params[:staff_political],
         :phone => params[:staff_phone], :address => params[:staff_addr], :base_salary => params[:staff_base_salary].to_f.round(2), :status => Staff::STATUS[:normal],
-        :store_id => @store.id, :username => params[:staff_name], :is_score_ge_salary => is_score_ge_salary, :working_stats => params[:staff_work_st].nil? ? 1 : 0,
+        :store_id => @store.id, :username => params[:staff_phone], :is_score_ge_salary => is_score_ge_salary, :working_stats => params[:staff_work_st].nil? ? 1 : 0,
         :probation_salary => params[:staff_work_st].nil? ? nil : params[:staff_prob_salary].to_f.round(2),
         :probation_days =>  params[:staff_work_st].nil? ? nil : params[:staff_prob_days].to_f.round(2),
         :is_deduct => params[:staff_is_deduct].nil? || params[:staff_is_deduct].to_i==0 ? false : true, :department_id => params[:staff_posi].to_i,
@@ -77,8 +77,8 @@ class StaffManagesController < ApplicationController #员工管理-员工列表
 
   #新建奖励或惩罚
   def new_reward_violation
-      @staffs = Staff.where(["store_id=? and status in (?)", @store.id, Staff::VALID_STATUS])
-      @types = params[:types].to_i #1奖励 0惩罚
+    @staffs = Staff.where(["store_id=? and status in (?)", @store.id, Staff::VALID_STATUS])
+    @types = params[:types].to_i #1奖励 0惩罚
   end
 
   #创建奖励或惩罚
@@ -96,8 +96,8 @@ class StaffManagesController < ApplicationController #员工管理-员工列表
       ViolationReward.transaction do
         staffs.each do |s|
           ViolationReward.create!(:staff_id => s, :situation => situation, :status => ViolationReward::STATUS[:NOMAL],
-          :process_types => process_types, :mark => mark, :types => @types, :score_num => score_num,
-          :salary_num => salary_num, :belong_types => belong_types)
+            :process_types => process_types, :mark => mark, :types => @types, :score_num => score_num,
+            :salary_num => salary_num, :belong_types => belong_types)
         end if staffs
         flash[:notice] = @types == 1 ? "奖励创建成功!" : "处罚创建成功!"
       end
@@ -135,21 +135,14 @@ class StaffManagesController < ApplicationController #员工管理-员工列表
   #新近员工名称与手机号码验证
   def staff_valid
     types = params[:types].to_i
-    name = params[:staff_name]
     phone = params[:staff_phone]
     status = 1
     msg = ""
     if types == 1 #新建时的验证
-      staff = Staff.where(["name=? and status in (?) and store_id=?", name, Staff::VALID_STATUS, @store.id]).first
-      if staff.nil?
-        staff = Staff.where(["phone=? and status in (?) and store_id=?", phone, Staff::VALID_STATUS, @store.id]).first
-        if staff
-          status = 0
-          msg = "该手机号已被注册!"
-        end
-      else
+      staff = Staff.where(["phone=? and status in (?) and store_id=?", phone, Staff::VALID_STATUS, @store.id]).first
+      if staff
         status = 0
-        msg = "已有同名的员工!"
+        msg = "该手机号已被注册!"
       end
     elsif types == 2    #编辑时...
 

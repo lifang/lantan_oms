@@ -11,7 +11,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20140605060527) do
+ActiveRecord::Schema.define(:version => 20140717073443) do
 
   create_table "accounts", :force => true do |t|
     t.integer  "types"
@@ -170,11 +170,13 @@ ActiveRecord::Schema.define(:version => 20140605060527) do
     t.integer  "card_id"
     t.decimal  "amt",             :precision => 16, :scale => 2, :default => 0.0
     t.string   "package_content"
-    t.decimal  "discount",        :precision => 2,  :scale => 2, :default => 0.0
+    t.decimal  "discount",        :precision => 16, :scale => 2, :default => 0.0
     t.datetime "ended_at"
     t.datetime "created_at",                                                      :null => false
     t.datetime "updated_at",                                                      :null => false
     t.integer  "order_id"
+    t.string   "password"
+    t.string   "verify_code"
   end
 
   add_index "customer_cards", ["card_id"], :name => "index_customer_cards_on_card_id"
@@ -435,11 +437,11 @@ ActiveRecord::Schema.define(:version => 20140605060527) do
 
   create_table "o_pcard_relations", :force => true do |t|
     t.integer  "order_id"
-    t.integer  "c_pcard_relation_id"
+    t.integer  "customer_card_id"
     t.integer  "product_id"
     t.integer  "product_num"
-    t.datetime "created_at",          :null => false
-    t.datetime "updated_at",          :null => false
+    t.datetime "created_at",       :null => false
+    t.datetime "updated_at",       :null => false
   end
 
   create_table "order_pay_types", :force => true do |t|
@@ -464,13 +466,14 @@ ActiveRecord::Schema.define(:version => 20140605060527) do
     t.integer  "order_id"
     t.integer  "item_id"
     t.integer  "pro_num"
-    t.decimal  "price",        :precision => 20, :scale => 2, :default => 0.0
-    t.decimal  "total_price",  :precision => 20, :scale => 2, :default => 0.0
-    t.decimal  "t_price",      :precision => 20, :scale => 2, :default => 0.0
-    t.integer  "return_types",                                :default => 0
-    t.datetime "created_at",                                                   :null => false
-    t.datetime "updated_at",                                                   :null => false
+    t.decimal  "price",             :precision => 20, :scale => 2, :default => 0.0
+    t.decimal  "total_price",       :precision => 20, :scale => 2, :default => 0.0
+    t.decimal  "t_price",           :precision => 20, :scale => 2, :default => 0.0
+    t.integer  "return_types",                                     :default => 0
+    t.datetime "created_at",                                                        :null => false
+    t.datetime "updated_at",                                                        :null => false
     t.integer  "prod_types"
+    t.integer  "customer_pcard_id"
   end
 
   add_index "order_prod_relations", ["created_at"], :name => "index_order_prod_relations_on_created_at"
@@ -1333,6 +1336,7 @@ ActiveRecord::Schema.define(:version => 20140605060527) do
     t.integer  "cost_time"
     t.datetime "created_at",       :null => false
     t.datetime "updated_at",       :null => false
+    t.integer  "service_id"
   end
 
   add_index "work_orders", ["current_day"], :name => "index_work_orders_on_current_day"

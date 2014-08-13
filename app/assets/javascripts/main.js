@@ -45,9 +45,9 @@ function tishi(message){
     var win_height = document.documentElement.clientHeight;//jQuery(document).height();
     var z_layer_height = $("#tishi_div").height();
     $("#tishi_div").css('top',(win_height-z_layer_height)/2 + scolltop);
-    var doc_width = $(document).width();
+    var doc_width = document.documentElement.clientWidth;
     var layer_width = $("#tishi_div").width();
-    $("#tishi_div").css('left',(doc_width-layer_width)/2);
+    $("#tishi_div").css('left',(doc_width-layer_width-40)/2);
     $("#tishi_div").css('display','block');
     jQuery('#tishi_div').fadeTo("slow",1);
     $("#tishi_div .x").click(function(){

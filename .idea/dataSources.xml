@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="DataSourceManagerImpl" format="xml" hash="2310009722">
+    <data-source source="LOCAL" name="Rails lantan_oms: development" uuid="484cc832-c8c4-409f-b60a-00202c035a83">
+      <driver-ref>mysql</driver-ref>
+      <jdbc-driver>com.mysql.jdbc.Driver</jdbc-driver>
+      <jdbc-url>jdbc:mysql://127.0.0.1/lantan_oms_development</jdbc-url>
+      <user-name>root</user-name>
+      <user-password>dfc9dfc5dfc7dfcedfc5df98df9adf9bdf98</user-password>
+      <libraries />
+    </data-source>
+    <data-source source="LOCAL" name="Rails lantan_oms: test" uuid="996aa491-bb6c-4794-b3d1-00f63d6f61a8">
+      <driver-ref>mysql</driver-ref>
+      <jdbc-driver>com.mysql.jdbc.Driver</jdbc-driver>
+      <jdbc-url>jdbc:mysql://127.0.0.1/lantan_oms_test</jdbc-url>
+      <user-name>root</user-name>
+      <user-password>dfc9dfc5dfc7dfcedfc5df98df9adf9bdf98</user-password>
+      <libraries />
+    </data-source>
+    <data-source source="LOCAL" name="Rails lantan_oms: production" uuid="6ccc7a9e-1e89-47fd-b227-9c6b69dd1cca">
+      <driver-ref>mysql</driver-ref>
+      <jdbc-driver>com.mysql.jdbc.Driver</jdbc-driver>
+      <jdbc-url>jdbc:mysql://127.0.0.1/lantan_oms_production</jdbc-url>
+      <user-name>root</user-name>
+      <user-password>dfc9dfc5dfc7dfcedfc5df98df9adf9bdf98</user-password>
+      <libraries />
+    </data-source>
+  </component>
+</project>
+

@@ -10,7 +10,7 @@
           <div style="border: 1px solid #e2e2e2; overflow: auto; padding: 5px; height: 120px;" id="staffs_list">
             <% @staffs.each do |s| %>
               <div class="checkBox" style=" float: left;"><input type="checkbox" name="staffs[]" value="<%= s.id %>"/></div>
-              <label style="text-align:left;"><%= s.name %></label>
+              <label style="width:73px;text-align:left;"><%= s.name %></label>
             <% end if @staffs.any? %>
           </div>
         </div>

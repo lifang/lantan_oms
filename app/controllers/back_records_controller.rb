@@ -11,7 +11,6 @@ class BackRecordsController < ApplicationController #库存管理中的报损记
     @code = params[:p_code]
     page = params[:page] ||=1
     @back_records = BackGoodRecord.get_back_records(@store.id, @supplier, @type, @name, @code, page)
-    p @back_records
   end
 
   def new

@@ -15,15 +15,18 @@ class StationDatasController < ApplicationController  #系统设置-工位
     @stations = stations.paginate(:page => params[:page] ||= 1, :per_page => 2) if stations.any?
     @s_service = StationServiceRelation.find_by_sql(["select ssr.station_id, p.name from station_service_relations
         ssr inner join products p on ssr.product_id=p.id where ssr.station_id in (?) and p.status=?",
-        @stations.map(&:id), Product::STATUS[:NORMAL]]).group_by{|ss|ss.station_id} if @stations.any?
+        @stations.map(&:id), Product::STATUS[:NORMAL]]).group_by{|ss|ss.station_id} if @stations && @stations.any?
         
   end
 
   def edit
     @station = Station.find_by_id(params[:id].to_i)
     @station_services = @station.products.map(&:id)
-    @category = Category.where(["types = ? and store_id = ? ", Category::TYPES[:service], @store.id]).inject({}){|hash,c|hash[c.id]=c.name;hash};
-    @services = @category.empty? ? {}:Product.is_normal.where(:category_id => @category.keys).group_by { |p| p.category_id }
+    @category = Category.where(["types in (?) and store_id = ? ", [Category::TYPES[:service], Category::TYPES[:material]],
+        @store.id]).inject({}){|hash,c|hash[c.id]=c.name;hash};
+    @services = @category.empty? ? {} : Product.where(["status=? and category_id in (?) and (types=? or
+    (types=? and is_added=?))", Product::STATUS[:NORMAL], @category.keys, Product::TYPES[:SERVICE],
+        Product::TYPES[:MATERIAL], Product::IS_ADDED[:YES]]).group_by { |p| p.category_id }
     pack_serv = Product.is_normal.where(:category_id => Product::PACK[:PACK],:store_id=>@store.id)
     unless pack_serv.blank?
       @category.merge!(Product::PACK_SERVIE)
@@ -58,8 +61,11 @@ class StationDatasController < ApplicationController  #系统设置-工位
   end
 
   def new
-    @category = Category.where(["types = ? and store_id = ? ", Category::TYPES[:service], @store.id]).inject({}){|hash,c|hash[c.id]=c.name;hash};
-    @services = @category.empty? ? {}:Product.is_normal.where(:category_id => @category.keys).group_by { |p| p.category_id }
+    @category = Category.where(["types in (?) and store_id = ? ", [Category::TYPES[:service], Category::TYPES[:material]],
+        @store.id]).inject({}){|hash,c|hash[c.id]=c.name;hash};
+    @services = @category.empty? ? {} : Product.where(["status=? and category_id in (?) and (types=? or
+    (types=? and is_added=?))", Product::STATUS[:NORMAL], @category.keys, Product::TYPES[:SERVICE],
+        Product::TYPES[:MATERIAL], Product::IS_ADDED[:YES]]).group_by { |p| p.category_id }
     pack_serv = Product.is_normal.where(:category_id => Product::PACK[:PACK],:store_id=>@store.id)
     unless pack_serv.blank?
       @category.merge!(Product::PACK_SERVIE)

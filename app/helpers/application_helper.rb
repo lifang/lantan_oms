@@ -5,7 +5,6 @@ module ApplicationHelper
   require 'openssl'
   include RolesHelper
   include MessageManagesHelper
-  
   MODEL_STATUS={:NORMAL=>0,:DELETED=>1,:INVALID=>2}
   def has_sign?
     store_id = params[:store_id]
@@ -34,12 +33,13 @@ module ApplicationHelper
   #  订单中有哪些服务
   def combin_orders(orders)
     orders.map{|order|
-      work_order = WorkOrder.find_by_order_id(order.id)
+      work_order = WorkOrder.find_by_order_id(order.order_id)
       service_name = Order.find_by_sql("select p.name p_name from orders o inner join order_prod_relations opr on opr.order_id=o.id inner join
-            products p on p.id=opr.product_id where p.is_service=#{Product::PROD_TYPES[:SERVICE]} and o.id = #{order.id}").map(&:p_name).compact.uniq
+            products p on p.id=opr.item_id where p.is_service=#{Product::IS_SERVICE[:YES]} and o.id = #{order.order_id}
+            and opr.prod_types=#{OrderProdRelation::PROD_TYPES[:SERVICE]}").map(&:p_name).compact.uniq
       order[:wo_started_at] = (work_order && work_order.started_at && work_order.started_at.strftime("%Y-%m-%d %H:%M:%S")) || ""
       order[:wo_ended_at] = (work_order && work_order.ended_at && work_order.ended_at.strftime("%Y-%m-%d %H:%M:%S")) || ""
-      order[:car_num] = order.car_num.try(:num)
+      #      order[:car_num] = order.car_num.try(:num)
       order[:service_name] = service_name.join(",")
       order[:cost_time] = work_order.try(:cost_time)
       order[:station_id] = work_order.try(:station_id)
@@ -76,4 +76,12 @@ module ApplicationHelper
     back_res =http.request(request)
     return JSON back_res.body
   end
+
+  def proof_code(len)
+    chars = ('A'..'Z').to_a + ('a'..'z').to_a + (0..9).to_a
+    code_array = []
+    1.upto(len) {code_array << chars[rand(chars.length)]}
+    return code_array.join("")
+  end
+
 end

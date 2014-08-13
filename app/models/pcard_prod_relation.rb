@@ -25,7 +25,7 @@ class PcardProdRelation < ActiveRecord::Base
       prod_name_num = pnn.split("-")
       prod_id = prod_name_num[0]
       pcard_prod_group[prod_id]
-      new_content << "#{prod_id.to_i}-#{prod_name_num[1]}-#{prod_name_num[2].to_i+pcard_prod_group[prod_id]}"
+      new_content << "#{prod_id.to_i}-#{prod_name_num[1]}-#{prod_name_num[2].to_i+pcard_prod_group[prod_id].to_i}"
     end
     return new_content.join(",")
   end

@@ -5,7 +5,7 @@
     <p style="line-height: 24px; text-align: right;">日期：<%= Time.now.strftime("%y-%m-%d") %></p>
     <div class="searchBox">
       <%= form_tag "/stores/#{@store.id}/in_and_out_records/in_search_prods", :id => "search_prod_form", :remote => true do %>
-        <div class="selectBox">
+        <div class="selectBox" style="width:168px;">
           <span></span>
           <div class="openDownIcon"></div>
           <select name="in_order_prod_id" id="in_order_prod_id">

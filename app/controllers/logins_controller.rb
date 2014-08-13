@@ -2,7 +2,6 @@
 class LoginsController < ApplicationController  #登陆
   layout :false
   def index
-
   end
 
   def validate
@@ -16,7 +15,7 @@ class LoginsController < ApplicationController  #登陆
       @status = 0
       @msg = "用户不存在!"
     else
-      if staff.encrypted_password != Digest::MD5.hexdigest(user_pwd)
+      if staff.has_password?(user_pwd) == false
         @status = 0
         @msg = "密码错误!"
       else

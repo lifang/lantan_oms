@@ -15,7 +15,6 @@ class Station < ActiveRecord::Base
   IS_CONTROLLER = {:YES=>1,:NO=>0} #定义是否拥有工控机
   PerPage = 10
   validates :name, :presence => true
-  validate :unique_code
 
 
 
@@ -25,61 +24,59 @@ class Station < ActiveRecord::Base
     w.status in (#{WorkOrder::STAT[:SERVICING]},#{WorkOrder::STAT[:WAIT_PAY]}) and w.store_id=#{store_id}"
   end
 
-
-
-
-  def self.arrange_time store_id, prod_ids, order = nil, res_time = nil
-    #查询所有满足条件的工位
-    stations = Station.includes(:wk_or_times).where(:store_id => store_id, :status => Station::STAT[:NORMAL])
-    station_arr = []
-    prod_ids = prod_ids.collect{|p| p.to_i }
-    (stations || []).each do |station|
-      if station.station_service_relations
-        prods = station.station_service_relations.collect{|r| r.product_id }
-        station_arr << station if (prods & prod_ids).sort == prod_ids.sort
-      end
+  def self.station_service store_id
+    stations = Station.where("store_id =? and status not in (?) ",store_id, [Station::STAT[:WRONG], Station::STAT[:DELETED]]).select("id, name")
+    product_sta = Product.find_by_sql(["SELECT p.id product_id,p.name,ssr.station_id from  products p INNER JOIN station_service_relations ssr on p.id = ssr.product_id
+        where p.is_service=#{Product::IS_SERVICE[:YES]} and ssr.station_id in (?) ",stations.map(&:id)]).group_by{|product| product.station_id}
+    stations.each do |station|
+      station['services'] = product_sta[station.id].nil? ? [] : product_sta[station.id]
     end
-    times_arr = []
-    time_now = Time.now.strftime("%Y%m%d%H%M")
-    times_arr << time_now
-    station_id = 0
-
-    #如果用户连续多次下单并且购买的服务可以在原工位上施工，则排在原来工位上。
-    if order
-      work_order = WorkOrder.joins(:order => :car_num).where(:car_nums => {:id => order.car_num_id},
-        :work_orders => {:status => [WorkOrder::STAT[:WAIT], WorkOrder::STAT[:SERVICING]], :current_day => Time.now.strftime("%Y%m%d").to_i}).order("ended_at desc").first
-      if work_order #5
-        ended_at = work_order.ended_at
-        last_order_ended_at = ended_at.strftime("%Y%m%d%H%M")
-        times_arr << last_order_ended_at
-        if station_arr.map(&:id).include?(work_order.station_id) #[1,3] 5
-          station_id = work_order.station_id
-        end
-      end
-    end
-    if station_id == 0
-      #按照工位的忙闲获取预计时间
-      wkor_times = WkOrTime.where(:station_id => station_arr, :current_day => Time.now.strftime("%Y%m%d"))
-      if wkor_times.blank?
-        station_id = station_arr[0].try(:id) || 0
-      else
-        stations = Station.where(:id => wkor_times.map(&:station_id))
-        no_order_stations = station_arr - stations #获得工位上没订单的工位
-        if no_order_stations.present?
-          station_id = no_order_stations[0].id
-        else
-          min_wkor_times = wkor_times.min{|a,b| a.current_times <=> b.current_times}
-          min_ended_at = min_wkor_times.current_times
-          times_arr << min_ended_at
-          station_id = min_wkor_times.station_id
-        end
-      end
-    end
-    temp_time = times_arr.each{|t| Time.zone.parse(t)}.max
-    time = (res_time && (temp_time < Time.zone.parse(res_time))) ? Time.zone.parse(res_time) : Time.zone.parse(temp_time)
-    time_arr = [(time + Constant::W_MIN.minutes).strftime("%Y-%m-%d %H:%M"),
-      (time + (Constant::W_MIN + Constant::STATION_MIN).minutes).strftime("%Y-%m-%d %H:%M"),station_id]
-    #puts time_arr,"-----------------"
-    time_arr
+    return stations
   end
+
+  #给某个门店下的工位安排工单
+  def self.arrange_work_orders store_id
+    stations = Station.where(["status=? and store_id=?", STAT[:NORMAL], store_id]).order("created_at asc")
+    stations.each do |s|
+      #首先查看该工位当前在不在施工
+      his_serving_wo = WorkOrder.where(["station_id=? and status=? and current_day=?", s.id, WorkOrder::STAT[:SERVICING],
+        Time.now.strftime("%Y%m%d").to_i]).first
+      if his_serving_wo.nil?  #如果该工位当前不在施工
+        his_services = s.station_service_relations.map(&:product_id).collect{|p|p.to_i} #获取该工位可进行的服务
+        #获取已排到该工位的正在等待的工单
+        his_wait_wos = WorkOrder.where(["station_id=? and status=? and current_day=? and service_id in (?)", s.id,
+            WorkOrder::STAT[:WAIT], Time.now.strftime("%Y%m%d").to_i, his_services]).order("created_at asc")
+        if his_wait_wos.any?   #首先安排已排上该工位的工单施工(按时间先后顺序)
+          his_wait_wos.each do |hww|
+            #查看这个工单对应的订单当前在不在其他工位上施工
+            other_serving_wos = WorkOrder.where(["station_id!=? and status=? and current_day=? and order_id=?",
+              s.id, WorkOrder::STAT[:SERVICING], Time.now.strftime("%Y%m%d").to_i, hww.order_id])
+            if other_serving_wos.blank? #如果这个工单对应的车辆正在其他工位施工，则跳过。否则安排该工单
+              hww.update_attributes(:status => WorkOrder::STAT[:SERVICING], :started_at => Time.now,
+                :ended_at => Time.now + hww.cost_time.to_i*60)
+              current_order = hww.order
+              current_order.update_attribute("status", Order::STATUS[:SERVICING]) if current_order.status==Order::STATUS[:NORMAL]
+              break
+            end
+          end
+        else   #如果没有排上该工位的工单 则查出最早的station_id为空的工单
+          no_sid_wos = WorkOrder.where(["station_id is null and status=? and current_day=? and service_id in (?)",
+            WorkOrder::STAT[:WAIT], Time.now.strftime("%Y%m%d").to_i, his_services]).order("created_at asc")
+          no_sid_wos.each do |nsw|
+            #查看这个工单对应的订单当前在不在其他工位上施工
+            other_serving_wos = WorkOrder.where(["station_id!=? and status=? and current_day=? and order_id=?",
+              s.id, WorkOrder::STAT[:SERVICING], Time.now.strftime("%Y%m%d").to_i, nsw.order_id])
+             if other_serving_wos.blank? #如果这个工单对应的车辆正在其他工位施工，则跳过。否则安排该工单
+               nsw.update_attributes(:station_id => s.id, :status => WorkOrder::STAT[:SERVICING], :started_at => Time.now,
+                :ended_at => Time.now + nsw.cost_time.to_i*60)
+              current_order = nsw.order
+              current_order.update_attribute("status", Order::STATUS[:SERVICING]) if current_order.status==Order::STATUS[:NORMAL]
+              break
+             end
+          end if no_sid_wos.any?
+        end
+      end
+    end if stations.any?
+  end
+
 end
