@@ -12,11 +12,11 @@ development:
   adapter: mysql2
   encoding: utf8
   reconnect: false
-  database: lantan_oms_development
+  database: lantan_oms
   pool: 5
-  username: root
-  password: comdo2012
-  host: localhost
+  username: lantan
+  password: lantan2013
+  host: 114.215.208.110
 
 # Warning: The database defined as "test" will be erased and
 # re-generated from your development database when you run "rake".
@@ -35,7 +35,7 @@ production:
   adapter: mysql2
   encoding: utf8
   reconnect: false
-  database: lantan_oms_production
+  database: lantan_oms
   pool: 5
   username: root
   password: comdo2012

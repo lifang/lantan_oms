@@ -1,11 +1,10 @@
-source 'http://ruby.taobao.org'
+source 'http://ruby.taobao.org/'
 
-gem 'rails', '3.2.12'
+gem 'rails', '3.1.2'
 
 # Bundle edge Rails instead:
-# gem 'rails', :git => 'git://github.com/rails/rails.git'
-
-gem 'rake'
+# gem 'rails',     :git => 'git://github.com/rails/rails.git'
+gem 'rake', '10.1.0'
 gem 'mysql2', '0.3.10'
 gem "will_paginate", '3.0.3'
 gem 'mini_magick', '3.5.0'
@@ -20,8 +19,8 @@ gem 'remotipart', '~> 1.0'
 # Gems used only for assets and not required
 # in production environments by default.
 group :assets do
-  gem 'sass-rails',   '~> 3.2.3'
-  gem 'coffee-rails', '~> 3.2.1'
+#  gem 'sass-rails',   '~> 3.2.3'
+#  gem 'coffee-rails', '~> 3.2.1'
 
   # See https://github.com/sstephenson/execjs#readme for more supported runtimes
   # gem 'therubyracer', :platforms => :ruby
